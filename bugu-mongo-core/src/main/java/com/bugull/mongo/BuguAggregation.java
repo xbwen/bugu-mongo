@@ -35,7 +35,7 @@ import java.util.List;
 public class BuguAggregation<T> {
     
     private DBCollection coll;
-    List<DBObject> pipeline;
+    private List<DBObject> pipeline;
     
     public BuguAggregation(DBCollection coll){
         this.coll = coll;
@@ -93,18 +93,9 @@ public class BuguAggregation<T> {
         if(size <= 0){
             throw new AggregationException("Empty pipeline in aggregation!");
         }
-        AggregationOutput output = null;
-        if(size == 1){
-            output = coll.aggregate(pipeline.get(0));
-        }else{
-            DBObject firstOp = pipeline.get(0);
-            List<DBObject> subList = pipeline.subList(1, size);
-            DBObject[] arr = subList.toArray(new DBObject[size-1]);
-            output = coll.aggregate(firstOp, arr);
-        }
-        CommandResult cr = output.getCommandResult();
-        if(! cr.ok()){
-            throw new AggregationException(cr.getErrorMessage());
+        AggregationOutput output = coll.aggregate(pipeline);
+        if(output == null){
+            throw new AggregationException("Aggregation Error!");
         }
         return output.results();
     }

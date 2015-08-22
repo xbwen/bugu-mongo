@@ -42,17 +42,29 @@ public class DaoCache {
     public <T> InternalDao<T> get(Class<T> clazz){
         String name = clazz.getName();
         SoftReference<InternalDao<?>> sr = cache.get(name);
+        InternalDao<T> dao = null;
+        boolean recycled = false;
         if(sr != null){
-            return (InternalDao<T>)sr.get();
+            dao = (InternalDao<T>)sr.get();
+            if(dao == null){
+                recycled = true;
+            }else{
+                return dao;
+            }
         }
         //if not exists
-        InternalDao<?> dao = new InternalDao<T>(clazz);
+        dao = new InternalDao<T>(clazz);
         sr = new SoftReference<InternalDao<?>>(dao);
-        SoftReference<InternalDao<?>> temp = cache.putIfAbsent(name, sr);
-        if(temp != null){
-            return (InternalDao<T>)temp.get();
+        if(recycled){
+            cache.put(name, sr);
+            return dao;
         }else{
-            return (InternalDao<T>)sr.get();
+            SoftReference<InternalDao<?>> temp = cache.putIfAbsent(name, sr);
+            if(temp != null){
+                return (InternalDao<T>)temp.get();
+            }else{
+                return (InternalDao<T>)sr.get();
+            }
         }
     }
     

@@ -88,17 +88,29 @@ public class FieldsCache {
     public Field[] get(Class<?> clazz){
         String name = clazz.getName();
         SoftReference<Field[]> sr = cache.get(name);
+        Field[] fields = null;
+        boolean recycled = false;
         if(sr != null){
-            return sr.get();
+            fields = sr.get();
+            if(fields == null){
+                recycled = true;
+            }else{
+                return fields;
+            }
         }
         //if not exists
-        Field[] fields = getAllFields(clazz);
+        fields = getAllFields(clazz);
         sr = new SoftReference<Field[]>(fields);
-        SoftReference<Field[]> temp = cache.putIfAbsent(name, sr);
-        if(temp != null){
-            return temp.get();
+        if(recycled){
+            cache.put(name, sr);
+            return fields;
         }else{
-            return sr.get();
+            SoftReference<Field[]> temp = cache.putIfAbsent(name, sr);
+            if(temp != null){
+                return temp.get();
+            }else{
+                return sr.get();
+            }
         }
     }
     

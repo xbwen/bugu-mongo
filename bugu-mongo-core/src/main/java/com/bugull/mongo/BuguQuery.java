@@ -381,8 +381,18 @@ public class BuguQuery<T> {
         return this;
     }
     
-    public BuguQuery<T> sort(String orderBy){
-        this.orderBy = orderBy;
+    /**
+     * query result by order.
+     * @param orderStrings such as "seq:1", 1 for aescending, -1 for descending.
+     * @return 
+     */
+    public BuguQuery<T> sort(String... orderStrings){
+        StringBuilder sb = new StringBuilder();
+        for(String s : orderStrings){
+            sb.append(s).append(",");
+        }
+        String str = sb.toString();
+        this.orderBy = str.substring(0, str.length()-1);
         return this;
     }
     
@@ -452,6 +462,14 @@ public class BuguQuery<T> {
 
     public DBObject getCondition() {
         return condition;
+    }
+    
+    public static String aescending(String key){
+        return key + ":1";
+    }
+    
+    public static String descending(String key){
+        return key + ":-1";
     }
     
 }

@@ -53,8 +53,8 @@ public class RefEncoder extends AbstractEncoder{
     public Object encode(){
         BuguEntity entity = (BuguEntity)value;
         if(ref.cascade().toUpperCase().indexOf(Default.CASCADE_CREATE)!=-1 || ref.cascade().toUpperCase().indexOf(Default.CASCADE_UPDATE)!=-1){
-            Class<?> clazz = FieldUtil.getRealType(field);
-            InternalDao dao = DaoCache.getInstance().get(clazz);
+            Class<?> cls = FieldUtil.getRealType(field);
+            InternalDao dao = DaoCache.getInstance().get(cls);
             dao.save(entity);
         }
         return ReferenceUtil.toDbReference(ref, entity.getClass(), entity.getId());

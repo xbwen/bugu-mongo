@@ -149,12 +149,12 @@ public class CascadeDeleteListener implements EntityListener {
     
     @Override
     public void entityInserted(BuguEntity entity) {
-        throw new UnsupportedOperationException("Not supported yet."); 
+        //do nothing
     }
 
     @Override
     public void entityUpdated(BuguEntity entity) {
-        throw new UnsupportedOperationException("Not supported yet."); 
+        //do nothing
     }
 
 }

@@ -20,9 +20,10 @@ import com.bugull.mongo.exception.DBConnectionException;
 import com.mongodb.DB;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
+import com.mongodb.MongoCredential;
 import com.mongodb.ReadPreference;
 import com.mongodb.ServerAddress;
-import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -40,7 +41,8 @@ public class BuguConnection {
     
     private String host;
     private int port;
-    private List<ServerAddress> replicaSet;
+    private List<ServerAddress> serverList;
+    private List<MongoCredential> credentialList;
     private ReadPreference readPreference;
     private MongoClientOptions options;
     private String database;
@@ -73,28 +75,18 @@ public class BuguConnection {
         connect();
     }
     
-    public void connect(List<ServerAddress> replicaSet, String database, String username, String password){
-        this.replicaSet = replicaSet;
+    public void connect(List<ServerAddress> serverList, List<MongoCredential> credentialList, String database){
+        this.serverList = serverList;
+        this.credentialList = credentialList;
         this.database = database;
-        this.username = username;
-        this.password = password;
         connect();
     }
     
     public void connect(){
         try {
             doConnect();
-        } catch (UnknownHostException ex) {
-            logger.error("Can not connect to host " + host, ex);
         } catch (DBConnectionException ex) {
             logger.error(ex.getMessage(), ex);
-        }
-        if(username != null && password != null){
-            try{
-                doAuth();
-            }catch(DBConnectionException ex){
-                logger.error(ex.getMessage(), ex);
-            } 
         }
     }
     
@@ -105,20 +97,25 @@ public class BuguConnection {
         }
     }
 
-    private void doConnect() throws UnknownHostException, DBConnectionException {
+    private void doConnect() throws DBConnectionException {
+        if(username != null && password != null && database != null){
+            credentialList = new ArrayList<MongoCredential>();
+            MongoCredential cred = MongoCredential.createCredential(username, database, password.toCharArray());
+            credentialList.add(cred);
+        }
         if(host != null && port != 0){
             ServerAddress sa = new ServerAddress(host, port);
             if(options != null){
-                mc = new MongoClient(sa, options);
+                mc = new MongoClient(sa, credentialList, options);
             }else{
-                mc = new MongoClient(sa);
+                mc = new MongoClient(sa, credentialList);
             }
         }
-        else if(replicaSet != null){
+        else if(serverList != null && credentialList != null){
             if(options != null){
-                mc = new MongoClient(replicaSet, options);
+                mc = new MongoClient(serverList, credentialList, options);
             }else{
-                mc = new MongoClient(replicaSet);
+                mc = new MongoClient(serverList, credentialList);
             }
             if(readPreference != null){
                 mc.setReadPreference(readPreference);
@@ -126,18 +123,9 @@ public class BuguConnection {
         }
         if(mc != null){
             db = mc.getDB(database);
-        }else{
-            throw new DBConnectionException("Can not get database instance! Please ensure connected to mongoDB correctly.");
-        }
-    }
-    
-    private void doAuth() throws DBConnectionException {
-        boolean auth = db.authenticate(username, password.toCharArray());
-        if(auth){
             logger.info("Connected to mongodb successfully!");
         }else{
-            db = null;
-            throw new DBConnectionException("Can not connect to mongoDB. Failed to authenticate!");
+            throw new DBConnectionException("Can not get database instance! Please ensure connected to mongoDB correctly.");
         }
     }
     
@@ -171,8 +159,8 @@ public class BuguConnection {
         return this;
     }
 
-    public BuguConnection setReplicaSet(List<ServerAddress> replicaSet) {
-        this.replicaSet = replicaSet;
+    public BuguConnection setServerList(List<ServerAddress> serverList) {
+        this.serverList = serverList;
         return this;
     }
 

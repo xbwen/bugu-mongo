@@ -46,12 +46,18 @@ public class ConstructorCache {
     private <T> Constructor<T> get(Class<T> clazz){
         String name = clazz.getName();
         SoftReference<Constructor<?>> sr = cache.get(name);
+        Constructor<T> cons = null;
+        boolean recycled = false;
         if(sr != null){
-            return (Constructor<T>)sr.get();
+            cons = (Constructor<T>)sr.get();
+            if(cons == null){
+                recycled = true;
+            }else{
+                return cons;
+            }
         }
         //if not exists
-        Class[] types = null;
-        Constructor<?> cons = null;
+        Class<T>[] types = null;
         try {
             cons = clazz.getConstructor(types);
         } catch (NoSuchMethodException ex) {
@@ -60,11 +66,16 @@ public class ConstructorCache {
             logger.error("Something is wrong when get constructor", ex);
         }
         sr = new SoftReference<Constructor<?>>(cons);
-        SoftReference<Constructor<?>> temp = cache.putIfAbsent(name, sr);
-        if(temp != null){
-            return (Constructor<T>)temp.get();
+        if(recycled){
+            cache.put(name, sr);
+            return cons;
         }else{
-            return (Constructor<T>)sr.get();
+            SoftReference<Constructor<?>> temp = cache.putIfAbsent(name, sr);
+            if(temp != null){
+                return (Constructor<T>)temp.get();
+            }else{
+                return (Constructor<T>)sr.get();
+            }
         }
     }
     

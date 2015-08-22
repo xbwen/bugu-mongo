@@ -18,7 +18,8 @@ package com.bugull.mongo.listener;
 import com.bugull.mongo.BuguEntity;
 
 /**
- *
+ * When <code>BuguEntity</code> has been inserted, updated, or deleted, the event will deliver to <code>EntityListener</code>
+ * 
  * @author Frank Wen(xbwen@hotmail.com)
  */
 public interface EntityListener {

@@ -16,15 +16,12 @@
 
 package com.bugull.mongo.utils;
 
-import com.bugull.mongo.BuguConnection;
 import com.bugull.mongo.annotations.Id;
 import com.bugull.mongo.annotations.Ref;
 import com.bugull.mongo.annotations.RefList;
 import com.bugull.mongo.cache.FieldsCache;
-import com.bugull.mongo.exception.DBConnectionException;
 import com.bugull.mongo.exception.FieldException;
 import com.bugull.mongo.exception.IdException;
-import com.mongodb.DB;
 import com.mongodb.DBRef;
 import java.lang.reflect.Field;
 import org.apache.logging.log4j.LogManager;
@@ -89,15 +86,9 @@ public final class ReferenceUtil {
     }
     
     private static DBRef toDBRef(Class<?> clazz, String idStr){
-        DB db = null;
-        try {
-            db = BuguConnection.getInstance().getDB();
-        } catch (DBConnectionException ex) {
-            logger.error(ex.getMessage(), ex);
-        }
         String name = MapperUtil.getEntityName(clazz);
         Object dbId = IdUtil.toDbId(clazz, idStr);
-        return new DBRef(db, name, dbId);
+        return new DBRef(name, dbId);
     }
     
     public static String fromDbReference(Ref ref, Object value){
