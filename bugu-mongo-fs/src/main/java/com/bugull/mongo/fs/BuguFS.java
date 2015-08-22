@@ -17,7 +17,6 @@
 package com.bugull.mongo.fs;
 
 import com.bugull.mongo.BuguConnection;
-import com.bugull.mongo.exception.DBConnectionException;
 import com.bugull.mongo.utils.MapperUtil;
 import com.bugull.mongo.utils.Operator;
 import com.mongodb.BasicDBObject;
@@ -61,12 +60,7 @@ public class BuguFS {
     public BuguFS(String bucketName, long chunkSize){
         this.bucketName = bucketName;
         this.chunkSize = chunkSize;
-        DB db = null;
-        try {
-            db = BuguConnection.getInstance().getDB();
-        } catch (DBConnectionException ex) {
-            logger.error(ex.getMessage(), ex);
-        }
+        DB db = BuguConnection.getInstance().getDB();
         fs = new GridFS(db, bucketName);
         files = db.getCollection(bucketName + ".files");
         //ensure the DBCursor can be cast to GridFSDBFile
@@ -92,10 +86,12 @@ public class BuguFS {
         }catch(IOException ex){
             logger.error("Can not create GridFSInputFile", ex);
         }
-        f.setChunkSize(chunkSize);
-        f.setFilename(filename);
-        setAttributes(f, attributes);
-        f.save();
+        if(f != null){
+            f.setChunkSize(chunkSize);
+            f.setFilename(filename);
+            setAttributes(f, attributes);
+            f.save();
+        }
     }
     
     public void save(InputStream is, String filename){
