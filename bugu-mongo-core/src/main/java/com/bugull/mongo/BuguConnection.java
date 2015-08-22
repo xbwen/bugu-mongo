@@ -16,7 +16,6 @@
 
 package com.bugull.mongo;
 
-import com.bugull.mongo.exception.DBConnectionException;
 import com.mongodb.DB;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
@@ -25,8 +24,6 @@ import com.mongodb.ReadPreference;
 import com.mongodb.ServerAddress;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * The connection to MongoDB.
@@ -36,8 +33,6 @@ import org.apache.logging.log4j.Logger;
  * @author Frank Wen(xbwen@hotmail.com)
  */
 public class BuguConnection {
-    
-    private final static Logger logger = LogManager.getLogger(BuguConnection.class.getName());
     
     private String host;
     private int port;
@@ -49,7 +44,6 @@ public class BuguConnection {
     private String username;
     private String password;
     private MongoClient mc;
-    private DB db;
     
     private static class Holder {
         final static BuguConnection instance = new BuguConnection();
@@ -83,21 +77,6 @@ public class BuguConnection {
     }
     
     public void connect(){
-        try {
-            doConnect();
-        } catch (DBConnectionException ex) {
-            logger.error(ex.getMessage(), ex);
-        }
-    }
-    
-    public void close(){
-        BuguFramework.getInstance().destroy();
-        if(mc != null){
-            mc.close();
-        }
-    }
-
-    private void doConnect() throws DBConnectionException {
         if(username != null && password != null && database != null){
             credentialList = new ArrayList<MongoCredential>();
             MongoCredential cred = MongoCredential.createCredential(username, database, password.toCharArray());
@@ -121,11 +100,12 @@ public class BuguConnection {
                 mc.setReadPreference(readPreference);
             }
         }
+    }
+    
+    public void close(){
+        BuguFramework.getInstance().destroy();
         if(mc != null){
-            db = mc.getDB(database);
-            logger.info("Connected to mongodb successfully!");
-        }else{
-            throw new DBConnectionException("Can not get database instance! Please ensure connected to mongoDB correctly.");
+            mc.close();
         }
     }
     
@@ -169,12 +149,8 @@ public class BuguConnection {
         return this;
     }
 
-    public DB getDB() throws DBConnectionException {
-        if(db == null){
-            throw new DBConnectionException("Can not get database instance! Please ensure connected to mongoDB correctly.");
-        }else{
-            return db;
-        }
+    public DB getDB() {
+        return mc.getDB(database);
     }
     
 }

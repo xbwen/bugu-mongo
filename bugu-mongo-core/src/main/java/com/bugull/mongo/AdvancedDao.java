@@ -16,7 +16,6 @@
 
 package com.bugull.mongo;
 
-import com.bugull.mongo.exception.MapReduceException;
 import com.bugull.mongo.utils.MapperUtil;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
@@ -58,12 +57,7 @@ public class AdvancedDao<T> extends BuguDao<T>{
         map.append(key);
         map.append("});}");
         String reduce = "function(key, values){var max=values[0].value; for(var i=1;i<values.length; i++){if(values[i].value>max){max=values[i].value;}} return {'value':max}}";
-        Iterable<DBObject> results = null;
-        try{
-            results = mapReduce(map.toString(), reduce, query);
-        }catch(MapReduceException ex){
-            logger.error(ex.getMessage(), ex);
-        }
+        Iterable<DBObject> results = mapReduce(map.toString(), reduce, query);
         DBObject result = results.iterator().next();
         DBObject dbo = (DBObject)result.get("value");
         return Double.parseDouble(dbo.get("value").toString());
@@ -87,12 +81,7 @@ public class AdvancedDao<T> extends BuguDao<T>{
         map.append(key);
         map.append("});}");
         String reduce = "function(key, values){var min=values[0].value; for(var i=1;i<values.length; i++){if(values[i].value<min){min=values[i].value;}} return {'value':min}}";
-        Iterable<DBObject> results = null;
-        try{
-            results = mapReduce(map.toString(), reduce, query);
-        }catch(MapReduceException ex){
-            logger.error(ex.getMessage(), ex);
-        }
+        Iterable<DBObject> results = mapReduce(map.toString(), reduce, query);
         DBObject result = results.iterator().next();
         DBObject dbo = (DBObject)result.get("value");
         return Double.parseDouble(dbo.get("value").toString());
@@ -116,12 +105,7 @@ public class AdvancedDao<T> extends BuguDao<T>{
         map.append(key);
         map.append("});}");
         String reduce = "function(key, values){var sum=0; for(var i=0;i<values.length; i++){sum+=values[i].value;} return {'value':sum}}";
-        Iterable<DBObject> results = null;
-        try{
-            results = mapReduce(map.toString(), reduce, query);
-        }catch(MapReduceException ex){
-            logger.error(ex.getMessage(), ex);
-        }
+        Iterable<DBObject> results = mapReduce(map.toString(), reduce, query);
         DBObject result = results.iterator().next();
         DBObject dbo = (DBObject)result.get("value");
         return Double.parseDouble(dbo.get("value").toString());
@@ -144,43 +128,31 @@ public class AdvancedDao<T> extends BuguDao<T>{
         return sum / count;
     }
     
-    public Iterable<DBObject> mapReduce(MapReduceCommand cmd) throws MapReduceException {
+    public Iterable<DBObject> mapReduce(MapReduceCommand cmd) {
         MapReduceOutput output = coll.mapReduce(cmd);
-        if(output == null){
-            throw new MapReduceException("MapReduce Error!");
-        }
         return output.results();
     }
     
-    public Iterable<DBObject> mapReduce(String map, String reduce) throws MapReduceException {
+    public Iterable<DBObject> mapReduce(String map, String reduce) {
         MapReduceOutput output = coll.mapReduce(map, reduce, null, OutputType.INLINE, null);
-        if(output == null){
-            throw new MapReduceException("MapReduce Error!");
-        }
         return output.results();
     }
     
-    public Iterable<DBObject> mapReduce(String map, String reduce, BuguQuery query) throws MapReduceException {
+    public Iterable<DBObject> mapReduce(String map, String reduce, BuguQuery query) {
         return mapReduce(map, reduce, query.getCondition());
     }
     
-    private Iterable<DBObject> mapReduce(String map, String reduce, DBObject query) throws MapReduceException {
+    private Iterable<DBObject> mapReduce(String map, String reduce, DBObject query) {
         MapReduceOutput output = coll.mapReduce(map, reduce, null, OutputType.INLINE, query);
-        if(output == null){
-            throw new MapReduceException("MapReduce Error!");
-        }
         return output.results();
     }
     
-    public Iterable<DBObject> mapReduce(String map, String reduce, String outputTarget, MapReduceCommand.OutputType outputType, String orderBy, BuguQuery query) throws MapReduceException {
+    public Iterable<DBObject> mapReduce(String map, String reduce, String outputTarget, MapReduceCommand.OutputType outputType, String orderBy, BuguQuery query) {
         return mapReduce(map, reduce, outputTarget, outputType, orderBy, query.getCondition());
     }
     
-    private synchronized Iterable<DBObject> mapReduce(String map, String reduce, String outputTarget, MapReduceCommand.OutputType outputType, String orderBy, DBObject query) throws MapReduceException {
+    private synchronized Iterable<DBObject> mapReduce(String map, String reduce, String outputTarget, MapReduceCommand.OutputType outputType, String orderBy, DBObject query) {
         MapReduceOutput output = coll.mapReduce(map, reduce, outputTarget, outputType, query);
-        if(output == null){
-            throw new MapReduceException("MapReduce Error!");
-        }
         DBCollection c = output.getOutputCollection();
         DBCursor cursor = null;
         if(orderBy != null){
@@ -195,15 +167,12 @@ public class AdvancedDao<T> extends BuguDao<T>{
         return list;
     }
     
-    public Iterable<DBObject> mapReduce(String map, String reduce, String outputTarget, MapReduceCommand.OutputType outputType, String orderBy, int pageNum, int pageSize, BuguQuery query) throws MapReduceException {
+    public Iterable<DBObject> mapReduce(String map, String reduce, String outputTarget, MapReduceCommand.OutputType outputType, String orderBy, int pageNum, int pageSize, BuguQuery query) {
         return mapReduce(map, reduce, outputTarget, outputType, orderBy, pageNum, pageSize, query.getCondition());
     }
     
-    private synchronized Iterable<DBObject> mapReduce(String map, String reduce, String outputTarget, MapReduceCommand.OutputType outputType, String orderBy, int pageNum, int pageSize, DBObject query) throws MapReduceException {
+    private synchronized Iterable<DBObject> mapReduce(String map, String reduce, String outputTarget, MapReduceCommand.OutputType outputType, String orderBy, int pageNum, int pageSize, DBObject query) {
         MapReduceOutput output = coll.mapReduce(map, reduce, outputTarget, outputType, query);
-        if(output == null){
-            throw new MapReduceException("MapReduce Error!");
-        }
         DBCollection c = output.getOutputCollection();
         DBCursor cursor = null;
         if(orderBy != null){

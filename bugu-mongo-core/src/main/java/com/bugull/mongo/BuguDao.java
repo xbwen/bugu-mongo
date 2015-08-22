@@ -23,7 +23,6 @@ import com.bugull.mongo.annotations.Id;
 import com.bugull.mongo.annotations.IdType;
 import com.bugull.mongo.annotations.SplitType;
 import com.bugull.mongo.cache.FieldsCache;
-import com.bugull.mongo.exception.DBConnectionException;
 import com.bugull.mongo.exception.IdException;
 import com.bugull.mongo.listener.CascadeDeleteListener;
 import com.bugull.mongo.listener.EntityListener;
@@ -68,12 +67,7 @@ public class BuguDao<T> {
     
     public BuguDao(Class<T> clazz){
         this.clazz = clazz;
-        DB db = null;
-        try {
-            db = BuguConnection.getInstance().getDB();
-        } catch (DBConnectionException ex) {
-            logger.error(ex.getMessage(), ex);
-        }
+        DB db = BuguConnection.getInstance().getDB();
         //The default write concern is ACKNOWLEDGED, set in MongoClientOptions.
         concern = db.getWriteConcern();
         //init none-split collection
@@ -92,12 +86,7 @@ public class BuguDao<T> {
     }
     
     private void initCollection(String name){
-        DB db = null;
-        try {
-            db = BuguConnection.getInstance().getDB();
-        } catch (DBConnectionException ex) {
-            logger.error(ex.getMessage(), ex);
-        }
+        DB db = BuguConnection.getInstance().getDB();
         Entity entity = clazz.getAnnotation(Entity.class);
         //if capped
         if(entity.capped() && !db.collectionExists(name)){

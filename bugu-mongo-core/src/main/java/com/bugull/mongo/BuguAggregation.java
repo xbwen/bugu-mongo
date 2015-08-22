@@ -16,12 +16,10 @@
 
 package com.bugull.mongo;
 
-import com.bugull.mongo.exception.AggregationException;
 import com.bugull.mongo.utils.MapperUtil;
 import com.bugull.mongo.utils.Operator;
 import com.mongodb.AggregationOutput;
 import com.mongodb.BasicDBObject;
-import com.mongodb.CommandResult;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 import java.util.ArrayList;
@@ -88,15 +86,8 @@ public class BuguAggregation<T> {
         return this;
     }
     
-    public Iterable<DBObject> results() throws AggregationException {
-        int size = pipeline.size();
-        if(size <= 0){
-            throw new AggregationException("Empty pipeline in aggregation!");
-        }
+    public Iterable<DBObject> results(){
         AggregationOutput output = coll.aggregate(pipeline);
-        if(output == null){
-            throw new AggregationException("Aggregation Error!");
-        }
         return output.results();
     }
 
