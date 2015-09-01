@@ -13,6 +13,16 @@ subprojects{
         compile group:'org.mongodb', name:'mongo-java-driver', version:'3.0.3'
         compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.0.2'
         compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.0.2'
+        testCompile group:'junit', name:'junit', version:'4.11'
+    }
+    
+    project.ext.set("junit", "true")
+
+    test{
+        onlyIf {
+            project.junit == "true"
+        }
+        testLogging.showStandardStreams = true
     }
 
     task copyJars(type: Copy) {

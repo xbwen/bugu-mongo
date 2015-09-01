@@ -55,7 +55,7 @@ public abstract class SimpleEntity implements BuguEntity {
             return -1;
         }
         ObjectId oid = new ObjectId(id);
-        return oid.getTime();
+        return oid.getTimestamp() * 1000L;
     }
     
     @Override
