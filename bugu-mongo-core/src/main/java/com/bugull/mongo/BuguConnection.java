@@ -144,6 +144,11 @@ public class BuguConnection {
         return this;
     }
 
+    public BuguConnection setCredentialList(List<MongoCredential> credentialList) {
+        this.credentialList = credentialList;
+        return this;
+    }
+
     public BuguConnection setReadPreference(ReadPreference readPreference) {
         this.readPreference = readPreference;
         return this;
