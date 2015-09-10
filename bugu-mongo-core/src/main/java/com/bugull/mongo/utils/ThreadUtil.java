@@ -32,7 +32,7 @@ public class ThreadUtil {
         if(pool != null){
             pool.shutdown();
             try{
-                if (!pool.awaitTermination(30, TimeUnit.SECONDS)) {
+                if (!pool.awaitTermination(10, TimeUnit.SECONDS)) {
                     pool.shutdownNow();
                 }
             }catch(InterruptedException ex){

@@ -51,18 +51,18 @@ public class BuguFS {
     
     private GridFS fs;
     private DBCollection files;
-    private String bucketName;
+    private String bucket;
     private long chunkSize;
     
     public final static String BUCKET = "bucket";
     public final static String FILENAME = "filename";
     
-    public BuguFS(String bucketName, long chunkSize){
-        this.bucketName = bucketName;
+    public BuguFS(String bucket, long chunkSize){
+        this.bucket = bucket;
         this.chunkSize = chunkSize;
         DB db = BuguConnection.getInstance().getDB();
-        fs = new GridFS(db, bucketName);
-        files = db.getCollection(bucketName + ".files");
+        fs = new GridFS(db, bucket);
+        files = db.getCollection(bucket + ".files");
         //ensure the DBCursor can be cast to GridFSDBFile
         files.setObjectClass(GridFSDBFile.class);
     }
@@ -192,8 +192,8 @@ public class BuguFS {
         return list;
     }
 
-    public String getBucketName() {
-        return bucketName;
+    public String getBucket() {
+        return bucket;
     }
 
     public long getChunkSize() {

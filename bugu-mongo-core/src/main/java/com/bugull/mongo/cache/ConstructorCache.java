@@ -45,9 +45,9 @@ public class ConstructorCache {
     
     private <T> Constructor<T> get(Class<T> clazz){
         String name = clazz.getName();
-        SoftReference<Constructor<?>> sr = cache.get(name);
         Constructor<T> cons = null;
         boolean recycled = false;
+        SoftReference<Constructor<?>> sr = cache.get(name);
         if(sr != null){
             cons = (Constructor<T>)sr.get();
             if(cons == null){

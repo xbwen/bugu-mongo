@@ -21,17 +21,18 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- *
+ * Things used by framework internally.
+ * 
  * @author Frank Wen(xbwen@hotmail.com)
  */
 public class BuguFramework {
     
     private ExecutorService executor = null;
     
+    private int threadPoolSize = 0;
+    
     private BuguFramework(){
-        //default thread pool size: 2 * cpu + 1
-        int threadPoolSize = Runtime.getRuntime().availableProcessors() * 2 + 1;
-        executor = Executors.newFixedThreadPool(threadPoolSize);
+        
     }
     
     private static class Holder {
@@ -41,9 +42,21 @@ public class BuguFramework {
     public static BuguFramework getInstance(){
         return Holder.instance;
     }
+    
+    public void init(){
+        if(threadPoolSize == 0){
+            //default thread pool size: 2 * cpu + 1
+            threadPoolSize = Runtime.getRuntime().availableProcessors() * 2 + 1;
+        }
+        executor = Executors.newFixedThreadPool(threadPoolSize);
+    }
 
     public ExecutorService getExecutor() {
         return executor;
+    }
+    
+    public void setThreadPoolSize(int threadPoolSize){
+        this.threadPoolSize = threadPoolSize;
     }
     
     public void destroy(){

@@ -166,7 +166,7 @@ public class ImageUploader extends Uploader{
     private InputStream getOriginalInputStream(){
         DBObject query = new BasicDBObject(BuguFS.FILENAME, filename);
         query.put(DIMENSION, null);
-        BuguFS fs = BuguFSFactory.getInstance().create(bucketName, chunkSize);
+        BuguFS fs = BuguFSFactory.getInstance().create(bucket, chunkSize);
         GridFSDBFile f = fs.findOne(query);
         return f.getInputStream();
     }
@@ -205,7 +205,7 @@ public class ImageUploader extends Uploader{
         } catch (IOException ex) {
             logger.error("Can not encode the JPEGImageEncoder", ex);
         }
-        BuguFS fs = BuguFSFactory.getInstance().create(bucketName, chunkSize);
+        BuguFS fs = BuguFSFactory.getInstance().create(bucket, chunkSize);
         fs.save(baos.toByteArray(), filename, attributes);
         StreamUtil.safeClose(baos);
     }

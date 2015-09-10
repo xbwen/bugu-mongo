@@ -43,26 +43,39 @@ public class BuguFSFactory {
         return create(GridFS.DEFAULT_BUCKET, GridFS.DEFAULT_CHUNKSIZE);
     }
     
-    public BuguFS create(String bucketName){
-        return create(bucketName, GridFS.DEFAULT_CHUNKSIZE);
+    public BuguFS create(String bucket){
+        return create(bucket, GridFS.DEFAULT_CHUNKSIZE);
     }
     
     public BuguFS create(long chunkSize){
         return create(GridFS.DEFAULT_BUCKET, chunkSize);
     }
     
-    public BuguFS create(String bucketName, long chunkSize){
-        SoftReference<BuguFS> sr = cache.get(bucketName);
+    public BuguFS create(String bucket, long chunkSize){
+        BuguFS fs = null;
+        boolean recycled = false;
+        SoftReference<BuguFS> sr = cache.get(bucket);
         if(sr != null){
-            return sr.get();
+            fs = sr.get();
+            if(fs == null){
+                recycled = true;
+            }else{
+                return fs;
+            }
         }
-        BuguFS fs = new BuguFS(bucketName, chunkSize);
+        //if not exists
+        fs = new BuguFS(bucket, chunkSize);
         sr = new SoftReference<BuguFS>(fs);
-        SoftReference<BuguFS> temp = cache.putIfAbsent(bucketName, sr);
-        if(temp != null){
-            return temp.get();
+        if(recycled){
+            cache.putIfAbsent(bucket, sr);
+            return fs;
         }else{
-            return sr.get();
+            SoftReference<BuguFS> temp = cache.putIfAbsent(bucket, sr);
+            if(temp != null){
+                return temp.get();
+            }else{
+                return sr.get();
+            }
         }
     }
     

@@ -100,6 +100,9 @@ public class BuguConnection {
                 mc.setReadPreference(readPreference);
             }
         }
+        
+        //init the framework
+        BuguFramework.getInstance().init();
     }
     
     public void close(){

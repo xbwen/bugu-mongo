@@ -80,27 +80,27 @@ public class UploadedFileServlet extends HttpServlet {
         String filename = uri.substring(last+1);
         DBObject query = new BasicDBObject(BuguFS.FILENAME, filename);
         query.put(ImageUploader.DIMENSION, null);  //note: this is necessary!
-        String bucketName = GridFS.DEFAULT_BUCKET;
+        String bucket = GridFS.DEFAULT_BUCKET;
         int first = uri.indexOf(SLASH);
         if(first != last){
             String sub = uri.substring(first+1, last);
             String[] arr = sub.split(SLASH);
             for(int i=0; i<arr.length; i+=2){
                 if(arr[i].equals(BuguFS.BUCKET)){
-                    bucketName = arr[i+1];
+                    bucket = arr[i+1];
                 }else{
                     query.put(arr[i], arr[i+1]);
                 }
             }
         }
         //check if the bucket is allowed to access by this servlet
-        if(!StringUtil.isEmpty(allowBucket) && !allowBucket.equalsIgnoreCase(bucketName)){
+        if(!StringUtil.isEmpty(allowBucket) && !allowBucket.equalsIgnoreCase(bucket)){
             return;
         }
-        if(!StringUtil.isEmpty(forbidBucket) && forbidBucket.equalsIgnoreCase(bucketName)){
+        if(!StringUtil.isEmpty(forbidBucket) && forbidBucket.equalsIgnoreCase(bucket)){
             return;
         }
-        BuguFS fs = BuguFSFactory.getInstance().create(bucketName);
+        BuguFS fs = BuguFSFactory.getInstance().create(bucket);
         GridFSDBFile f = fs.findOne(query);
         if(f == null){
             return;
