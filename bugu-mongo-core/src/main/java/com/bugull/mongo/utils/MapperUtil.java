@@ -17,17 +17,13 @@
 package com.bugull.mongo.utils;
 
 import com.bugull.mongo.annotations.Default;
-import com.bugull.mongo.annotations.Embed;
-import com.bugull.mongo.annotations.EmbedList;
 import com.bugull.mongo.annotations.Entity;
-import com.bugull.mongo.annotations.Property;
 import com.bugull.mongo.cache.ConstructorCache;
 import com.bugull.mongo.cache.FieldsCache;
 import com.bugull.mongo.decoder.Decoder;
 import com.bugull.mongo.decoder.DecoderFactory;
 import com.bugull.mongo.encoder.Encoder;
 import com.bugull.mongo.encoder.EncoderFactory;
-import com.bugull.mongo.misc.DBIndex;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
@@ -117,49 +113,6 @@ public final class MapperUtil {
     }
     
     /**
-     * options for ensureIndex().
-     * @param index
-     * @return 
-     */
-    public static List<DBIndex> getDBIndex(String index){
-        List<DBIndex> list = new ArrayList<DBIndex>();
-        index = index.replaceAll("\\}[^{^}]+\\{", "};{");
-        index = index.replaceAll("[{}'']", "");
-        String[] items = index.split(";");
-        for(String item : items){
-            DBObject keys = new BasicDBObject();
-            DBObject options = new BasicDBObject("background", true);
-            String[] arr = item.split(",");
-            for(String s : arr){
-                String[] kv = s.split(":");
-                String k = kv[0].trim();
-                String v = kv[1].trim();
-                //note: the following check order can't be changed!
-                if(v.equalsIgnoreCase("2d") || v.equalsIgnoreCase("text")){
-                    keys.put(k, v);
-                }
-                else if(k.equalsIgnoreCase("expireAfterSeconds")){
-                    options.put(k, Integer.parseInt(v));
-                }
-                else if(v.equals("1") || v.equals("-1")){
-                    keys.put(k, Integer.parseInt(v));
-                }
-                else if(v.equalsIgnoreCase("true") || v.equalsIgnoreCase("false")){
-                    options.put(k, Boolean.parseBoolean(v));
-                }
-                else if(k.equalsIgnoreCase("name")){
-                    options.put(k, v);
-                }
-            }
-            DBIndex dbi = new DBIndex();
-            dbi.setKeys(keys);
-            dbi.setOptions(options);
-            list.add(dbi);
-        }
-        return list;
-    }
-    
-    /**
      * Get the name property of @Entity annotation. 
      * If the name property is not set, then return the class' name, in lower case type.
      * @param clazz
@@ -172,47 +125,6 @@ public final class MapperUtil {
             name = clazz.getSimpleName().toLowerCase();
         }
         return name;
-    }
-    
-    /**
-     * Get the lazy fields
-     * @param clazz
-     * @return 
-     */
-    public static DBObject getKeyFields(Class<?> clazz){
-        DBObject keys = new BasicDBObject();
-        Field[] fields = FieldsCache.getInstance().get(clazz);
-        for(Field field : fields){
-            String fieldName = field.getName();
-            Property property = field.getAnnotation(Property.class);
-            if(property!=null && property.lazy()){
-                String name = property.name();
-                if(!name.equals(Default.NAME)){
-                    fieldName = name;
-                }
-                keys.put(fieldName, 0);
-                continue;
-            }
-            Embed embed = field.getAnnotation(Embed.class);
-            if(embed!=null && embed.lazy()){
-                String name = embed.name();
-                if(!name.equals(Default.NAME)){
-                    fieldName = name;
-                }
-                keys.put(fieldName, 0);
-                continue;
-            }
-            EmbedList embedList = field.getAnnotation(EmbedList.class);
-            if(embedList!=null && embedList.lazy()){
-                String name = embedList.name();
-                if(!name.equals(Default.NAME)){
-                    fieldName = name;
-                }
-                keys.put(fieldName, 0);
-                continue;
-            }
-        }
-        return keys;
     }
     
 }

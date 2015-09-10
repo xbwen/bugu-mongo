@@ -17,17 +17,20 @@
 package com.bugull.mongo;
 
 import com.bugull.mongo.annotations.Default;
+import com.bugull.mongo.annotations.Embed;
+import com.bugull.mongo.annotations.EmbedList;
 import com.bugull.mongo.annotations.EnsureIndex;
 import com.bugull.mongo.annotations.Entity;
 import com.bugull.mongo.annotations.Id;
 import com.bugull.mongo.annotations.IdType;
+import com.bugull.mongo.annotations.Property;
+import com.bugull.mongo.annotations.Ref;
+import com.bugull.mongo.annotations.RefList;
 import com.bugull.mongo.annotations.SplitType;
 import com.bugull.mongo.cache.FieldsCache;
 import com.bugull.mongo.exception.IdException;
 import com.bugull.mongo.listener.CascadeDeleteListener;
 import com.bugull.mongo.listener.EntityListener;
-import com.bugull.mongo.misc.CascadeChecker;
-import com.bugull.mongo.misc.DBIndex;
 import com.bugull.mongo.utils.IdUtil;
 import com.bugull.mongo.utils.MapperUtil;
 import com.bugull.mongo.utils.Operator;
@@ -78,11 +81,65 @@ public class BuguDao<T> {
             initCollection(name);
         }
         //for keys
-        keys = MapperUtil.getKeyFields(clazz);
+        keys = getLazyFields();
         //for cascade delete
-        if(CascadeChecker.needListener(clazz)){
-            addEntityListener(new CascadeDeleteListener(clazz));
+        if(needCascadeListener()){
+            listenerList.add(new CascadeDeleteListener(clazz));
         }
+    }
+    
+    private DBObject getLazyFields(){
+        DBObject lazyKeys = new BasicDBObject();
+        Field[] fields = FieldsCache.getInstance().get(clazz);
+        for(Field field : fields){
+            String fieldName = field.getName();
+            Property property = field.getAnnotation(Property.class);
+            if(property!=null && property.lazy()){
+                String name = property.name();
+                if(!name.equals(Default.NAME)){
+                    fieldName = name;
+                }
+                lazyKeys.put(fieldName, 0);
+                continue;
+            }
+            Embed embed = field.getAnnotation(Embed.class);
+            if(embed!=null && embed.lazy()){
+                String name = embed.name();
+                if(!name.equals(Default.NAME)){
+                    fieldName = name;
+                }
+                lazyKeys.put(fieldName, 0);
+                continue;
+            }
+            EmbedList embedList = field.getAnnotation(EmbedList.class);
+            if(embedList!=null && embedList.lazy()){
+                String name = embedList.name();
+                if(!name.equals(Default.NAME)){
+                    fieldName = name;
+                }
+                lazyKeys.put(fieldName, 0);
+                continue;
+            }
+        }
+        return lazyKeys;
+    }
+    
+    private boolean needCascadeListener(){
+        boolean result = false;
+        Field[] fields = FieldsCache.getInstance().get(clazz);
+        for(Field f : fields){
+            Ref ref = f.getAnnotation(Ref.class);
+            if(ref!=null && ref.cascade().toUpperCase().indexOf(Default.CASCADE_DELETE)!=-1){
+                result = true;
+                break;
+            }
+            RefList refList = f.getAnnotation(RefList.class);
+            if(refList!=null && refList.cascade().toUpperCase().indexOf(Default.CASCADE_DELETE)!=-1){
+                result = true;
+                break;
+            }
+        }
+        return result;
     }
     
     private void initCollection(String name){
@@ -106,11 +163,54 @@ public class BuguDao<T> {
         //for @EnsureIndex
         EnsureIndex ei = clazz.getAnnotation(EnsureIndex.class);
         if(ei != null){
-            List<DBIndex> list = MapperUtil.getDBIndex(ei.value());
+            List<DBIndex> list = getDBIndex(ei.value());
             for(DBIndex dbi : list){
-                coll.createIndex(dbi.getKeys(), dbi.getOptions());
+                coll.createIndex(dbi.indexKeys, dbi.indexOptions);
             }
         }
+    }
+    
+    private class DBIndex{
+        DBObject indexKeys;
+        DBObject indexOptions;
+    }
+    
+    private List<DBIndex> getDBIndex(String indexString){
+        List<DBIndex> list = new ArrayList<DBIndex>();
+        indexString = indexString.replaceAll("\\}[^{^}]+\\{", "};{");
+        indexString = indexString.replaceAll("[{}'']", "");
+        String[] items = indexString.split(";");
+        for(String item : items){
+            DBObject indexKeys = new BasicDBObject();
+            DBObject indexOptions = new BasicDBObject("background", true);
+            String[] arr = item.split(",");
+            for(String s : arr){
+                String[] kv = s.split(":");
+                String k = kv[0].trim();
+                String v = kv[1].trim();
+                //note: the following check order can't be changed!
+                if(v.equalsIgnoreCase("2d") || v.equalsIgnoreCase("text")){
+                    indexKeys.put(k, v);
+                }
+                else if(k.equalsIgnoreCase("expireAfterSeconds")){
+                    indexOptions.put(k, Integer.parseInt(v));
+                }
+                else if(v.equals("1") || v.equals("-1")){
+                    indexKeys.put(k, Integer.parseInt(v));
+                }
+                else if(v.equalsIgnoreCase("true") || v.equalsIgnoreCase("false")){
+                    indexOptions.put(k, Boolean.parseBoolean(v));
+                }
+                else if(k.equalsIgnoreCase("name")){
+                    indexOptions.put(k, v);
+                }
+            }
+            DBIndex dbi = new DBIndex();
+            dbi.indexKeys = indexKeys;
+            dbi.indexOptions = indexOptions;
+            list.add(dbi);
+        }
+        return list;
     }
     
     /**
@@ -313,8 +413,10 @@ public class BuguDao<T> {
                 remove(t);
             }
         }
-        coll.drop();
-        coll.dropIndexes();
+        else{
+            coll.drop();
+            coll.dropIndexes();
+        }
     }
     
     /**
