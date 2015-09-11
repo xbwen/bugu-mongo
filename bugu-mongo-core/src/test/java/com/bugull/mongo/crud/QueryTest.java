@@ -18,7 +18,6 @@ package com.bugull.mongo.crud;
 
 import com.bugull.mongo.base.BaseTest;
 import com.bugull.mongo.BuguMapper;
-import com.bugull.mongo.BuguQuery;
 import com.bugull.mongo.dao.OrderDao;
 import com.bugull.mongo.dao.UserDao;
 import com.bugull.mongo.entity.Address;
@@ -26,6 +25,7 @@ import com.bugull.mongo.entity.Contact;
 import com.bugull.mongo.entity.Order;
 import com.bugull.mongo.entity.Product;
 import com.bugull.mongo.entity.User;
+import com.bugull.mongo.utils.SortUtil;
 import java.util.List;
 import org.junit.Test;
 
@@ -57,7 +57,7 @@ public class QueryTest extends BaseTest {
         System.out.println();
         
         OrderDao orderDao = new OrderDao();
-        List<Order> orderList = orderDao.query().is("user", user).sort(BuguQuery.descending("money")).results();
+        List<Order> orderList = orderDao.query().is("user", user).sort(SortUtil.descending("money")).results();
         BuguMapper.fetchCascade(orderList, "productList");
         for(Order order : orderList){
             System.out.println("total money: " + order.getMoney());
