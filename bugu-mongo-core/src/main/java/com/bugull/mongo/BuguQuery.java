@@ -50,12 +50,12 @@ public class BuguQuery<T> {
     
     private DBObject slices;
     private DBObject fields;
-    private boolean fieldsSpecified = false;
+    private boolean fieldsSpecified;  //default value is false
     
     private final DBObject condition = new BasicDBObject();
     private String orderBy;
-    private int pageNumber = 0;  //default value is zero
-    private int pageSize = 0;  //default value is zero
+    private int pageNumber;  //default value is zero
+    private int pageSize;  //default value is zero
     
     public BuguQuery(BuguDao<T> dao){
         this.dao = dao;
@@ -372,7 +372,7 @@ public class BuguQuery<T> {
             fields = new BasicDBObject();
         }
         for(String field : fieldNames){
-            //do not replace the $slice, if has set
+            //do not replace the $slice, if has been set
             if(fields.get(field)==null){
                 fields.put(field, value);
             }

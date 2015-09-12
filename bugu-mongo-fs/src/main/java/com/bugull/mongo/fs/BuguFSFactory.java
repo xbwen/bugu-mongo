@@ -23,7 +23,7 @@ import java.util.concurrent.ConcurrentMap;
 /**
  * Factory to create BuguFS instance. 
  * 
- * For performance sake, it uses a map to cache all the BuguFS object.
+ * Create a GridFS/BuguFS object is slow and expensive. For performance sake, we use a map to cache all the BuguFS object.
  * 
  * @author Frank Wen(xbwen@hotmail.com)
  */
