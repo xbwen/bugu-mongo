@@ -69,7 +69,7 @@ public class BuguUpdater<T> {
     
     private void append(String op, String key, Object value){
         Object obj = modifier.get(op);
-        DBObject dbo = null;
+        DBObject dbo;
         if(!(obj instanceof DBObject)) {
             dbo = new BasicDBObject(key, value);
             modifier.put(op, dbo);

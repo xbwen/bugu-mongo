@@ -87,7 +87,7 @@ public class FieldsCache {
     
     public Field[] get(Class<?> clazz){
         String name = clazz.getName();
-        Field[] fields = null;
+        Field[] fields;
         boolean recycled = false;
         SoftReference<Field[]> sr = cache.get(name);
         if(sr != null){

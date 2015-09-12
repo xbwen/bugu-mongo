@@ -52,7 +52,7 @@ public class BuguFSFactory {
     }
     
     public BuguFS create(String bucket, long chunkSize){
-        BuguFS fs = null;
+        BuguFS fs;
         boolean recycled = false;
         SoftReference<BuguFS> sr = cache.get(bucket);
         if(sr != null){

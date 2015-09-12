@@ -170,7 +170,7 @@ public class BuguDao<T> {
         }
     }
     
-    private class DBIndex{
+    private final class DBIndex{
         DBObject indexKeys;
         DBObject indexOptions;
     }
@@ -368,7 +368,7 @@ public class BuguDao<T> {
      * @return 
      */
     public WriteResult save(T t){
-        WriteResult wr = null;
+        WriteResult wr;
         BuguEntity ent = (BuguEntity)t;
         if(StringUtil.isEmpty(ent.getId())){
             wr = insert(t);

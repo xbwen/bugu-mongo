@@ -40,7 +40,7 @@ public final class ReferenceUtil {
         if(StringUtil.isEmpty(idStr)){
             return null;
         }
-        Object result = null;
+        Object result;
         if(ref.reduced()){
             result = toManualRef(clazz, idStr);
         }else{
@@ -53,7 +53,7 @@ public final class ReferenceUtil {
         if(StringUtil.isEmpty(idStr)){
             return null;
         }
-        Object result = null;
+        Object result;
         if(refList.reduced()){
             result = toManualRef(clazz, idStr);
         }else{
@@ -92,7 +92,7 @@ public final class ReferenceUtil {
     }
     
     public static String fromDbReference(Ref ref, Object value){
-        String result = null;
+        String result;
         if(ref.reduced()){
             result = value.toString();
         }else{
@@ -103,7 +103,7 @@ public final class ReferenceUtil {
     }
     
     public static String fromDbReference(RefList refList, Object value){
-        String result = null;
+        String result;
         if(refList.reduced()){
             result = value.toString();
         }else{
@@ -114,7 +114,7 @@ public final class ReferenceUtil {
     }
     
     public static Object toDbReference(Class<?> clazz, String fieldName, Class<?> refClass, String idStr){
-        Object result = null;
+        Object result;
         Field refField = null;
         try{
             refField = FieldsCache.getInstance().getField(clazz, fieldName);

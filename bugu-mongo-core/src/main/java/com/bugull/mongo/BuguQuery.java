@@ -151,7 +151,7 @@ public class BuguQuery<T> {
             return;
         }
         Object obj = condition.get(key);
-        DBObject dbo = null;
+        DBObject dbo;
         if(!(obj instanceof DBObject)) {
             dbo = new BasicDBObject(op, value);
             condition.put(key, dbo);
@@ -408,8 +408,8 @@ public class BuguQuery<T> {
         }catch(DBQueryException ex){
             logger.error(ex.getMessage(), ex);
         }
-        DBObject dbo = null;
         DBCollection coll = dao.getCollection();
+        DBObject dbo;
         if(fieldsSpecified){
             dbo = coll.findOne(condition, fields);
         }else if(slices != null){
@@ -421,8 +421,8 @@ public class BuguQuery<T> {
     }
     
     public List<T> results(){
-        DBCursor cursor = null;
         DBCollection coll = dao.getCollection();
+        DBCursor cursor;
         if(fieldsSpecified){
             cursor = coll.find(condition, fields);
         }else{

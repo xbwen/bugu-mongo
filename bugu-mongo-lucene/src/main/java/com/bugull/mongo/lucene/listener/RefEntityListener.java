@@ -72,7 +72,7 @@ public class RefEntityListener {
         else{
             RefList refList = f.getAnnotation(RefList.class);
             if(refList!=null && f.getAnnotation(IndexRefList.class)!=null){
-                Class<?> c = null;
+                Class<?> c;
                 Class<?> type = f.getType();
                 if(type.isArray()){
                     c = type.getComponentType();  //for Array

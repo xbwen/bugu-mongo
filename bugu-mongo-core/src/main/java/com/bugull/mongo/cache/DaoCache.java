@@ -41,7 +41,7 @@ public class DaoCache {
     
     public <T> InternalDao<T> get(Class<T> clazz){
         String name = clazz.getName();
-        InternalDao<T> dao = null;
+        InternalDao<T> dao;
         boolean recycled = false;
         SoftReference<InternalDao<?>> sr = cache.get(name);
         if(sr != null){

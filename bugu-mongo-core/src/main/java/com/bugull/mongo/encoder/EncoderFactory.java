@@ -31,7 +31,7 @@ import java.lang.reflect.Field;
 public final class EncoderFactory {
     
     public static Encoder create(Object obj, Field field){
-        Encoder encoder = null;
+        Encoder encoder;
         if(field.getAnnotation(Id.class) != null){
             encoder = new IdEncoder(obj, field);
         }

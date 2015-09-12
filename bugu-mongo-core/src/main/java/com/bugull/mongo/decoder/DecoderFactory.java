@@ -32,7 +32,7 @@ import java.lang.reflect.Field;
 public final class DecoderFactory {
     
     public static Decoder create(Field field, DBObject dbo){
-        Decoder decoder = null;
+        Decoder decoder;
         if(field.getAnnotation(Id.class) != null){
             decoder = new IdDecoder(field, dbo);
         }

@@ -154,7 +154,7 @@ public class AdvancedDao<T> extends BuguDao<T>{
     private synchronized Iterable<DBObject> mapReduce(String map, String reduce, String outputTarget, MapReduceCommand.OutputType outputType, String orderBy, DBObject query) {
         MapReduceOutput output = coll.mapReduce(map, reduce, outputTarget, outputType, query);
         DBCollection c = output.getOutputCollection();
-        DBCursor cursor = null;
+        DBCursor cursor;
         if(orderBy != null){
             cursor = c.find().sort(MapperUtil.getSort(orderBy));
         }else{
@@ -174,7 +174,7 @@ public class AdvancedDao<T> extends BuguDao<T>{
     private synchronized Iterable<DBObject> mapReduce(String map, String reduce, String outputTarget, MapReduceCommand.OutputType outputType, String orderBy, int pageNum, int pageSize, DBObject query) {
         MapReduceOutput output = coll.mapReduce(map, reduce, outputTarget, outputType, query);
         DBCollection c = output.getOutputCollection();
-        DBCursor cursor = null;
+        DBCursor cursor;
         if(orderBy != null){
             cursor = c.find().sort(MapperUtil.getSort(orderBy)).skip((pageNum-1)*pageSize).limit(pageSize);
         }else{

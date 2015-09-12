@@ -58,7 +58,7 @@ public final class StringUtil {
         if(isEmpty(s)){
             return null;
         }
-        MessageDigest md = null;
+        MessageDigest md;
         try{
             md = MessageDigest.getInstance("MD5");
         }catch (NoSuchAlgorithmException ex) {

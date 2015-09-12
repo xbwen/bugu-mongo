@@ -221,7 +221,7 @@ public final class BuguMapper {
         String sort = refList.sort();
         InternalDao dao = DaoCache.getInstance().get(clazz);
         BuguQuery query = dao.query().in(Operator.ID, idList);
-        List<BuguEntity> entityList = null;
+        List<BuguEntity> entityList;
         if(sort.equals(Default.SORT)){
             entityList = query.results();
         }else{
@@ -254,7 +254,7 @@ public final class BuguMapper {
         clazz = FieldUtil.getRealType(clazz, field);
         InternalDao dao = DaoCache.getInstance().get(clazz);
         BuguQuery query = dao.query().in(Operator.ID, idList);
-        List result = null;
+        List result;
         if(sort.equals(Default.SORT)){
             result = query.results();
         }else{

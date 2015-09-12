@@ -50,7 +50,7 @@ public class RefDecoder extends AbstractDecoder{
     public void decode(Object obj){
         String refId = ReferenceUtil.fromDbReference(ref, value);
         Class<?> clazz = FieldUtil.getRealType(field);
-        BuguEntity refObj = null;
+        BuguEntity refObj;
         if(ref.cascade().toUpperCase().indexOf(Default.CASCADE_READ)==-1){
             refObj = (BuguEntity)ConstructorCache.getInstance().create(clazz);
             refObj.setId(refId);
