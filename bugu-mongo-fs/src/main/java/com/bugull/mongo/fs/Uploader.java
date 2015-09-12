@@ -44,7 +44,7 @@ public class Uploader {
     protected boolean rename;
     
     protected String bucket = GridFS.DEFAULT_BUCKET;
-    protected long chunkSize = GridFS.DEFAULT_CHUNKSIZE;
+    protected int chunkSize = GridFS.DEFAULT_CHUNKSIZE;
     protected String filename;
     protected Map<String, Object> attributes;
     
@@ -86,7 +86,7 @@ public class Uploader {
         this.bucket = bucket;
     }
     
-    public void setChunkSize(long chunkSize){
+    public void setChunkSize(int chunkSize){
         this.chunkSize = chunkSize;
     }
     

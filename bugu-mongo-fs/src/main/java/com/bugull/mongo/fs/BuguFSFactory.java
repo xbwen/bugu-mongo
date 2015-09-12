@@ -47,11 +47,11 @@ public class BuguFSFactory {
         return create(bucket, GridFS.DEFAULT_CHUNKSIZE);
     }
     
-    public BuguFS create(long chunkSize){
+    public BuguFS create(int chunkSize){
         return create(GridFS.DEFAULT_BUCKET, chunkSize);
     }
     
-    public BuguFS create(String bucket, long chunkSize){
+    public BuguFS create(String bucket, int chunkSize){
         BuguFS fs;
         boolean recycled = false;
         SoftReference<BuguFS> sr = cache.get(bucket);

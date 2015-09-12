@@ -52,12 +52,12 @@ public class BuguFS {
     private GridFS fs;
     private DBCollection files;
     private String bucket;
-    private long chunkSize;
+    private int chunkSize;
     
     public final static String BUCKET = "bucket";
     public final static String FILENAME = "filename";
     
-    public BuguFS(String bucket, long chunkSize){
+    public BuguFS(String bucket, int chunkSize){
         this.bucket = bucket;
         this.chunkSize = chunkSize;
         DB db = BuguConnection.getInstance().getDB();
@@ -196,7 +196,7 @@ public class BuguFS {
         return bucket;
     }
 
-    public long getChunkSize() {
+    public int getChunkSize() {
         return chunkSize;
     }
     
