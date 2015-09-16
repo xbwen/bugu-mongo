@@ -38,6 +38,10 @@ public class IndexSearcherHolder {
     
     private final ConcurrentMap<String, IndexSearcher> map = new ConcurrentHashMap<String, IndexSearcher>();
     
+    private IndexSearcherHolder(){
+        
+    }
+    
     private static class Holder {
         final static IndexSearcherHolder instance = new IndexSearcherHolder();
     } 

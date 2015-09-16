@@ -45,6 +45,10 @@ public class FieldsCache {
     
     private final ConcurrentMap<String, SoftReference<Field[]>> cache = new ConcurrentHashMap<String, SoftReference<Field[]>>();
     
+    private FieldsCache(){
+        
+    }
+    
     private static class Holder {
         final static FieldsCache instance = new FieldsCache();
     } 

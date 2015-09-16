@@ -29,6 +29,10 @@ public class AccessCount {
     
     private final ConcurrentMap<String, Semaphore> map = new ConcurrentHashMap<String, Semaphore>();
     
+    private AccessCount(){
+        
+    }
+    
     private static class Holder {
         final static AccessCount instance = new AccessCount();
     } 

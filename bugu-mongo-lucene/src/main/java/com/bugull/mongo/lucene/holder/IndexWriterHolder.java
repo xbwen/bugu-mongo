@@ -40,6 +40,10 @@ public class IndexWriterHolder {
     
     private final ConcurrentMap<String, IndexWriter> map = new ConcurrentHashMap<String, IndexWriter>();
     
+    private IndexWriterHolder(){
+        
+    }
+    
     private static class Holder {
         final static IndexWriterHolder instance = new IndexWriterHolder();
     } 

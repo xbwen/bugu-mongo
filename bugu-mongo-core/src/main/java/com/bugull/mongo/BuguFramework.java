@@ -27,9 +27,9 @@ import java.util.concurrent.Executors;
  */
 public class BuguFramework {
     
-    private ExecutorService executor = null;
+    private ExecutorService executor;
     
-    private int threadPoolSize = 0;
+    private int threadPoolSize;
     
     private BuguFramework(){
         

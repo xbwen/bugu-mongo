@@ -59,6 +59,10 @@ public class BuguIndex {
     private boolean reopening;
     private Set<String> rebuildingSet;
     
+    private BuguIndex(){
+        
+    }
+    
     private static class Holder {
         final static BuguIndex instance = new BuguIndex();
     } 

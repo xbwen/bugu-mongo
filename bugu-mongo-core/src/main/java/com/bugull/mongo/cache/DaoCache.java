@@ -31,6 +31,10 @@ public class DaoCache {
     
     private final ConcurrentMap<String, SoftReference<InternalDao<?>>> cache = new ConcurrentHashMap<String, SoftReference<InternalDao<?>>>();
     
+    private DaoCache(){
+        
+    }
+    
     private static class Holder {
         final static DaoCache instance = new DaoCache();
     } 

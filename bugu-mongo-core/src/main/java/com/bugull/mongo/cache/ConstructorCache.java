@@ -35,6 +35,10 @@ public class ConstructorCache {
     
     private final ConcurrentMap<String, SoftReference<Constructor<?>>> cache = new ConcurrentHashMap<String, SoftReference<Constructor<?>>>();
     
+    private ConstructorCache(){
+        
+    }
+    
     private static class Holder {
         final static ConstructorCache instance = new ConstructorCache();
     } 

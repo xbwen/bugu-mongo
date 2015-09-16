@@ -31,6 +31,10 @@ public class BuguFSFactory {
     
     private final ConcurrentMap<String, SoftReference<BuguFS>> cache = new ConcurrentHashMap<String, SoftReference<BuguFS>>();
     
+    private BuguFSFactory(){
+        
+    }
+    
     private static class Holder {
         final static BuguFSFactory instance = new BuguFSFactory();
     } 

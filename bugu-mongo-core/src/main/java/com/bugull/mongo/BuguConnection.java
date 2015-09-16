@@ -45,6 +45,10 @@ public class BuguConnection {
     private String password;
     private MongoClient mc;
     
+    private BuguConnection(){
+        
+    }
+    
     private static class Holder {
         final static BuguConnection instance = new BuguConnection();
     } 
