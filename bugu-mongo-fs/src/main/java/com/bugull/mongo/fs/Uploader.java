@@ -26,7 +26,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
+import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -108,14 +108,12 @@ public class Uploader {
     
     protected void processFilename(){
         if(rename){
-            long time = System.nanoTime();
-            //the nano time's last 3 bits is 000, add it with a random number
-            time += new Random().nextInt(1000);
+            String uuid = UUID.randomUUID().toString();
             String ext = StringUtil.getExtention(originalName);
             if(!StringUtil.isEmpty(ext)){
-                filename = String.valueOf(time) + "." + ext;
+                filename = uuid + "." + ext;
             }else{
-                filename = String.valueOf(time);
+                filename = uuid;
             }
         }else{
             filename = originalName;
