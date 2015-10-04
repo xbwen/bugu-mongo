@@ -56,9 +56,11 @@ public final class Operator {
     public static final String UNSET = "$unset";
     public static final String INC = "$inc";
     public static final String MUL = "$mul";
+    public static final String ADD_TO_SET = "$addToSet";
     public static final String PUSH = "$push";
-    public static final String PULL = "$pull";
     public static final String EACH = "$each";
+    public static final String PULL = "$pull";
+    public static final String PULL_ALL = "$pullAll";
     public static final String POP = "$pop";
     public static final String MIN = "$min";
     public static final String MAX = "$max";

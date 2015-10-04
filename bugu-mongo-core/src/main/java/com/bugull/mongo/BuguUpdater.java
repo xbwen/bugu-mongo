@@ -185,6 +185,18 @@ public class BuguUpdater<T> {
     }
     
     /**
+     * Adds a value to an array unless the value is already present, 
+     * in which case does nothing to that array.
+     * @param key
+     * @param value
+     * @return 
+     */
+    public BuguUpdater<T> addToSet(String key, Object value){
+        append(Operator.ADD_TO_SET, key, value);
+        return this;
+    }
+    
+    /**
      * Add an element to entity's array/list/set field.
      * @param key the field's name
      * @param value the element to add
@@ -222,6 +234,22 @@ public class BuguUpdater<T> {
     public BuguUpdater<T> pull(String key, Object value){
         value = checkArrayValue(key, value);
         append(Operator.PULL, key, value);
+        return this;
+    }
+    
+    /**
+     * Removes all instances of the specified values from an existing array.
+     * @param key
+     * @param valueArray
+     * @return 
+     */
+    public BuguUpdater<T> pullAll(String key, Object... valueArray){
+        int len = valueArray.length;
+        Object[] values = new Object[len];
+        for(int i=0; i<len; i++){
+            values[i] = checkArrayValue(key, valueArray[i]);
+        }
+        append(Operator.PULL_ALL, key, values);
         return this;
     }
     
