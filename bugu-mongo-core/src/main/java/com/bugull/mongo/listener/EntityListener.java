@@ -24,10 +24,22 @@ import com.bugull.mongo.BuguEntity;
  */
 public interface EntityListener {
     
+    /**
+     * Notified that an entity has been inserted.
+     * @param entity the inserted object
+     */
     public void entityInserted(BuguEntity entity);
     
+    /**
+     * Notified that an entity has been updated.
+     * @param entity the updated object
+     */
     public void entityUpdated(BuguEntity entity);
     
+    /**
+     * Notified that an entity has been deleted.
+     * @param entity the deleted object
+     */
     public void entityDeleted(BuguEntity entity);
     
 }

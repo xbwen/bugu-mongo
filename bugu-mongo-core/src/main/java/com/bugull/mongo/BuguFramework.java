@@ -27,6 +27,8 @@ import java.util.concurrent.Executors;
  */
 public class BuguFramework {
     
+    private BuguConnection connection;
+    
     private ExecutorService executor;
     
     private int threadPoolSize;
@@ -43,12 +45,22 @@ public class BuguFramework {
         return Holder.instance;
     }
     
-    public void init(){
+    public BuguConnection createConnection(){
+        synchronized(this){
+            if(connection == null){
+                connection = new BuguConnection();
+            }
+        }
         if(threadPoolSize == 0){
             //default thread pool size: 2 * cpu + 1
             threadPoolSize = Runtime.getRuntime().availableProcessors() * 2 + 1;
         }
         executor = Executors.newFixedThreadPool(threadPoolSize);
+        return connection;
+    }
+
+    public BuguConnection getConnection() {
+        return connection;
     }
 
     public ExecutorService getExecutor() {
@@ -61,6 +73,9 @@ public class BuguFramework {
     
     public void destroy(){
         ThreadUtil.safeClose(executor);
+        if(connection != null){
+            connection.close();
+        }
     }
 
 }

@@ -16,7 +16,7 @@
 
 package com.bugull.mongo.fs;
 
-import com.bugull.mongo.BuguConnection;
+import com.bugull.mongo.BuguFramework;
 import com.bugull.mongo.utils.MapperUtil;
 import com.bugull.mongo.utils.Operator;
 import com.mongodb.BasicDBObject;
@@ -60,7 +60,7 @@ public class BuguFS {
     public BuguFS(String bucket, int chunkSize){
         this.bucket = bucket;
         this.chunkSize = chunkSize;
-        DB db = BuguConnection.getInstance().getDB();
+        DB db = BuguFramework.getInstance().getConnection().getDB();
         fs = new GridFS(db, bucket);
         files = db.getCollection(bucket + ".files");
         //ensure the DBCursor can be cast to GridFSDBFile

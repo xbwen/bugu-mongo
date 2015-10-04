@@ -45,18 +45,6 @@ public class BuguConnection {
     private String password;
     private MongoClient mc;
     
-    private BuguConnection(){
-        
-    }
-    
-    private static class Holder {
-        final static BuguConnection instance = new BuguConnection();
-    } 
-    
-    public static BuguConnection getInstance(){
-        return Holder.instance;
-    }
-    
     public void connect(String host, int port, String database){
         this.host = host;
         this.port = port;
@@ -104,15 +92,12 @@ public class BuguConnection {
                 mc.setReadPreference(readPreference);
             }
         }
-        
-        //init the framework
-        BuguFramework.getInstance().init();
     }
     
     public void close(){
-        BuguFramework.getInstance().destroy();
         if(mc != null){
             mc.close();
+            mc = null;
         }
     }
     

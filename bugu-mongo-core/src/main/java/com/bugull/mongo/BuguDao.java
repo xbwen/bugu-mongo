@@ -70,7 +70,7 @@ public class BuguDao<T> {
     
     public BuguDao(Class<T> clazz){
         this.clazz = clazz;
-        DB db = BuguConnection.getInstance().getDB();
+        DB db = BuguFramework.getInstance().getConnection().getDB();
         //The default write concern is ACKNOWLEDGED, set in MongoClientOptions.
         concern = db.getWriteConcern();
         //init none-split collection
@@ -143,7 +143,7 @@ public class BuguDao<T> {
     }
     
     private void initCollection(String name){
-        DB db = BuguConnection.getInstance().getDB();
+        DB db = BuguFramework.getInstance().getConnection().getDB();
         Entity entity = clazz.getAnnotation(Entity.class);
         //if capped
         if(entity.capped() && !db.collectionExists(name)){

@@ -17,6 +17,7 @@
 package com.bugull.mongo.base;
 
 import com.bugull.mongo.BuguConnection;
+import com.bugull.mongo.BuguFramework;
 
 /**
  *
@@ -25,7 +26,10 @@ import com.bugull.mongo.BuguConnection;
 public abstract class BaseTest {
     
     protected void connectDB(){
-        BuguConnection conn = BuguConnection.getInstance();
+        BuguFramework framework = BuguFramework.getInstance();
+        framework.setThreadPoolSize(30);
+        
+        BuguConnection conn = framework.createConnection();
         conn.setHost("192.168.0.200");
         conn.setPort(27017);
         conn.setUsername("test");
@@ -35,7 +39,7 @@ public abstract class BaseTest {
     }
     
     protected void disconnectDB(){
-        BuguConnection.getInstance().close();
+        BuguFramework.getInstance().destroy();
     }
 
 }

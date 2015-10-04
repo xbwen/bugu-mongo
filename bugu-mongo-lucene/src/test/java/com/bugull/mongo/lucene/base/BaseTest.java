@@ -17,6 +17,7 @@
 package com.bugull.mongo.lucene.base;
 
 import com.bugull.mongo.BuguConnection;
+import com.bugull.mongo.BuguFramework;
 import com.bugull.mongo.lucene.BuguIndex;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.util.Version;
@@ -28,7 +29,7 @@ import org.apache.lucene.util.Version;
 public abstract class BaseTest {
     
     protected void connectDB(){
-        BuguConnection conn = BuguConnection.getInstance();
+        BuguConnection conn = BuguFramework.getInstance().createConnection();
         conn.setHost("192.168.0.200");
         conn.setPort(27017);
         conn.setUsername("test");
@@ -48,7 +49,7 @@ public abstract class BaseTest {
     
     protected void disconnectDB(){
         BuguIndex.getInstance().close();
-        BuguConnection.getInstance().close();
+        BuguFramework.getInstance().destroy();
     }
 
 }
