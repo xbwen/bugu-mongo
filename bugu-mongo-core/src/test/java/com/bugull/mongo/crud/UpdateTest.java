@@ -40,7 +40,7 @@ public class UpdateTest extends BaseTest {
         
         OrderDao orderDao = new OrderDao();
         BuguQuery query = orderDao.query().is("user", user);
-        orderDao.update().inc("money", -100).apply(query);
+        orderDao.update().inc("money", -100).execute(query);
         
         disconnectDB();
     }

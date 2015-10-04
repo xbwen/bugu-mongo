@@ -84,9 +84,9 @@ public class BuguUpdater<T> {
      * @param t
      * @return 
      */
-    public WriteResult apply(T t){
+    public WriteResult execute(T t){
         BuguEntity ent = (BuguEntity)t;
-        return apply(ent.getId());
+        return execute(ent.getId());
     }
     
     /**
@@ -94,7 +94,7 @@ public class BuguUpdater<T> {
      * @param id
      * @return 
      */
-    public WriteResult apply(String id){
+    public WriteResult execute(String id){
         Class<T> clazz = dao.getEntityClass();
         DBObject condition = new BasicDBObject(Operator.ID, IdUtil.toDbId(clazz, id));
         WriteResult wr = dao.getCollection().update(condition, modifier, false, false, dao.getWriteConcern()); //update one
@@ -109,8 +109,8 @@ public class BuguUpdater<T> {
      * execute the update operation on all entity.
      * @return 
      */
-    public WriteResult apply(){
-        return apply(new BasicDBObject());
+    public WriteResult execute(){
+        return execute(new BasicDBObject());
     }
     
     /**
@@ -118,11 +118,11 @@ public class BuguUpdater<T> {
      * @param query
      * @return 
      */
-    public WriteResult apply(BuguQuery query){
-        return apply(query.getCondition());
+    public WriteResult execute(BuguQuery query){
+        return execute(query.getCondition());
     }
     
-    private WriteResult apply(DBObject condition){
+    private WriteResult execute(DBObject condition){
         List ids = null;
         if(!dao.getListenerList().isEmpty()){
             ids = dao.getCollection().distinct(Operator.ID, condition);
