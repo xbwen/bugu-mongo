@@ -106,20 +106,20 @@ public class BuguUpdater<T> {
     }
     
     /**
-     * execute the update operation on all entity.
-     * @return 
-     */
-    public WriteResult execute(){
-        return execute(new BasicDBObject());
-    }
-    
-    /**
      * execute the update operation on multi entity.
      * @param query
      * @return 
      */
     public WriteResult execute(BuguQuery query){
         return execute(query.getCondition());
+    }
+    
+    /**
+     * execute the update operation on all entity.
+     * @return 
+     */
+    public WriteResult execute(){
+        return execute(new BasicDBObject());
     }
     
     private WriteResult execute(DBObject condition){
