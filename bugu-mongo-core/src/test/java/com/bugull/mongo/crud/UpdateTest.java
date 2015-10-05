@@ -34,18 +34,15 @@ public class UpdateTest extends BaseTest {
     public void testUpdate(){
         connectDB();
         
-        //修改产品名称
         ProductDao productDao = new ProductDao();
         Product product = productDao.query().is("name", "iPhone 6").result();
         product.setPrice(5000F);
         productDao.save(product);
         
-        //修改某个用户信息
         UserDao userDao = new UserDao();
         User user = userDao.query().is("username", "frank").result();
         userDao.update().set("username", "franky").inc("age", 1).execute(user);
         
-        //修改所有订单总价
         OrderDao orderDao = new OrderDao();
         orderDao.update().inc("money", -500).execute();
         

@@ -1,5 +1,17 @@
 /*
  * Copyright (c) www.bugull.com
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package com.bugull.mongo.lucene.search;
@@ -38,7 +50,7 @@ public class SearchTest extends BaseTest {
         produectDao.save(p2);
         
         try {
-            //等待一会，以便索引更新
+            //wait some time, for index reopen
             Thread.sleep(40L * 1000L);
         } catch (InterruptedException ex) {
             

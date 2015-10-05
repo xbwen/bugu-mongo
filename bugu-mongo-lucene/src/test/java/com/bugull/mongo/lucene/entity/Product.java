@@ -23,7 +23,6 @@ import com.bugull.mongo.annotations.Property;
 import com.bugull.mongo.lucene.annotations.IndexProperty;
 
 /**
- * 商城产品
  * 
  * @author Frank Wen(xbwen@hotmail.com)
  */

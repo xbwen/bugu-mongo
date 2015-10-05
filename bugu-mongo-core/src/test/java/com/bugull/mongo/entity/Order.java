@@ -23,7 +23,6 @@ import com.bugull.mongo.annotations.RefList;
 import java.util.List;
 
 /**
- * 用户订单
  * 
  * @author Frank Wen(xbwen@hotmail.com)
  */

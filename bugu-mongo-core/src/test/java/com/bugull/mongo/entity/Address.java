@@ -17,7 +17,6 @@
 package com.bugull.mongo.entity;
 
 /**
- * 收货地址
  * 
  * @author Frank Wen(xbwen@hotmail.com)
  */

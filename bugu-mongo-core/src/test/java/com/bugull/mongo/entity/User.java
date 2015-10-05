@@ -25,7 +25,6 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * 商城用户
  * 
  * @author Frank Wen(xbwen@hotmail.com)
  */

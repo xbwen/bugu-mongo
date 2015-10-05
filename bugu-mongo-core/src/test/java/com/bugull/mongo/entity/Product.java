@@ -22,7 +22,6 @@ import com.bugull.mongo.annotations.Id;
 import com.bugull.mongo.annotations.Property;
 
 /**
- * 商城产品
  * 
  * @author Frank Wen(xbwen@hotmail.com)
  */
