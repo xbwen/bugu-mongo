@@ -1,6 +1,5 @@
 简介
 ==========
-
 bugu-mongo是一个MongoDB Java开发框架。它在MongoDB Java Driver的基础上，对常用功能进行了封装，简单易用。
 
 各个版本的更新日志，请[查看这里](https://github.com/xbwen/bugu-mongo/releases)。
@@ -22,4 +21,5 @@ bugu-mongo是一个MongoDB Java开发框架。它在MongoDB Java Driver的基础
 交流反馈
 ===========
 Email：xbwen(at)hotmail.com
+
 QQ群：165738383
