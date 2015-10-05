@@ -2,7 +2,13 @@
 ==========
 bugu-mongo是一个MongoDB Java开发框架。它在MongoDB Java Driver的基础上，对常用功能进行了封装，简单易用。
 
-各个版本的更新日志，请[查看这里](https://github.com/xbwen/bugu-mongo/releases)。
+bugu-mongo由1个核心模块，外加2个扩展模块组成：
+
+bugu-mongo-core：核心模块，必须
+
+bugu-mongo-fs：扩展模块，GridFS相关功能，任选
+
+bugu-mongo-lucene：扩展模块，Lucene相关功能，任选
 
 
 帮助文档
@@ -16,6 +22,11 @@ bugu-mongo是一个MongoDB Java开发框架。它在MongoDB Java Driver的基础
 * [GridFS文件操作](https://github.com/xbwen/bugu-mongo/wiki/GridFS%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C)
 * [Lucene索引和搜索](https://github.com/xbwen/bugu-mongo/wiki/Lucene%E7%B4%A2%E5%BC%95%E5%92%8C%E6%90%9C%E7%B4%A2)
 * [扩展bugu-mongo](https://github.com/xbwen/bugu-mongo/wiki/%E6%89%A9%E5%B1%95bugu-mongo)
+
+
+更新日志
+==========
+各个版本的更新日志，请[查看这里](https://github.com/xbwen/bugu-mongo/releases)。
 
 
 交流反馈
