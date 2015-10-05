@@ -14,29 +14,19 @@
  * limitations under the License.
  */
 
-package com.bugull.mongo.base;
+package com.bugull.mongo.extention;
 
-import com.bugull.mongo.BuguConnection;
-import com.bugull.mongo.BuguFramework;
+import com.bugull.mongo.BuguDao;
 
 /**
  *
  * @author Frank Wen(xbwen@hotmail.com)
  */
-public abstract class BaseTest {
+public class FooDao extends BuguDao<Foo> {
     
-    protected void connectDB(){
-        BuguConnection conn = BuguFramework.getInstance().createConnection();
-        conn.setHost("192.168.0.200");
-        conn.setPort(27017);
-        conn.setUsername("test");
-        conn.setPassword("test");
-        conn.setDatabase("test");
-        conn.connect();
-    }
-    
-    protected void disconnectDB(){
-        BuguFramework.getInstance().destroy();
+    public FooDao(){
+        super(Foo.class);
+        super.addEntityListener(new MyFooListener());
     }
 
 }

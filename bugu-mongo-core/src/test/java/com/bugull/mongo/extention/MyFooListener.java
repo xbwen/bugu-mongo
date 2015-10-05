@@ -14,29 +14,30 @@
  * limitations under the License.
  */
 
-package com.bugull.mongo.base;
+package com.bugull.mongo.extention;
 
-import com.bugull.mongo.BuguConnection;
-import com.bugull.mongo.BuguFramework;
+import com.bugull.mongo.BuguEntity;
+import com.bugull.mongo.listener.EntityListener;
 
 /**
  *
  * @author Frank Wen(xbwen@hotmail.com)
  */
-public abstract class BaseTest {
-    
-    protected void connectDB(){
-        BuguConnection conn = BuguFramework.getInstance().createConnection();
-        conn.setHost("192.168.0.200");
-        conn.setPort(27017);
-        conn.setUsername("test");
-        conn.setPassword("test");
-        conn.setDatabase("test");
-        conn.connect();
+public class MyFooListener implements EntityListener {
+
+    @Override
+    public void entityInserted(BuguEntity entity) {
+        //do nothing
     }
-    
-    protected void disconnectDB(){
-        BuguFramework.getInstance().destroy();
+
+    @Override
+    public void entityUpdated(BuguEntity entity) {
+        //do nothing
+    }
+
+    @Override
+    public void entityDeleted(BuguEntity entity) {
+        System.out.println("entity has been deleted! id is: " + entity.getId());
     }
 
 }
