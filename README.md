@@ -25,7 +25,7 @@ bugu-mongo由1个核心模块，外加2个扩展模块组成：
 
 版本与下载
 ----------
-各个版本的更新日志，以及jar包下载，请[查看这里](https://github.com/xbwen/bugu-mongo/releases)。
+各个版本的变更日志，以及jar包下载，请[查看这里](https://github.com/xbwen/bugu-mongo/releases)。
 
 
 交流反馈
