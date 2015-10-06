@@ -23,9 +23,9 @@ bugu-mongo由1个核心模块，外加2个扩展模块组成：
 * [扩展bugu-mongo](https://github.com/xbwen/bugu-mongo/wiki/%E6%89%A9%E5%B1%95bugu-mongo)
 
 
-更新日志
+版本与下载
 ----------
-各个版本的更新日志，请[查看这里](https://github.com/xbwen/bugu-mongo/releases)。
+各个版本的更新日志，以及jar包下载，请[查看这里](https://github.com/xbwen/bugu-mongo/releases)。
 
 
 交流反馈
