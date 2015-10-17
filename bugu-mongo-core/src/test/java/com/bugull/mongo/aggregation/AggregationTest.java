@@ -31,7 +31,7 @@ public class AggregationTest extends BaseTest {
     /**
      * insert 5 records, for aggregate operation.
      */
-    @Test
+    //@Test
     public void testInsert(){
         connectDB();
         
@@ -81,9 +81,33 @@ public class AggregationTest extends BaseTest {
     }
     
     /**
-     * group by author, order by books count
+     * test the basic aggregate operation.
      */
     @Test
+    public void testAggregation_0(){
+        connectDB();
+        
+        BookDao dao = new BookDao();
+        
+        double maxValue = dao.max("price");
+        System.out.println("max:" + maxValue);
+        
+        double minValue = dao.min("price");
+        System.out.println("min:" + minValue);
+        
+        double sumValue = dao.sum("price");
+        System.out.println("sum:" + sumValue);
+        
+        double averageValue = dao.average("price");
+        System.out.println("average: " + averageValue);
+        
+        disconnectDB();
+    }
+    
+    /**
+     * group by author, order by books count
+     */
+    //@Test
     public void testAggregation_1(){
         connectDB();
         
@@ -103,7 +127,7 @@ public class AggregationTest extends BaseTest {
     /**
      * sum the total price of books contain tag 'Programming'
      */
-    @Test
+    //@Test
     public void testAggregation_2(){
         connectDB();
         
