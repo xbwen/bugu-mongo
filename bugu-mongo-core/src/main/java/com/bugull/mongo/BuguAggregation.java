@@ -16,12 +16,12 @@
 
 package com.bugull.mongo;
 
-import com.bugull.mongo.utils.MapperUtil;
 import com.bugull.mongo.utils.Operator;
 import com.mongodb.AggregationOutput;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
+import com.mongodb.util.JSON;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,6 +45,19 @@ public class BuguAggregation<T> {
         return this;
     }
     
+    public BuguAggregation project(String jsonString){
+        DBObject dbo = (DBObject)JSON.parse(jsonString);
+        return project(dbo);
+    }
+    
+    public BuguAggregation projectInclude(String... fields){
+        DBObject dbo = new BasicDBObject();
+        for(String field : fields){
+            dbo.put(field, 1);
+        }
+        return project(dbo);
+    }
+    
     public BuguAggregation match(String key, Object value){
         DBObject dbo = new BasicDBObject(key, value);
         pipeline.add(new BasicDBObject(Operator.MATCH, dbo));
@@ -54,6 +67,15 @@ public class BuguAggregation<T> {
     public BuguAggregation match(DBObject dbo){
         pipeline.add(new BasicDBObject(Operator.MATCH, dbo));
         return this;
+    }
+    
+    public BuguAggregation match(BuguQuery query){
+        return match(query.getCondition());
+    }
+    
+    public BuguAggregation match(String jsonString){
+        DBObject dbo = (DBObject)JSON.parse(jsonString);
+        return match(dbo);
     }
     
     public BuguAggregation limit(int n){
@@ -67,6 +89,9 @@ public class BuguAggregation<T> {
     }
     
     public BuguAggregation unwind(String field){
+        if(! field.startsWith("$")){
+            field = "$" + field;
+        }
         pipeline.add(new BasicDBObject(Operator.UNWIND, field));
         return this;
     }
@@ -76,13 +101,31 @@ public class BuguAggregation<T> {
         return this;
     }
     
-    public BuguAggregation sort(String orderBy){
-        pipeline.add(new BasicDBObject(Operator.SORT, MapperUtil.getSort(orderBy)));
+    public BuguAggregation group(String jsonString){
+        DBObject dbo = (DBObject)JSON.parse(jsonString);
+        return group(dbo);
+    }
+    
+    public BuguAggregation sort(String jsonString){
+        jsonString = jsonString.trim();
+        if(! jsonString.startsWith("{")){
+            jsonString = "{" + jsonString;
+        }
+        if(! jsonString.endsWith("}")){
+            jsonString = jsonString + "}";
+        }
+        DBObject dbo = (DBObject)JSON.parse(jsonString);
+        pipeline.add(new BasicDBObject(Operator.SORT, dbo));
         return this;
     }
     
     public BuguAggregation sort(DBObject dbo){
         pipeline.add(new BasicDBObject(Operator.SORT, dbo));
+        return this;
+    }
+    
+    public BuguAggregation out(String target){
+        pipeline.add(new BasicDBObject(Operator.OUT, target));
         return this;
     }
     

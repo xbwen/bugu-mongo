@@ -74,5 +74,6 @@ public final class Operator {
     public static final String UNWIND = "$unwind";
     public static final String GROUP = "$group";
     public static final String SORT = "$sort";
+    public static final String OUT = "$out";
     
 }
