@@ -22,6 +22,8 @@ import com.bugull.mongo.dao.ProductDao;
 import com.bugull.mongo.dao.UserDao;
 import com.bugull.mongo.entity.Product;
 import com.bugull.mongo.entity.User;
+import java.util.HashMap;
+import java.util.Map;
 import org.junit.Test;
 
 /**
@@ -45,6 +47,32 @@ public class UpdateTest extends BaseTest {
         
         OrderDao orderDao = new OrderDao();
         orderDao.update().inc("money", -500).execute();
+        
+        disconnectDB();
+    }
+    
+    @Test
+    public void testSetManyFields(){
+        connectDB();
+        
+        UserDao userDao = new UserDao();
+        User user = userDao.query().is("username", "frank").result();
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("username", "Franky");
+        map.put("age", 30);
+        map.put("valid", false);
+        userDao.update().set(map).execute(user);
+        
+        disconnectDB();
+    }
+    
+    @Test
+    public void testUnsetManyFields(){
+        connectDB();
+        
+        UserDao userDao = new UserDao();
+        User user = userDao.query().is("username", "Franky").result();
+        userDao.update().unset("registerTime", "contact").execute(user);
         
         disconnectDB();
     }

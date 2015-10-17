@@ -25,6 +25,9 @@ import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.WriteResult;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * Convenient class for execute atomic update.
@@ -153,12 +156,38 @@ public class BuguUpdater<T> {
     }
     
     /**
+     * Update entities with new key/value pairs.
+     * Notice: the Map values must can be converted to DBObject.
+     * @param map
+     * @return 
+     */
+    public BuguUpdater<T> set(Map<String, Object> map){
+        Set<Entry<String, Object>> set = map.entrySet();
+        for(Entry<String, Object> entry : set){
+            set(entry.getKey(), entry.getValue());
+        }
+        return this;
+    }
+    
+    /**
      * Remove one filed(column) of an entity.
      * @param key the field name
      * @return 
      */
     public BuguUpdater<T> unset(String key){
         append(Operator.UNSET, key, 1);
+        return this;
+    }
+    
+     /**
+     * Remove many fileds(column) of an entity.
+     * @param keys the fields' name
+     * @return 
+     */
+    public BuguUpdater<T> unset(String... keys){
+        for(String key : keys){
+            unset(key);
+        }
         return this;
     }
     
