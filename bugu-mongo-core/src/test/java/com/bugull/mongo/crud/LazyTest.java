@@ -35,7 +35,7 @@ public class LazyTest extends BaseTest {
         
         ProductDao pDao = new ProductDao();
         List<Product> list = pDao.findAll();
-        //the description property is lazy, it will not contained in the result list.
+        //the description field is lazy, it will not contained in the result list.
         for(Product p : list){
             System.out.println("description: " + p.getDescription());
         }
@@ -47,8 +47,12 @@ public class LazyTest extends BaseTest {
         }
         
         //lazy property will not play a part if only one record is return.
-        Product p = pDao.findOne();
-        System.out.println("description: " + p.getDescription());
+        Product p1 = pDao.findOne();
+        System.out.println("description: " + p1.getDescription());
+        
+        //if you query with method notReturnFields(), the field will not contained even if only one record is return.
+        Product p2 = pDao.query().is("id", "55f3bae5a00803537bd092c6").notReturnFields("description").result();
+        System.out.println("description: " + p2.getDescription());
         
         disconnectDB();
     }
