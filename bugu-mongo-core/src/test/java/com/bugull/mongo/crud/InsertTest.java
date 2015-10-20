@@ -27,7 +27,9 @@ import com.bugull.mongo.entity.Product;
 import com.bugull.mongo.entity.User;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.junit.Test;
 
 /**
@@ -75,6 +77,19 @@ public class InsertTest extends BaseTest {
         addr2.setDetailAddress("Binhai Road");
         addressList.add(addr2);
         user.setAddressList(addressList);
+        Map<String, List<Integer>> permissions = new HashMap<String, List<Integer>>();
+        List<Integer> list1 = new ArrayList<Integer>();
+        list1.add(1);
+        list1.add(2);
+        list1.add(3);
+        permissions.put("product", list1);
+        List<Integer> list2 = new ArrayList<Integer>();
+        list2.add(1);
+        list2.add(3);
+        permissions.put("order", list2);
+        user.setPermissions(permissions);
+        float[] scores = new float[]{80F, 95.5F, 100F};
+        user.setScores(scores);
         userDao.save(user);
         
         OrderDao orderDao = new OrderDao();

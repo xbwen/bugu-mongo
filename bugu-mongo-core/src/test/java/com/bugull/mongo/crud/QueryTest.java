@@ -16,8 +16,8 @@
 
 package com.bugull.mongo.crud;
 
-import com.bugull.mongo.base.BaseTest;
 import com.bugull.mongo.BuguMapper;
+import com.bugull.mongo.base.BaseTest;
 import com.bugull.mongo.dao.OrderDao;
 import com.bugull.mongo.dao.UserDao;
 import com.bugull.mongo.entity.Address;
@@ -27,6 +27,9 @@ import com.bugull.mongo.entity.Product;
 import com.bugull.mongo.entity.User;
 import com.bugull.mongo.utils.SortUtil;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import org.junit.Test;
 
 /**
@@ -52,6 +55,19 @@ public class QueryTest extends BaseTest {
             System.out.println("province: " + address.getProvince());
             System.out.println("city: " + address.getCity());
             System.out.println("detail address: " + address.getDetailAddress());
+        }
+        Map<String, List<Integer>> permissions = user.getPermissions();
+        Set<Entry<String, List<Integer>>> set = permissions.entrySet();
+        for(Entry<String, List<Integer>> entry : set){
+            System.out.println("module: " + entry.getKey());
+            List<Integer> list = entry.getValue();
+            for(Integer i : list){
+                System.out.println("p: " + i);
+            }
+        }
+        float[] scores = user.getScores();
+        for(float f : scores){
+            System.out.println("score:" + f);
         }
         
         System.out.println();

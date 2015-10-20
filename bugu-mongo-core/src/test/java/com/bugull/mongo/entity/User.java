@@ -23,6 +23,7 @@ import com.bugull.mongo.annotations.EnsureIndex;
 import com.bugull.mongo.annotations.Entity;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 
@@ -40,6 +41,8 @@ public class User extends SimpleEntity {
     private Contact contact;
     @EmbedList
     private List<Address> addressList;
+    private Map<String, List<Integer>> permissions;
+    private float[] scores;
 
     public String getUsername() {
         return username;
@@ -87,6 +90,22 @@ public class User extends SimpleEntity {
 
     public void setAddressList(List<Address> addressList) {
         this.addressList = addressList;
+    }
+
+    public Map<String, List<Integer>> getPermissions() {
+        return permissions;
+    }
+
+    public void setPermissions(Map<String, List<Integer>> permissions) {
+        this.permissions = permissions;
+    }
+
+    public float[] getScores() {
+        return scores;
+    }
+
+    public void setScores(float[] scores) {
+        this.scores = scores;
     }
     
 }
