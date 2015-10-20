@@ -29,7 +29,7 @@ import org.junit.Test;
  *
  * @author Frank Wen(xbwen@hotmail.com)
  */
-public class ArrayTest {
+public class ReflectTest {
     
     private class Foo
 	{
