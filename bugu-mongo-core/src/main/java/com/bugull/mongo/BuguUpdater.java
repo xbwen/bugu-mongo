@@ -287,7 +287,7 @@ public class BuguUpdater<T> {
      * @param key the field's name
      * @return 
      */
-    public BuguUpdater<T> popFirst(String id, String key){
+    public BuguUpdater<T> popFirst(String key){
         append(Operator.POP, key, -1);
         return this;
     }
@@ -297,7 +297,7 @@ public class BuguUpdater<T> {
      * @param key the field's name
      * @return 
      */
-    public BuguUpdater<T> popLast(String id, String key){
+    public BuguUpdater<T> popLast(String key){
         append(Operator.POP, key, 1);
         return this;
     } 
@@ -309,7 +309,7 @@ public class BuguUpdater<T> {
      * @param value the specified value
      * @return 
      */
-    public BuguUpdater<T> min(String id, String key, Object value){
+    public BuguUpdater<T> min(String key, Object value){
         append(Operator.MIN, key, value);
         return this;
     }
@@ -333,7 +333,7 @@ public class BuguUpdater<T> {
      * @param bitwise the enum type of bitwise operation: AND,OR,XOR
      * @return 
      */
-    public BuguUpdater<T> bitwise(String id, String key, int value, Bitwise bitwise){
+    public BuguUpdater<T> bitwise(String key, int value, Bitwise bitwise){
         DBObject logic = new BasicDBObject(checkBitwise(bitwise), value);
         append(Operator.BIT, key, logic);
         return this;
