@@ -24,6 +24,7 @@ import com.bugull.mongo.utils.IdUtil;
 import com.bugull.mongo.utils.MapperUtil;
 import com.bugull.mongo.utils.Operator;
 import com.bugull.mongo.utils.ReferenceUtil;
+import com.bugull.mongo.utils.SortUtil;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
@@ -430,7 +431,7 @@ public class BuguQuery<T> {
             cursor = coll.find(condition, dao.getKeyFields());
         }
         if(orderBy != null){
-            cursor.sort(MapperUtil.getSort(orderBy));
+            cursor.sort(SortUtil.getSort(orderBy));
         }
         if(pageNumber>0 && pageSize>0){
             cursor.skip((pageNumber-1)*pageSize).limit(pageSize);

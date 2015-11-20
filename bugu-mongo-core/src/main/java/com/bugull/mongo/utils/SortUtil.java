@@ -16,6 +16,9 @@
 
 package com.bugull.mongo.utils;
 
+import com.mongodb.DBObject;
+import com.mongodb.util.JSON;
+
 /**
  *
  * @author Frank Wen(xbwen@hotmail.com)
@@ -28,6 +31,22 @@ public final class SortUtil {
     
     public static String descending(String key){
         return key + ":-1";
+    }
+
+    /**
+     * convert order string to DBObject.
+     * @param jsonString
+     * @return
+     */
+    public static DBObject getSort(String jsonString) {
+        jsonString = jsonString.trim();
+        if (!jsonString.startsWith("{")) {
+            jsonString = "{" + jsonString;
+        }
+        if (!jsonString.endsWith("}")) {
+            jsonString = jsonString + "}";
+        }
+        return (DBObject) JSON.parse(jsonString);
     }
 
 }

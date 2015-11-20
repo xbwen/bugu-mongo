@@ -16,8 +16,8 @@
 
 package com.bugull.mongo;
 
-import com.bugull.mongo.utils.MapperUtil;
 import com.bugull.mongo.utils.Operator;
+import com.bugull.mongo.utils.SortUtil;
 import com.mongodb.AggregationOutput;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
@@ -107,7 +107,7 @@ public class BuguAggregation<T> {
     }
     
     public BuguAggregation sort(String jsonString){
-        DBObject dbo = MapperUtil.getSort(jsonString);
+        DBObject dbo = SortUtil.getSort(jsonString);
         pipeline.add(new BasicDBObject(Operator.SORT, dbo));
         return this;
     }

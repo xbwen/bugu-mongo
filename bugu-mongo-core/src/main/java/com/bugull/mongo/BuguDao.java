@@ -35,6 +35,7 @@ import com.bugull.mongo.utils.IdUtil;
 import com.bugull.mongo.utils.MapperUtil;
 import com.bugull.mongo.utils.Operator;
 import com.bugull.mongo.utils.ReferenceUtil;
+import com.bugull.mongo.utils.SortUtil;
 import com.bugull.mongo.utils.StringUtil;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
@@ -573,7 +574,7 @@ public class BuguDao<T> {
      * @return 
      */
     public List<T> findAll(String orderBy){
-        DBObject dbo = MapperUtil.getSort(orderBy);
+        DBObject dbo = SortUtil.getSort(orderBy);
         DBCursor cursor = coll.find(new BasicDBObject(), keys).sort(dbo);
         return MapperUtil.toList(clazz, cursor);
     }
@@ -597,7 +598,7 @@ public class BuguDao<T> {
      * @return 
      */
     public List<T> findAll(String orderBy, int pageNum, int pageSize){
-        DBObject dbo = MapperUtil.getSort(orderBy);
+        DBObject dbo = SortUtil.getSort(orderBy);
         DBCursor cursor = coll.find(new BasicDBObject(), keys).sort(dbo).skip((pageNum-1)*pageSize).limit(pageSize);
         return MapperUtil.toList(clazz, cursor);
     }

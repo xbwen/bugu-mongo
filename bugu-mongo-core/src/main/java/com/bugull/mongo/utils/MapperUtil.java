@@ -27,7 +27,6 @@ import com.bugull.mongo.encoder.EncoderFactory;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
-import com.mongodb.util.JSON;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -90,22 +89,6 @@ public final class MapperUtil {
         }
         cursor.close();
         return list;
-    }
-    
-    /**
-     * convert order string to DBObject.
-     * @param jsonString
-     * @return 
-     */
-    public static DBObject getSort(String jsonString){
-        jsonString = jsonString.trim();
-        if(! jsonString.startsWith("{")){
-            jsonString = "{" + jsonString;
-        }
-        if(! jsonString.endsWith("}")){
-            jsonString = jsonString + "}";
-        }
-        return (DBObject)JSON.parse(jsonString);
     }
     
     /**

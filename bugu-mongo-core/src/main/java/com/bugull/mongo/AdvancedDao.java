@@ -16,7 +16,7 @@
 
 package com.bugull.mongo;
 
-import com.bugull.mongo.utils.MapperUtil;
+import com.bugull.mongo.utils.SortUtil;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
@@ -147,7 +147,7 @@ public class AdvancedDao<T> extends BuguDao<T>{
         DBCollection c = output.getOutputCollection();
         DBCursor cursor;
         if(orderBy != null){
-            cursor = c.find().sort(MapperUtil.getSort(orderBy));
+            cursor = c.find().sort(SortUtil.getSort(orderBy));
         }else{
             cursor = c.find();
         }
@@ -167,7 +167,7 @@ public class AdvancedDao<T> extends BuguDao<T>{
         DBCollection c = output.getOutputCollection();
         DBCursor cursor;
         if(orderBy != null){
-            cursor = c.find().sort(MapperUtil.getSort(orderBy)).skip((pageNum-1)*pageSize).limit(pageSize);
+            cursor = c.find().sort(SortUtil.getSort(orderBy)).skip((pageNum-1)*pageSize).limit(pageSize);
         }else{
             cursor = c.find().skip((pageNum-1)*pageSize).limit(pageSize);
         }
