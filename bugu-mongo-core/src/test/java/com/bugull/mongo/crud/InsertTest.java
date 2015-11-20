@@ -100,6 +100,7 @@ public class InsertTest extends BaseTest {
         order.setProductList(productList);
         order.setUser(user);
         order.setMoney(9999.9);
+        order.setNote("AA");
         orderDao.save(order);
         
         disconnectDB();

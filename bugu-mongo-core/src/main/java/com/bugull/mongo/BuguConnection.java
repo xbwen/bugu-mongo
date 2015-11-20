@@ -28,8 +28,6 @@ import java.util.List;
 /**
  * The connection to MongoDB.
  * 
- * <p>Singleton Pattern is used here. An application should use only one BuguConnection.</p>
- * 
  * @author Frank Wen(xbwen@hotmail.com)
  */
 public class BuguConnection {

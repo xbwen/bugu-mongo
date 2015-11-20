@@ -34,6 +34,7 @@ public class Order extends SimpleEntity {
     private User user;
     @RefList
     private List<Product> productList;
+    private String note;
 
     public double getMoney() {
         return money;
@@ -57,6 +58,14 @@ public class Order extends SimpleEntity {
 
     public void setProductList(List<Product> productList) {
         this.productList = productList;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
     }
 
 }

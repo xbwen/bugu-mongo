@@ -131,7 +131,7 @@ public class BuguUpdater<T> {
             ids = dao.getCollection().distinct(Operator.ID, condition);
         }
         WriteResult wr = dao.getCollection().update(condition, modifier, false, true, dao.getWriteConcern());  //update multi
-        if(ids != null){
+        if(!dao.getListenerList().isEmpty() && ids != null){
             DBObject in = new BasicDBObject(Operator.IN, ids);
             DBCursor cursor = dao.getCollection().find(new BasicDBObject(Operator.ID, in));
             List<T> list = MapperUtil.toList(dao.getEntityClass(), cursor);

@@ -53,6 +53,7 @@ public class BuguQuery<T> {
     private boolean fieldsSpecified;  //default value is false
     
     private final DBObject condition = new BasicDBObject();
+    
     private String orderBy;
     private int pageNumber;  //default value is zero
     private int pageSize;  //default value is zero
