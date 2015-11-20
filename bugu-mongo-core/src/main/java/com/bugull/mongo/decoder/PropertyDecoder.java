@@ -92,7 +92,7 @@ public class PropertyDecoder extends AbstractDecoder{
         field.set(obj, arr);
     }
     
-    private void decodePrimitive(Object obj, Class type) throws IllegalArgumentException, IllegalAccessException{
+    private void decodePrimitive(Object obj, Class type) throws IllegalArgumentException, IllegalAccessException {
         //When value is number, it's default to Double and Integer, must cast to Float, Short and byte.
         //It's OK to set integer value to long field.
         if(DataType.isFloat(type)){
@@ -136,78 +136,7 @@ public class PropertyDecoder extends AbstractDecoder{
         }
         //process Map.
         else if(DataType.isMapType(type)){
-            ParameterizedType paramType = (ParameterizedType)field.getGenericType();
-            Type[] types = paramType.getActualTypeArguments();
-            boolean isArray = false;
-            boolean isCollection = false;
-            boolean isPrimitive = false;
-            Class vType = null;
-            Class elementType = null;
-            if(types[1] instanceof GenericArrayType){
-                isArray = true;
-                GenericArrayType g = (GenericArrayType)types[1];
-                elementType = (Class)g.getGenericComponentType();
-            }else if(types[1] instanceof ParameterizedType){
-                isCollection = true;
-                ParameterizedType p = (ParameterizedType)types[1];
-                vType = (Class)p.getRawType();
-                elementType = (Class)p.getActualTypeArguments()[0];
-            }else{
-                isPrimitive = true;
-            }
-            if(isArray){
-                Map src = (Map)value;
-                Map map = new HashMap();
-                Set<Entry> entrySet = src.entrySet();
-                for(Entry entry : entrySet){
-                    Object k = entry.getKey();
-                    List v = (ArrayList)entry.getValue();
-                    Object arr = convertToArrayValue(elementType, v);
-                    map.put(k, arr);
-                }
-                field.set(obj, map);
-            }else if(isCollection){
-                if(DataType.isListType(vType)){
-                    Map src = (Map)value;
-                    Map map = new HashMap();
-                    Set<Entry> entrySet = src.entrySet();
-                    for(Entry entry : entrySet){
-                        Object k = entry.getKey();
-                        List v = (ArrayList)entry.getValue();
-                        List list = new ArrayList();
-                        moveCollectionElement(elementType, v, list);
-                        map.put(k, list);
-                    }
-                    field.set(obj, map);
-                }else if(DataType.isSetType(vType)){
-                    Map src = (Map)value;
-                    Map map = new HashMap();
-                    Set<Entry> entrySet = src.entrySet();
-                    for(Entry entry : entrySet){
-                        Object k = entry.getKey();
-                        List v = (ArrayList)entry.getValue();
-                        Set set = new HashSet();
-                        moveCollectionElement(elementType, v, set);
-                        map.put(k, set);
-                    }
-                    field.set(obj, map);
-                }else if(DataType.isQueueType(type)){
-                    Map src = (Map)value;
-                    Map map = new HashMap();
-                    Set<Entry> entrySet = src.entrySet();
-                    for(Entry entry : entrySet){
-                        Object k = entry.getKey();
-                        List v = (ArrayList)entry.getValue();
-                        Queue queue = new LinkedList();
-                        moveCollectionElement(elementType, v, queue);
-                        map.put(k, queue);
-                    }
-                    field.set(obj, map);
-                }
-            }
-            else if(isPrimitive){
-                field.set(obj, value);
-            }
+            processMapType(obj);
         }
         //convert for char. default type is String "X"
         else if(DataType.isChar(type)){
@@ -221,6 +150,81 @@ public class PropertyDecoder extends AbstractDecoder{
         }
         else{
             field.set(obj, value);  //for others: String, Integer, Long, Double, Boolean and Date
+        }
+    }
+    
+    private void processMapType(Object obj) throws IllegalArgumentException, IllegalAccessException {
+        ParameterizedType paramType = (ParameterizedType)field.getGenericType();
+        Type[] types = paramType.getActualTypeArguments();
+        boolean isArray = false;
+        boolean isCollection = false;
+        boolean isPrimitive = false;
+        Class vType = null;
+        Class elementType = null;
+        if(types[1] instanceof GenericArrayType){
+            isArray = true;
+            GenericArrayType g = (GenericArrayType)types[1];
+            elementType = (Class)g.getGenericComponentType();
+        }else if(types[1] instanceof ParameterizedType){
+            isCollection = true;
+            ParameterizedType p = (ParameterizedType)types[1];
+            vType = (Class)p.getRawType();
+            elementType = (Class)p.getActualTypeArguments()[0];
+        }else{
+            isPrimitive = true;
+        }
+        if(isArray){
+            Map src = (Map)value;
+            Map map = new HashMap();
+            Set<Entry> entrySet = src.entrySet();
+            for(Entry entry : entrySet){
+                Object k = entry.getKey();
+                List v = (ArrayList)entry.getValue();
+                Object arr = convertToArrayValue(elementType, v);
+                map.put(k, arr);
+            }
+            field.set(obj, map);
+        }else if(isCollection){
+            if(DataType.isListType(vType)){
+                Map src = (Map)value;
+                Map map = new HashMap();
+                Set<Entry> entrySet = src.entrySet();
+                for(Entry entry : entrySet){
+                    Object k = entry.getKey();
+                    List v = (ArrayList)entry.getValue();
+                    List list = new ArrayList();
+                    moveCollectionElement(elementType, v, list);
+                    map.put(k, list);
+                }
+                field.set(obj, map);
+            }else if(DataType.isSetType(vType)){
+                Map src = (Map)value;
+                Map map = new HashMap();
+                Set<Entry> entrySet = src.entrySet();
+                for(Entry entry : entrySet){
+                    Object k = entry.getKey();
+                    List v = (ArrayList)entry.getValue();
+                    Set set = new HashSet();
+                    moveCollectionElement(elementType, v, set);
+                    map.put(k, set);
+                }
+                field.set(obj, map);
+            }else if(DataType.isQueueType(vType)){
+                Map src = (Map)value;
+                Map map = new HashMap();
+                Set<Entry> entrySet = src.entrySet();
+                for(Entry entry : entrySet){
+                    Object k = entry.getKey();
+                    List v = (ArrayList)entry.getValue();
+                    Queue queue = new LinkedList();
+                    moveCollectionElement(elementType, v, queue);
+                    map.put(k, queue);
+                }
+                field.set(obj, map);
+            }
+        }
+        else if(isPrimitive){
+            field.set(obj, value);
         }
     }
     

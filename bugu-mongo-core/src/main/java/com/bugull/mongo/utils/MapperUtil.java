@@ -27,6 +27,7 @@ import com.bugull.mongo.encoder.EncoderFactory;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
+import com.mongodb.util.JSON;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -93,23 +94,18 @@ public final class MapperUtil {
     
     /**
      * convert order string to DBObject.
-     * @param orderBy
+     * @param jsonString
      * @return 
      */
-    public static DBObject getSort(String orderBy){
-        DBObject sort = new BasicDBObject();
-        orderBy = orderBy.replaceAll("[{}'']", "");
-        String[] arr = orderBy.split(",");
-        for(String s : arr){
-            String[] kv = s.split(":");
-            String k = kv[0].trim();
-            String v = kv[1].trim();
-            if(k.equals("id")){  //it's not strict here, but can solve most cases.
-                k = Operator.ID;
-            }
-            sort.put(k, Integer.parseInt(v));
+    public static DBObject getSort(String jsonString){
+        jsonString = jsonString.trim();
+        if(! jsonString.startsWith("{")){
+            jsonString = "{" + jsonString;
         }
-        return sort;
+        if(! jsonString.endsWith("}")){
+            jsonString = jsonString + "}";
+        }
+        return (DBObject)JSON.parse(jsonString);
     }
     
     /**
