@@ -440,8 +440,8 @@ public class BuguDao<T> {
             BuguEntity entity = (BuguEntity)findOne(id);
             notifyDeleted(entity);
         }
-        DBObject dbo = new BasicDBObject(Operator.ID, IdUtil.toDbId(clazz, id));
-        return coll.remove(dbo, concern);
+        DBObject query = new BasicDBObject(Operator.ID, IdUtil.toDbId(clazz, id));
+        return coll.remove(query, concern);
     }
     
     /**
@@ -540,9 +540,9 @@ public class BuguDao<T> {
      * @return 
      */
     public T findOne(String id){
-        DBObject dbo = new BasicDBObject();
-        dbo.put(Operator.ID, IdUtil.toDbId(clazz, id));
-        DBObject result = coll.findOne(dbo);
+        DBObject query = new BasicDBObject();
+        query.put(Operator.ID, IdUtil.toDbId(clazz, id));
+        DBObject result = coll.findOne(query);
         return MapperUtil.fromDBObject(clazz, result);
     }
     
@@ -603,6 +603,118 @@ public class BuguDao<T> {
         return MapperUtil.toList(clazz, cursor);
     }
     
+    /**
+     * Atomically modify and return a single document. By default, the returned document does not include the modifications made on the update.
+     * @param id
+     * @param updater the modifications to apply
+     * @return 
+     */
+    public T findAndModify(String id, BuguUpdater updater){
+        return findAndModify(id, updater, false);
+    }
+    
+    /**
+     * Atomically modify and return a single document.
+     * @param id
+     * @param updater the modifications to apply
+     * @param returnNew when true, returns the modified document rather than the original
+     * @return 
+     */
+    public T findAndModify(String id, BuguUpdater updater, boolean returnNew){
+        DBObject query = new BasicDBObject();
+        query.put(Operator.ID, IdUtil.toDbId(clazz, id));
+        DBObject result = coll.findAndModify(query, null, null, false, updater.getModifier(), returnNew, false);
+        return MapperUtil.fromDBObject(clazz, result);
+    }
+    
+    /**
+     * Atomically modify and return a single document. By default, the returned document does not include the modifications made on the update.
+     * @param key
+     * @param value
+     * @param updater the modifications to apply
+     * @return 
+     */
+    public T findAndModify(String key, Object value, BuguUpdater updater){
+        return findAndModify(key, value, updater, false);
+    }
+    
+    /**
+     * Atomically modify and return a single document.
+     * @param key
+     * @param value
+     * @param updater the modifications to apply
+     * @param returnNew when true, returns the modified document rather than the original
+     * @return 
+     */
+    public T findAndModify(String key, Object value, BuguUpdater updater, boolean returnNew){
+        value = checkSpecialValue(key, value);
+        DBObject query = new BasicDBObject(key, value);
+        DBObject result = coll.findAndModify(query, null, null, false, updater.getModifier(), returnNew, false);
+        return MapperUtil.fromDBObject(clazz, result);
+    }
+    
+    /**
+     * Atomically modify and return a single document. By default, the returned document does not include the modifications made on the update.
+     * @param query
+     * @param updater the modifications to apply
+     * @return 
+     */
+    public T findAndModify(BuguQuery query, BuguUpdater updater){
+        return findAndModify(query, updater, false);
+    }
+    
+    /**
+     * Atomically modify and return a single document.
+     * @param query
+     * @param updater the modifications to apply
+     * @param returnNew when true, returns the modified document rather than the original
+     * @return 
+     */
+    public T findAndModify(BuguQuery query, BuguUpdater updater, boolean returnNew){
+        DBObject result = coll.findAndModify(query.getCondition(), null, query.getSort(), false, updater.getModifier(), returnNew, false);
+        return MapperUtil.fromDBObject(clazz, result);
+    }
+    
+    /**
+     * Atomically remove and return a single document. The returned document is the original document before removal.
+     * @param id
+     * @return 
+     */
+    public T findAndRemove(String id){
+        DBObject query = new BasicDBObject();
+        query.put(Operator.ID, IdUtil.toDbId(clazz, id));
+        DBObject result = coll.findAndRemove(query);
+        return MapperUtil.fromDBObject(clazz, result);
+    }
+    
+    /**
+     * Atomically remove and return a single document. The returned document is the original document before removal.
+     * @param key
+     * @param value
+     * @return 
+     */
+    public T findAndRemove(String key, Object value){
+        value = checkSpecialValue(key, value);
+        DBObject query = new BasicDBObject(key, value);
+        DBObject result = coll.findAndRemove(query);
+        return MapperUtil.fromDBObject(clazz, result);
+    }
+    
+    /**
+     * Atomically remove and return a single document. The returned document is the original document before removal.
+     * @param query
+     * @return 
+     */
+    public T findAndRemove(BuguQuery query){
+        DBObject result = coll.findAndRemove(query.getCondition());
+        return MapperUtil.fromDBObject(clazz, result);
+    }
+    
+    /**
+     * Find the distinct values for a specified field across a collection and returns the results in an array.
+     * @param key
+     * @return 
+     */
     public List distinct(String key){
         return coll.distinct(key);
     }

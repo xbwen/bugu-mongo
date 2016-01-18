@@ -456,4 +456,11 @@ public class BuguQuery<T> {
         return condition;
     }
     
+    public DBObject getSort(){
+        if(orderBy == null){
+            return null;
+        }
+        return SortUtil.getSort(orderBy);
+    }
+    
 }

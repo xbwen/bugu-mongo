@@ -81,6 +81,10 @@ public class BuguUpdater<T> {
             dbo.put(key, value);
         }
     }
+
+    public DBObject getModifier() {
+        return modifier;
+    }
     
     /**
      * execute the update operation on a single entity.
