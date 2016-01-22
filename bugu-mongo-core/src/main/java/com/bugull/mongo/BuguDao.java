@@ -42,6 +42,7 @@ import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
+import com.mongodb.MongoClient;
 import com.mongodb.WriteConcern;
 import com.mongodb.WriteResult;
 import java.lang.reflect.Field;
@@ -65,15 +66,15 @@ public class BuguDao<T> {
     protected DBCollection coll;
     protected Class<T> clazz;
     protected DBObject keys;  //non-lazy fields
-    protected WriteConcern concern;
+    protected WriteConcern writeConcern;
     
     protected final List<EntityListener> listenerList = new ArrayList<EntityListener>();
     
     public BuguDao(Class<T> clazz){
         this.clazz = clazz;
-        DB db = BuguFramework.getInstance().getConnection().getDB();
-        //The default write concern is ACKNOWLEDGED, set in MongoClientOptions.
-        concern = db.getWriteConcern();
+        MongoClient mc = BuguFramework.getInstance().getConnection().getMongoClient();
+        //the default write concern is ACKNOWLEDGED, set in MongoClientOptions.
+        writeConcern = mc.getWriteConcern();
         //init none-split collection
         Entity entity = clazz.getAnnotation(Entity.class);
         SplitType split = entity.split();
@@ -260,11 +261,11 @@ public class BuguDao<T> {
      * @param concern 
      */
     public void setWriteConcern(WriteConcern concern){
-        this.concern = concern;
+        this.writeConcern = concern;
     }
     
     public WriteConcern getWriteConcern(){
-        return concern;
+        return writeConcern;
     }
     
     public void addEntityListener(EntityListener listener){
@@ -326,7 +327,7 @@ public class BuguDao<T> {
      */
     public WriteResult insert(T t){
         DBObject dbo = MapperUtil.toDBObject(t);
-        WriteResult wr = coll.insert(dbo, concern);
+        WriteResult wr = coll.insert(dbo, writeConcern);
         String id = dbo.get(Operator.ID).toString();
         BuguEntity ent = (BuguEntity)t;
         ent.setId(id);
@@ -346,7 +347,7 @@ public class BuguDao<T> {
         for(T t : list){
             dboList.add(MapperUtil.toDBObject(t));
         }
-        WriteResult wr = coll.insert(dboList, concern);
+        WriteResult wr = coll.insert(dboList, writeConcern);
         int len = dboList.size();
         for(int i=0; i<len; i++){
             String id = dboList.get(i).get(Operator.ID).toString();
@@ -400,7 +401,7 @@ public class BuguDao<T> {
         if(!listenerList.isEmpty()){
             notifyUpdated(ent);
         }
-        return coll.save(MapperUtil.toDBObject(ent), concern);
+        return coll.save(MapperUtil.toDBObject(ent), writeConcern);
     }
     
     /**
@@ -441,7 +442,7 @@ public class BuguDao<T> {
             notifyDeleted(entity);
         }
         DBObject query = new BasicDBObject(Operator.ID, IdUtil.toDbId(clazz, id));
-        return coll.remove(query, concern);
+        return coll.remove(query, writeConcern);
     }
     
     /**
@@ -487,7 +488,7 @@ public class BuguDao<T> {
                 notifyDeleted((BuguEntity)t);
             }
         }
-        return coll.remove(condition, concern);
+        return coll.remove(condition, writeConcern);
     }
     
     private Object checkSpecialValue(String key, Object value){
@@ -623,7 +624,7 @@ public class BuguDao<T> {
     public T findAndModify(String id, BuguUpdater updater, boolean returnNew){
         DBObject query = new BasicDBObject();
         query.put(Operator.ID, IdUtil.toDbId(clazz, id));
-        DBObject result = coll.findAndModify(query, null, null, false, updater.getModifier(), returnNew, false);
+        DBObject result = coll.findAndModify(query, null, null, false, updater.getModifier(), returnNew, false, writeConcern);
         return MapperUtil.fromDBObject(clazz, result);
     }
     
@@ -649,7 +650,7 @@ public class BuguDao<T> {
     public T findAndModify(String key, Object value, BuguUpdater updater, boolean returnNew){
         value = checkSpecialValue(key, value);
         DBObject query = new BasicDBObject(key, value);
-        DBObject result = coll.findAndModify(query, null, null, false, updater.getModifier(), returnNew, false);
+        DBObject result = coll.findAndModify(query, null, null, false, updater.getModifier(), returnNew, false, writeConcern);
         return MapperUtil.fromDBObject(clazz, result);
     }
     
@@ -671,7 +672,7 @@ public class BuguDao<T> {
      * @return 
      */
     public T findAndModify(BuguQuery query, BuguUpdater updater, boolean returnNew){
-        DBObject result = coll.findAndModify(query.getCondition(), null, query.getSort(), false, updater.getModifier(), returnNew, false);
+        DBObject result = coll.findAndModify(query.getCondition(), null, query.getSort(), false, updater.getModifier(), returnNew, false, writeConcern);
         return MapperUtil.fromDBObject(clazz, result);
     }
     

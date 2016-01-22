@@ -20,7 +20,6 @@ import com.mongodb.DB;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
 import com.mongodb.MongoCredential;
-import com.mongodb.ReadPreference;
 import com.mongodb.ServerAddress;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,12 +35,11 @@ public class BuguConnection {
     private int port;
     private List<ServerAddress> serverList;
     private List<MongoCredential> credentialList;
-    private ReadPreference readPreference;
     private MongoClientOptions options;
     private String database;
     private String username;
     private String password;
-    private MongoClient mc;
+    private MongoClient mongoClient;
     
     public void connect(String host, int port, String database){
         this.host = host;
@@ -75,27 +73,24 @@ public class BuguConnection {
         if(host != null && port != 0){
             ServerAddress sa = new ServerAddress(host, port);
             if(options != null){
-                mc = new MongoClient(sa, credentialList, options);
+                mongoClient = new MongoClient(sa, credentialList, options);
             }else{
-                mc = new MongoClient(sa, credentialList);
+                mongoClient = new MongoClient(sa, credentialList);
             }
         }
         else if(serverList != null && credentialList != null){
             if(options != null){
-                mc = new MongoClient(serverList, credentialList, options);
+                mongoClient = new MongoClient(serverList, credentialList, options);
             }else{
-                mc = new MongoClient(serverList, credentialList);
-            }
-            if(readPreference != null){
-                mc.setReadPreference(readPreference);
+                mongoClient = new MongoClient(serverList, credentialList);
             }
         }
     }
     
     public void close(){
-        if(mc != null){
-            mc.close();
-            mc = null;
+        if(mongoClient != null){
+            mongoClient.close();
+            mongoClient = null;
         }
     }
     
@@ -139,13 +134,12 @@ public class BuguConnection {
         return this;
     }
 
-    public BuguConnection setReadPreference(ReadPreference readPreference) {
-        this.readPreference = readPreference;
-        return this;
+    public DB getDB() {
+        return mongoClient.getDB(database);
     }
 
-    public DB getDB() {
-        return mc.getDB(database);
+    public MongoClient getMongoClient() {
+        return mongoClient;
     }
     
 }

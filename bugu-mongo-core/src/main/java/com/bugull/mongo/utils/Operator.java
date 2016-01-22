@@ -67,6 +67,7 @@ public final class Operator {
     public static final String BIT = "$bit";
     
     //aggregation
+    public static final String LOOKUP = "$lookup";
     public static final String PROJECT = "$project";
     public static final String MATCH = "$match";
     public static final String LIMIT = "$limit";

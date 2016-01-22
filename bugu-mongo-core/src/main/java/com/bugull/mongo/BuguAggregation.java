@@ -40,6 +40,25 @@ public class BuguAggregation<T> {
         this.coll = coll;
     }
     
+    public BuguAggregation lookup(DBObject dbo){
+        pipeline.add(new BasicDBObject(Operator.LOOKUP, dbo));
+        return this;
+    }
+    
+    public BuguAggregation lookup(String jsonString){
+        DBObject dbo = (DBObject)JSON.parse(jsonString);
+        return lookup(dbo);
+    }
+    
+    public BuguAggregation lookup(Lookup lookup){
+        DBObject dbo = new BasicDBObject();
+        dbo.put(Lookup.FROM, lookup.from);
+        dbo.put(Lookup.LOCAL_FIELD, lookup.localField);
+        dbo.put(Lookup.FOREIGN_FIELD, lookup.foreignField);
+        dbo.put(Lookup.AS, lookup.as);
+        return lookup(lookup);
+    }
+    
     public BuguAggregation project(DBObject dbo){
         pipeline.add(new BasicDBObject(Operator.PROJECT, dbo));
         return this;
@@ -125,6 +144,28 @@ public class BuguAggregation<T> {
     public Iterable<DBObject> results(){
         AggregationOutput output = coll.aggregate(pipeline);
         return output.results();
+    }
+    
+    
+    public final class Lookup{
+        
+        final static String FROM = "from";
+        final static String LOCAL_FIELD = "localField";
+        final static String FOREIGN_FIELD = "foreignField";
+        final static String AS = "as";
+        
+        String from;
+        String localField;
+        String foreignField;
+        String as;
+        
+        public Lookup(String from, String localField, String foreignField, String as){
+            this.from = from;
+            this.localField = localField;
+            this.foreignField = foreignField;
+            this.as = as;
+        }
+        
     }
 
 }
