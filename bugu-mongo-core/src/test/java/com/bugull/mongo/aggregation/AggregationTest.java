@@ -17,6 +17,7 @@
 package com.bugull.mongo.aggregation;
 
 import com.bugull.mongo.BuguAggregation;
+import com.bugull.mongo.BuguAggregation.Lookup;
 import com.bugull.mongo.base.BaseTest;
 import com.mongodb.DBObject;
 import java.util.Date;
@@ -29,13 +30,14 @@ import org.junit.Test;
 public class AggregationTest extends BaseTest {
     
     /**
-     * insert 5 records, for aggregate operation.
+     * insert records, for aggregate operation.
      */
     //@Test
     public void testInsert(){
         connectDB();
         
-        BookDao dao = new BookDao();
+        BookDao bookDao = new BookDao();
+        CommentDao commentDao = new CommentDao();
         
         Book b1 = new Book();
         b1.setTitle("About Java");
@@ -43,7 +45,22 @@ public class AggregationTest extends BaseTest {
         b1.setTags(new String[]{"Java", "Programming"});
         b1.setPrice(50F);
         b1.setPublishDate(new Date());
-        dao.save(b1);
+        bookDao.save(b1);
+        
+        Comment c1 = new Comment();
+        c1.setTitle("About Java");
+        c1.setStar(5);
+        commentDao.save(c1);
+        
+        Comment c2 = new Comment();
+        c2.setTitle("About Java");
+        c2.setStar(4);
+        commentDao.save(c2);
+        
+        Comment c3 = new Comment();
+        c3.setTitle("About Java");
+        c3.setStar(3);
+        commentDao.save(c3);
         
         Book b2 = new Book();
         b2.setTitle("About C++");
@@ -51,7 +68,7 @@ public class AggregationTest extends BaseTest {
         b2.setTags(new String[]{"C++", "Programming"});
         b2.setPrice(40F);
         b2.setPublishDate(new Date());
-        dao.save(b2);
+        bookDao.save(b2);
         
         Book b3 = new Book();
         b3.setTitle("About Android");
@@ -59,7 +76,17 @@ public class AggregationTest extends BaseTest {
         b3.setTags(new String[]{"Android", "Java", "C++", "Programming"});
         b3.setPrice(60F);
         b3.setPublishDate(new Date());
-        dao.save(b3);
+        bookDao.save(b3);
+        
+        Comment c4 = new Comment();
+        c4.setTitle("About Android");
+        c4.setStar(4);
+        commentDao.save(c4);
+        
+        Comment c5 = new Comment();
+        c5.setTitle("About Android");
+        c5.setStar(3);
+        commentDao.save(c5);
         
         Book b4 = new Book();
         b4.setTitle("About iPhone");
@@ -67,7 +94,7 @@ public class AggregationTest extends BaseTest {
         b4.setTags(new String[]{"iPhone", "Objective-C", "Programming"});
         b4.setPrice(70F);
         b4.setPublishDate(new Date());
-        dao.save(b4);
+        bookDao.save(b4);
         
         Book b5 = new Book();
         b5.setTitle("About Network");
@@ -75,7 +102,12 @@ public class AggregationTest extends BaseTest {
         b5.setTags(new String[]{"Network"});
         b5.setPrice(80F);
         b5.setPublishDate(new Date());
-        dao.save(b5);
+        bookDao.save(b5);
+        
+        Comment c6 = new Comment();
+        c6.setTitle("About Network");
+        c6.setStar(5);
+        commentDao.save(c6);
         
         disconnectDB();
     }
@@ -83,7 +115,7 @@ public class AggregationTest extends BaseTest {
     /**
      * test the basic aggregate operation.
      */
-    @Test
+    //@Test
     public void testAggregation_0(){
         connectDB();
         
@@ -140,6 +172,29 @@ public class AggregationTest extends BaseTest {
         Iterable<DBObject> it = agg.results();
         for(DBObject dbo : it){
             System.out.println(dbo.get("total"));
+        }
+        
+        disconnectDB();
+    }
+    
+    /**
+     * get the comments count of each book, and order by quantity
+     */
+    @Test
+    public void testAggregation_3(){
+        connectDB();
+        
+        BookDao dao = new BookDao();
+        
+        BuguAggregation agg = dao.aggregate();
+        agg.lookup(new Lookup("comment", "title", "title", "book_comment"));
+        agg.unwind("$book_comment");
+        agg.group("{_id:'$title', count:{$sum:1}}");
+        agg.sort("{count:-1}");
+        Iterable<DBObject> it = agg.results();
+        for(DBObject dbo : it){
+            System.out.println(dbo.get("_id"));
+            System.out.println(dbo.get("count"));
         }
         
         disconnectDB();

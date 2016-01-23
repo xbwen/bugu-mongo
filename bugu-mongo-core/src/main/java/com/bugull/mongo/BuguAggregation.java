@@ -56,7 +56,7 @@ public class BuguAggregation<T> {
         dbo.put(Lookup.LOCAL_FIELD, lookup.localField);
         dbo.put(Lookup.FOREIGN_FIELD, lookup.foreignField);
         dbo.put(Lookup.AS, lookup.as);
-        return lookup(lookup);
+        return lookup(dbo);
     }
     
     public BuguAggregation project(DBObject dbo){
@@ -147,7 +147,7 @@ public class BuguAggregation<T> {
     }
     
     
-    public final class Lookup{
+    public final static class Lookup{
         
         final static String FROM = "from";
         final static String LOCAL_FIELD = "localField";
