@@ -115,7 +115,7 @@ public class AggregationTest extends BaseTest {
     /**
      * test the basic aggregate operation.
      */
-    //@Test
+    @Test
     public void testBasic(){
         connectDB();
         
@@ -130,8 +130,8 @@ public class AggregationTest extends BaseTest {
         double sumValue = dao.sum("price");
         System.out.println("sum:" + sumValue);
         
-        double averageValue = dao.average("price");
-        System.out.println("average: " + averageValue);
+        double avgValue = dao.average("price");
+        System.out.println("average: " + avgValue);
         
         disconnectDB();
     }
@@ -180,7 +180,7 @@ public class AggregationTest extends BaseTest {
     /**
      * get the comments count of each book, and order by quantity
      */
-    @Test
+    //@Test
     public void testLookup(){
         connectDB();
         

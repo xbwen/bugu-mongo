@@ -111,12 +111,16 @@ public class AdvancedDao<T> extends BuguDao<T>{
     }
     
     private double average(String key, DBObject query){
-        long count = coll.count(query);
-        if(count == 0){
+        if(!this.exists(query)){
             return 0;
         }
-        double sum = this.sum(key, query);
-        return sum / count;
+        BuguAggregation agg = this.aggregate();
+        agg.match(query);
+        String json = "{_id:null, avgValue:{$avg:'$" + key + "'}}";
+        agg.group(json);
+        Iterator it = agg.results().iterator();
+        DBObject dbo = (DBObject)it.next();
+        return Double.parseDouble(dbo.get("avgValue").toString());
     }
     
     public Iterable<DBObject> mapReduce(MapReduceCommand cmd) {
