@@ -104,7 +104,7 @@ public class BuguUpdater<T> {
     public WriteResult execute(String id){
         Class<T> clazz = dao.getEntityClass();
         DBObject condition = new BasicDBObject(Operator.ID, IdUtil.toDbId(clazz, id));
-        WriteResult wr = dao.getCollection().update(condition, modifier, false, false, dao.getWriteConcern()); //update one
+        WriteResult wr = dao.getCollection().update(condition, modifier, false, false); //update one
         if(!dao.getListenerList().isEmpty()){
             BuguEntity entity = (BuguEntity)dao.findOne(id);
             dao.notifyUpdated(entity);
@@ -134,7 +134,7 @@ public class BuguUpdater<T> {
         if(!dao.getListenerList().isEmpty()){
             ids = dao.getCollection().distinct(Operator.ID, condition);
         }
-        WriteResult wr = dao.getCollection().update(condition, modifier, false, true, dao.getWriteConcern());  //update multi
+        WriteResult wr = dao.getCollection().update(condition, modifier, false, true);  //update multi
         if(!dao.getListenerList().isEmpty() && ids != null){
             DBObject in = new BasicDBObject(Operator.IN, ids);
             DBCursor cursor = dao.getCollection().find(new BasicDBObject(Operator.ID, in));

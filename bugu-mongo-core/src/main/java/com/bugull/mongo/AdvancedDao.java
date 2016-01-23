@@ -47,7 +47,7 @@ public class AdvancedDao<T> extends BuguDao<T>{
         return max(key, query.getCondition());
     }
     
-    public double max(String key, DBObject query){
+    private double max(String key, DBObject query){
         double result = 0;
         BuguAggregation agg = this.aggregate();
         agg.match(query);
@@ -69,7 +69,7 @@ public class AdvancedDao<T> extends BuguDao<T>{
         return min(key, query.getCondition());
     }
     
-    public double min(String key, DBObject query){
+    private double min(String key, DBObject query){
         double result = 0;
         BuguAggregation agg = this.aggregate();
         agg.match(query);
@@ -91,7 +91,7 @@ public class AdvancedDao<T> extends BuguDao<T>{
         return sum(key, query.getCondition());
     }
     
-    public double sum(String key, DBObject query){
+    private double sum(String key, DBObject query){
         double result = 0;
         BuguAggregation agg = this.aggregate();
         agg.match(query);
@@ -113,7 +113,7 @@ public class AdvancedDao<T> extends BuguDao<T>{
         return average(key, query.getCondition());
     }
     
-    public double average(String key, DBObject query){
+    private double average(String key, DBObject query){
         double result = 0;
         BuguAggregation agg = this.aggregate();
         agg.match(query);

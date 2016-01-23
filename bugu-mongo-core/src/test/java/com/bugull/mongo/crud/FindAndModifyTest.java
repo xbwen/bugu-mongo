@@ -28,7 +28,7 @@ import org.junit.Test;
  */
 public class FindAndModifyTest extends BaseTest {
     
-    @Test
+    //@Test
     public void testFindAndModify(){
         connectDB();
         
@@ -44,7 +44,7 @@ public class FindAndModifyTest extends BaseTest {
         disconnectDB();
     }
     
-    //@Test
+    @Test
     public void testFindAndRemove(){
         connectDB();
         

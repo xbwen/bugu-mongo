@@ -42,7 +42,7 @@ import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
-import com.mongodb.MongoClient;
+import com.mongodb.ReadPreference;
 import com.mongodb.WriteConcern;
 import com.mongodb.WriteResult;
 import java.lang.reflect.Field;
@@ -66,15 +66,11 @@ public class BuguDao<T> {
     protected DBCollection coll;
     protected Class<T> clazz;
     protected DBObject keys;  //non-lazy fields
-    protected WriteConcern writeConcern;
     
     protected final List<EntityListener> listenerList = new ArrayList<EntityListener>();
     
     public BuguDao(Class<T> clazz){
         this.clazz = clazz;
-        MongoClient mc = BuguFramework.getInstance().getConnection().getMongoClient();
-        //the default write concern is ACKNOWLEDGED, set in MongoClientOptions.
-        writeConcern = mc.getWriteConcern();
         //init none-split collection
         Entity entity = clazz.getAnnotation(Entity.class);
         SplitType split = entity.split();
@@ -260,12 +256,16 @@ public class BuguDao<T> {
      * The default write concern is ACKNOWLEDGED, you can change it.
      * @param concern 
      */
-    public void setWriteConcern(WriteConcern concern){
-        this.writeConcern = concern;
+    public void setWriteConcern(WriteConcern writeConcern){
+        coll.setWriteConcern(writeConcern);
     }
     
-    public WriteConcern getWriteConcern(){
-        return writeConcern;
+    /**
+     * The default read preference is PRIMARY, you can change it.
+     * @param readPreference 
+     */
+    public void setReadPreference(ReadPreference readPreference) {
+        coll.setReadPreference(readPreference);
     }
     
     public void addEntityListener(EntityListener listener){
@@ -327,7 +327,7 @@ public class BuguDao<T> {
      */
     public WriteResult insert(T t){
         DBObject dbo = MapperUtil.toDBObject(t);
-        WriteResult wr = coll.insert(dbo, writeConcern);
+        WriteResult wr = coll.insert(dbo);
         String id = dbo.get(Operator.ID).toString();
         BuguEntity ent = (BuguEntity)t;
         ent.setId(id);
@@ -347,7 +347,7 @@ public class BuguDao<T> {
         for(T t : list){
             dboList.add(MapperUtil.toDBObject(t));
         }
-        WriteResult wr = coll.insert(dboList, writeConcern);
+        WriteResult wr = coll.insert(dboList);
         int len = dboList.size();
         for(int i=0; i<len; i++){
             String id = dboList.get(i).get(Operator.ID).toString();
@@ -401,7 +401,7 @@ public class BuguDao<T> {
         if(!listenerList.isEmpty()){
             notifyUpdated(ent);
         }
-        return coll.save(MapperUtil.toDBObject(ent), writeConcern);
+        return coll.save(MapperUtil.toDBObject(ent));
     }
     
     /**
@@ -442,7 +442,7 @@ public class BuguDao<T> {
             notifyDeleted(entity);
         }
         DBObject query = new BasicDBObject(Operator.ID, IdUtil.toDbId(clazz, id));
-        return coll.remove(query, writeConcern);
+        return coll.remove(query);
     }
     
     /**
@@ -488,7 +488,7 @@ public class BuguDao<T> {
                 notifyDeleted((BuguEntity)t);
             }
         }
-        return coll.remove(condition, writeConcern);
+        return coll.remove(condition);
     }
     
     private Object checkSpecialValue(String key, Object value){
@@ -624,8 +624,17 @@ public class BuguDao<T> {
     public T findAndModify(String id, BuguUpdater updater, boolean returnNew){
         DBObject query = new BasicDBObject();
         query.put(Operator.ID, IdUtil.toDbId(clazz, id));
-        DBObject result = coll.findAndModify(query, null, null, false, updater.getModifier(), returnNew, false, writeConcern);
-        return MapperUtil.fromDBObject(clazz, result);
+        DBObject result = coll.findAndModify(query, null, null, false, updater.getModifier(), returnNew, false);
+        T t = MapperUtil.fromDBObject(clazz, result);
+        if(!listenerList.isEmpty()){
+            if(returnNew){
+                notifyUpdated((BuguEntity)t);
+            }else{
+                BuguEntity entity = (BuguEntity)findOne(id);
+                notifyUpdated(entity);
+            }
+        }
+        return t;
     }
     
     /**
@@ -650,8 +659,17 @@ public class BuguDao<T> {
     public T findAndModify(String key, Object value, BuguUpdater updater, boolean returnNew){
         value = checkSpecialValue(key, value);
         DBObject query = new BasicDBObject(key, value);
-        DBObject result = coll.findAndModify(query, null, null, false, updater.getModifier(), returnNew, false, writeConcern);
-        return MapperUtil.fromDBObject(clazz, result);
+        DBObject result = coll.findAndModify(query, null, null, false, updater.getModifier(), returnNew, false);
+        T t = MapperUtil.fromDBObject(clazz, result);
+        if(!listenerList.isEmpty()){
+            if(returnNew){
+                notifyUpdated((BuguEntity)t);
+            }else{
+                BuguEntity entity = (BuguEntity)findOne(key, value);
+                notifyUpdated(entity);
+            }
+        }
+        return t;
     }
     
     /**
@@ -672,8 +690,17 @@ public class BuguDao<T> {
      * @return 
      */
     public T findAndModify(BuguQuery query, BuguUpdater updater, boolean returnNew){
-        DBObject result = coll.findAndModify(query.getCondition(), null, query.getSort(), false, updater.getModifier(), returnNew, false, writeConcern);
-        return MapperUtil.fromDBObject(clazz, result);
+        DBObject result = coll.findAndModify(query.getCondition(), null, query.getSort(), false, updater.getModifier(), returnNew, false);
+        T t = MapperUtil.fromDBObject(clazz, result);
+        if(!listenerList.isEmpty()){
+            if(returnNew){
+                notifyUpdated((BuguEntity)t);
+            }else{
+                BuguEntity entity = (BuguEntity)query.result();
+                notifyUpdated(entity);
+            }
+        }
+        return t;
     }
     
     /**
@@ -684,8 +711,7 @@ public class BuguDao<T> {
     public T findAndRemove(String id){
         DBObject query = new BasicDBObject();
         query.put(Operator.ID, IdUtil.toDbId(clazz, id));
-        DBObject result = coll.findAndRemove(query);
-        return MapperUtil.fromDBObject(clazz, result);
+        return findAndRemove(query);
     }
     
     /**
@@ -697,8 +723,7 @@ public class BuguDao<T> {
     public T findAndRemove(String key, Object value){
         value = checkSpecialValue(key, value);
         DBObject query = new BasicDBObject(key, value);
-        DBObject result = coll.findAndRemove(query);
-        return MapperUtil.fromDBObject(clazz, result);
+        return findAndRemove(query);
     }
     
     /**
@@ -707,8 +732,16 @@ public class BuguDao<T> {
      * @return 
      */
     public T findAndRemove(BuguQuery query){
-        DBObject result = coll.findAndRemove(query.getCondition());
-        return MapperUtil.fromDBObject(clazz, result);
+        return findAndRemove(query.getCondition());
+    }
+    
+    private T findAndRemove(DBObject dbo){
+        DBObject result = coll.findAndModify(dbo, null, null, true, null, false, false);
+        T t = MapperUtil.fromDBObject(clazz, result);
+        if(!listenerList.isEmpty()){
+            notifyDeleted((BuguEntity)t);
+        }
+        return t;
     }
     
     /**
