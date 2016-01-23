@@ -47,17 +47,18 @@ public class AdvancedDao<T> extends BuguDao<T>{
         return max(key, query.getCondition());
     }
     
-    private double max(String key, DBObject query){  
-        if(!this.exists(query)){
-            return 0;
-        }
+    public double max(String key, DBObject query){
+        double result = 0;
         BuguAggregation agg = this.aggregate();
         agg.match(query);
         String json = "{_id:null, maxValue:{$max:'$" + key + "'}}";
         agg.group(json);
         Iterator it = agg.results().iterator();
-        DBObject dbo = (DBObject)it.next();
-        return Double.parseDouble(dbo.get("maxValue").toString());
+        if(it.hasNext()){
+            DBObject dbo = (DBObject)it.next();
+            result = Double.parseDouble(dbo.get("maxValue").toString());
+        }
+        return result;
     }
     
     public double min(String key){
@@ -68,17 +69,18 @@ public class AdvancedDao<T> extends BuguDao<T>{
         return min(key, query.getCondition());
     }
     
-    private double min(String key, DBObject query){
-        if(!this.exists(query)){
-            return 0;
-        }
+    public double min(String key, DBObject query){
+        double result = 0;
         BuguAggregation agg = this.aggregate();
         agg.match(query);
         String json = "{_id:null, minValue:{$min:'$" + key + "'}}";
         agg.group(json);
         Iterator it = agg.results().iterator();
-        DBObject dbo = (DBObject)it.next();
-        return Double.parseDouble(dbo.get("minValue").toString());
+        if(it.hasNext()){
+            DBObject dbo = (DBObject)it.next();
+            result = Double.parseDouble(dbo.get("minValue").toString());
+        }
+        return result;
     }
     
     public double sum(String key){
@@ -89,17 +91,18 @@ public class AdvancedDao<T> extends BuguDao<T>{
         return sum(key, query.getCondition());
     }
     
-    private double sum(String key, DBObject query){
-        if(!this.exists(query)){
-            return 0;
-        }
+    public double sum(String key, DBObject query){
+        double result = 0;
         BuguAggregation agg = this.aggregate();
         agg.match(query);
         String json = "{_id:null, sumValue:{$sum:'$" + key + "'}}";
         agg.group(json);
         Iterator it = agg.results().iterator();
-        DBObject dbo = (DBObject)it.next();
-        return Double.parseDouble(dbo.get("sumValue").toString());
+        if(it.hasNext()){
+            DBObject dbo = (DBObject)it.next();
+            result = Double.parseDouble(dbo.get("sumValue").toString());
+        }
+        return result;
     }
     
     public double average(String key){
@@ -110,17 +113,18 @@ public class AdvancedDao<T> extends BuguDao<T>{
         return average(key, query.getCondition());
     }
     
-    private double average(String key, DBObject query){
-        if(!this.exists(query)){
-            return 0;
-        }
+    public double average(String key, DBObject query){
+        double result = 0;
         BuguAggregation agg = this.aggregate();
         agg.match(query);
         String json = "{_id:null, avgValue:{$avg:'$" + key + "'}}";
         agg.group(json);
         Iterator it = agg.results().iterator();
-        DBObject dbo = (DBObject)it.next();
-        return Double.parseDouble(dbo.get("avgValue").toString());
+        if(it.hasNext()){
+            DBObject dbo = (DBObject)it.next();
+            result = Double.parseDouble(dbo.get("avgValue").toString());
+        }
+        return result;
     }
     
     public Iterable<DBObject> mapReduce(MapReduceCommand cmd) {
@@ -188,15 +192,6 @@ public class AdvancedDao<T> extends BuguDao<T>{
      */
     public BuguAggregation<T> aggregate(){
         return new BuguAggregation<T>(coll);
-    }
-    
-    /**
-     * Check if any entity match the condition
-     * @param query the condition
-     * @return 
-     */
-    private boolean exists(DBObject query){
-        return coll.findOne(query) != null;
     }
     
 }

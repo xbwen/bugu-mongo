@@ -18,6 +18,7 @@ package com.bugull.mongo.aggregation;
 
 import com.bugull.mongo.BuguAggregation;
 import com.bugull.mongo.BuguAggregation.Lookup;
+import com.bugull.mongo.BuguQuery;
 import com.bugull.mongo.base.BaseTest;
 import com.mongodb.DBObject;
 import java.util.Date;
@@ -120,17 +121,18 @@ public class AggregationTest extends BaseTest {
         connectDB();
         
         BookDao dao = new BookDao();
+        BuguQuery query = dao.query().is("title", "about");
         
-        double maxValue = dao.max("price");
+        double maxValue = dao.max("price", query);
         System.out.println("max:" + maxValue);
         
-        double minValue = dao.min("price");
+        double minValue = dao.min("price", query);
         System.out.println("min:" + minValue);
         
-        double sumValue = dao.sum("price");
+        double sumValue = dao.sum("price", query);
         System.out.println("sum:" + sumValue);
         
-        double avgValue = dao.average("price");
+        double avgValue = dao.average("price", query);
         System.out.println("average: " + avgValue);
         
         disconnectDB();
