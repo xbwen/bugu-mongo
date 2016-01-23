@@ -116,7 +116,7 @@ public class AggregationTest extends BaseTest {
      * test the basic aggregate operation.
      */
     //@Test
-    public void testAggregation_0(){
+    public void testBasic(){
         connectDB();
         
         BookDao dao = new BookDao();
@@ -140,7 +140,7 @@ public class AggregationTest extends BaseTest {
      * group by author, order by books count
      */
     //@Test
-    public void testAggregation_1(){
+    public void testSum(){
         connectDB();
         
         BookDao dao = new BookDao();
@@ -160,7 +160,7 @@ public class AggregationTest extends BaseTest {
      * sum the total price of books contain tag 'Programming'
      */
     //@Test
-    public void testAggregation_2(){
+    public void testUnwind(){
         connectDB();
         
         BookDao dao = new BookDao();
@@ -181,7 +181,7 @@ public class AggregationTest extends BaseTest {
      * get the comments count of each book, and order by quantity
      */
     @Test
-    public void testAggregation_3(){
+    public void testLookup(){
         connectDB();
         
         BookDao dao = new BookDao();
