@@ -41,18 +41,18 @@ public class InsertTest extends ReplicaSetBaseTest {
     public void testInsert(){
         connectDB();
         
-        ProductDao produectDao = new ProductDao();
+        ProductDao productDao = new ProductDao();
         Product p1 = new Product();
         p1.setName("iPhone 6");
         p1.setDescription("iPhone 6 is the first choice for your mobile phone, and bala bala bala...");
         p1.setPrice(5321.5F);
-        produectDao.save(p1);
+        productDao.save(p1);
         
         Product p2 = new Product();
         p2.setName("iPhone 6 Plus");
         p2.setDescription("iPhone 6 Plus is the second choice for your mobile phone, and bala bala bala...");
         p2.setPrice(6321.5F);
-        produectDao.save(p2);
+        productDao.save(p2);
         
         UserDao userDao = new UserDao();
         User user = new User();

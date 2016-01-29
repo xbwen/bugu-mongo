@@ -72,10 +72,18 @@ public class BuguConnection {
         }
         if(host != null && port != 0){
             ServerAddress sa = new ServerAddress(host, port);
-            if(options != null){
-                mongoClient = new MongoClient(sa, credentialList, options);
+            if(credentialList != null){
+                if(options != null){
+                    mongoClient = new MongoClient(sa, credentialList, options);
+                }else{
+                    mongoClient = new MongoClient(sa, credentialList);
+                }
             }else{
-                mongoClient = new MongoClient(sa, credentialList);
+                if(options != null){
+                    mongoClient = new MongoClient(sa, options);
+                }else{
+                    mongoClient = new MongoClient(sa);
+                }
             }
         }
         else if(serverList != null && credentialList != null){
