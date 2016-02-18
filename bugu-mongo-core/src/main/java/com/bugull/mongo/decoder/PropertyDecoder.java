@@ -19,6 +19,7 @@ package com.bugull.mongo.decoder;
 import com.bugull.mongo.annotations.Default;
 import com.bugull.mongo.annotations.Property;
 import com.bugull.mongo.utils.DataType;
+import com.bugull.mongo.utils.FieldUtil;
 import com.mongodb.DBObject;
 import java.lang.reflect.Field;
 import java.lang.reflect.GenericArrayType;
@@ -171,7 +172,14 @@ public class PropertyDecoder extends AbstractDecoder{
             vType = (Class)p.getRawType();
             elementType = (Class)p.getActualTypeArguments()[0];
         }else{
-            isPrimitive = true;
+            //in JDK8, type[1] of array, is a class, not array
+            Class<?> actualType = FieldUtil.getClassOfType(types[1]);
+            if(actualType.isArray()){
+                isArray = true;
+                elementType = actualType.getComponentType();
+            }else{
+                isPrimitive = true;
+            }
         }
         if(isArray){
             Map src = (Map)value;

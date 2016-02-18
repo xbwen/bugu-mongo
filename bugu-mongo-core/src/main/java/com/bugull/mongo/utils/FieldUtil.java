@@ -21,6 +21,7 @@ import com.bugull.mongo.annotations.Ref;
 import com.bugull.mongo.annotations.RefList;
 import com.bugull.mongo.cache.FieldsCache;
 import java.lang.reflect.Field;
+import java.lang.reflect.Type;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -32,6 +33,8 @@ import org.apache.logging.log4j.Logger;
 public final class FieldUtil {
     
     private final static Logger logger = LogManager.getLogger(FieldUtil.class.getName());
+    
+    private static final String TYPE_NAME_PREFIX = "class ";
     
     public static Object get(Object obj, Field f){
         Object value = null;
@@ -90,6 +93,23 @@ public final class FieldUtil {
                     cls = refList.impl();
                 }
             }
+        }
+        return cls;
+    }
+    
+    public static Class<?> getClassOfType(Type type) {
+        if(type == null) {
+            return null;
+        }
+        String className = type.toString();
+        if (className.startsWith(TYPE_NAME_PREFIX)) {
+            className = className.substring(TYPE_NAME_PREFIX.length());
+        }
+        Class<?> cls = null;
+        try{
+            cls = Class.forName(className);
+        }catch(ClassNotFoundException ex){
+            logger.error("Can not get class of type " + type.toString(), ex);
         }
         return cls;
     }
