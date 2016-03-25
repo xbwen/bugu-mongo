@@ -23,6 +23,8 @@ import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * The connection to MongoDB.
@@ -31,8 +33,10 @@ import java.util.List;
  */
 public class BuguConnection {
     
+    private final static Logger logger = LogManager.getLogger(BuguConnection.class.getName());
+    
     private String host;
-    private int port;
+    private int port = 27017;
     private List<ServerAddress> serverList;
     private List<MongoCredential> credentialList;
     private MongoClientOptions options;
@@ -65,12 +69,16 @@ public class BuguConnection {
     }
     
     public void connect(){
+        if(host != null && serverList != null){
+            logger.error("Error when connect to database server! You should set database host or server list, but not both!");
+            return;
+        }
         if(username != null && password != null && database != null){
             credentialList = new ArrayList<MongoCredential>();
             MongoCredential cred = MongoCredential.createCredential(username, database, password.toCharArray());
             credentialList.add(cred);
         }
-        if(host != null && port != 0){
+        if(host != null){
             ServerAddress sa = new ServerAddress(host, port);
             if(credentialList != null){
                 if(options != null){
@@ -86,11 +94,19 @@ public class BuguConnection {
                 }
             }
         }
-        else if(serverList != null && credentialList != null){
-            if(options != null){
-                mongoClient = new MongoClient(serverList, credentialList, options);
+        else if(serverList != null){
+            if(credentialList != null){
+                if(options != null){
+                    mongoClient = new MongoClient(serverList, credentialList, options);
+                }else{
+                    mongoClient = new MongoClient(serverList, credentialList);
+                }
             }else{
-                mongoClient = new MongoClient(serverList, credentialList);
+                if(options != null){
+                    mongoClient = new MongoClient(serverList, options);
+                }else{
+                    mongoClient = new MongoClient(serverList);
+                }
             }
         }
     }

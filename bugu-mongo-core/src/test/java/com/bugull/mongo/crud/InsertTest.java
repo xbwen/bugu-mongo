@@ -42,7 +42,7 @@ import org.junit.Test;
  */
 public class InsertTest extends ReplicaSetBaseTest {
     
-    //@Test
+    @Test
     public void testInsert(){
         connectDB();
         
@@ -143,7 +143,7 @@ public class InsertTest extends ReplicaSetBaseTest {
         disconnectDB();
     }
     
-    @Test
+    //@Test
     public void testComplextRefList(){
         connectDB();
         

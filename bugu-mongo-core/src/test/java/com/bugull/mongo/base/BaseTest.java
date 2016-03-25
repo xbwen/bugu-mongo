@@ -27,7 +27,7 @@ public abstract class BaseTest {
     
     protected void connectDB(){
         BuguConnection conn = BuguFramework.getInstance().createConnection();
-        conn.setHost("192.168.0.200");
+        conn.setHost("127.0.0.1");
         conn.setPort(27017);
         conn.setUsername("test");
         conn.setPassword("test");

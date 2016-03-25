@@ -21,7 +21,6 @@ import com.bugull.mongo.base.ReplicaSetBaseTest;
 import com.bugull.mongo.dao.GroupContactDao;
 import com.bugull.mongo.dao.GroupProductDao;
 import com.bugull.mongo.dao.OrderDao;
-import com.bugull.mongo.dao.ProductDao;
 import com.bugull.mongo.dao.UserDao;
 import com.bugull.mongo.entity.Address;
 import com.bugull.mongo.entity.Contact;
@@ -31,8 +30,6 @@ import com.bugull.mongo.entity.Order;
 import com.bugull.mongo.entity.Product;
 import com.bugull.mongo.entity.User;
 import com.bugull.mongo.utils.SortUtil;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -45,7 +42,7 @@ import org.junit.Test;
  */
 public class QueryTest extends ReplicaSetBaseTest {
     
-    //@Test
+    @Test
     public void testQuery(){
         connectDB();
         
@@ -122,7 +119,7 @@ public class QueryTest extends ReplicaSetBaseTest {
         disconnectDB();
     }
     
-    @Test
+    //@Test
     public void testComplextRefList(){
         connectDB();
         
