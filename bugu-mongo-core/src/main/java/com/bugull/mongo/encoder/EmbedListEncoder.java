@@ -120,17 +120,17 @@ public class EmbedListEncoder extends AbstractEncoder{
         Map map = (Map)value;
         Map result = new HashMap();
         for(Object key : map.keySet()){
-            Object o = map.get(key);
-            if(o == null){
+            Object entryValue = map.get(key);
+            if(entryValue == null){
                 result.put(key, null);
                 continue;
             }
             if(isSingle){
-                result.put(key, MapperUtil.toDBObject(o));
+                result.put(key, MapperUtil.toDBObject(entryValue));
             }else if(isArray){
-                result.put(key, encodeArray(o));
+                result.put(key, encodeArray(entryValue));
             }else if(isCollection){
-                result.put(key, encodeCollection(o));
+                result.put(key, encodeCollection(entryValue));
             }
         }
         return result;

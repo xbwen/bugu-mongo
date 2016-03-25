@@ -29,17 +29,11 @@ import java.util.Map;
 @Entity
 public class GroupContact extends SimpleEntity {
     @EmbedList
-    private Map<String, List<Contact>> contacts;
+    private Map<String, Contact> mapContacts;
+    @EmbedList
+    private Map<String, List<Contact>> mapListContacts;
     @Ref
     private User user;
-
-    public Map<String, List<Contact>> getContacts() {
-        return contacts;
-    }
-
-    public void setContacts(Map<String, List<Contact>> contacts) {
-        this.contacts = contacts;
-    }
 
     public User getUser() {
         return user;
@@ -47,6 +41,22 @@ public class GroupContact extends SimpleEntity {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public Map<String, Contact> getMapContacts() {
+        return mapContacts;
+    }
+
+    public void setMapContacts(Map<String, Contact> mapContacts) {
+        this.mapContacts = mapContacts;
+    }
+
+    public Map<String, List<Contact>> getMapListContacts() {
+        return mapListContacts;
+    }
+
+    public void setMapListContacts(Map<String, List<Contact>> mapListContacts) {
+        this.mapListContacts = mapListContacts;
     }
     
 }

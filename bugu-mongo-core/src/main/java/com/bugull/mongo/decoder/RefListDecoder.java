@@ -30,6 +30,7 @@ import com.bugull.mongo.utils.ReferenceUtil;
 import com.mongodb.DBObject;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
+import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -64,33 +65,44 @@ public class RefListDecoder extends AbstractDecoder{
     public void decode(Object obj){
         Class<?> type = field.getType();
         if(type.isArray()){
-            decodeArray(obj, type.getComponentType());
+            Object arr = decodeArray(value, type.getComponentType());
+            FieldUtil.set(obj, field, arr);
         }else{
             ParameterizedType paramType = (ParameterizedType)field.getGenericType();
             Type[] types = paramType.getActualTypeArguments();
             int len = types.length;
             if(len == 1){
-                decodeCollection(obj, (Class)types[0]);
+                List list = decodeCollection(value, (Class)types[0]);
+                if(DataType.isListType(type)){
+                    FieldUtil.set(obj, field, list);
+                }
+                else if(DataType.isSetType(type)){
+                    FieldUtil.set(obj, field, new HashSet(list));
+                }
+                else if(DataType.isQueueType(type)){
+                    FieldUtil.set(obj, field, new LinkedList(list));
+                }
             }else if(len == 2){
-                decodeMap(obj, (Class)types[1]);
+                Object map = decodeMap();
+                FieldUtil.set(obj, field, map);
             }
         }
     }
     
-    private void decodeArray(Object obj, Class clazz){
-        clazz = FieldUtil.getRealType(clazz, field);
-        List list = (ArrayList)value;
+    private Object decodeArray(Object val, Class elementClass){
+        elementClass = FieldUtil.getRealType(elementClass, field);
+        List list = (ArrayList)val;
         int size = list.size();
         if(size <= 0){
-            return;
+            return null;
         }
-        Object arr = Array.newInstance(clazz, size);
+        Object arr = Array.newInstance(elementClass, size);
         if(refList.cascade().toUpperCase().indexOf(Default.CASCADE_READ)==-1){
             for(int i=0; i<size; i++){
                 Object item = list.get(i);
                 if(item != null){
                     String refId = ReferenceUtil.fromDbReference(refList, item);
-                    BuguEntity refObj = (BuguEntity)ConstructorCache.getInstance().create(clazz);
+                    BuguEntity refObj = (BuguEntity)ConstructorCache.getInstance().create(elementClass);
                     refObj.setId(refId);
                     Array.set(arr, i, refObj);
                 }else{
@@ -107,7 +119,7 @@ public class RefListDecoder extends AbstractDecoder{
                     idList.add(refId);
                 }
             }
-            InternalDao dao = DaoCache.getInstance().get(clazz);
+            InternalDao dao = DaoCache.getInstance().get(elementClass);
             BuguQuery query = dao.query().in(Operator.ID, idList);
             String sort = refList.sort();
             if(!sort.equals(Default.SORT)){
@@ -117,24 +129,24 @@ public class RefListDecoder extends AbstractDecoder{
             //when query returns, the size maybe changed
             if(entityList.size() != size){
                 size = entityList.size();
-                arr = Array.newInstance(clazz, size);
+                arr = Array.newInstance(elementClass, size);
             }
             for(int i=0; i<size; i++){
                 Array.set(arr, i, entityList.get(i));
             }
         }
-        FieldUtil.set(obj, field, arr);
+        return arr;
     }
     
-    private void decodeCollection(Object obj, Class clazz){
-        clazz = FieldUtil.getRealType(clazz, field);
-        Collection collection = (Collection)value;
+    private List decodeCollection(Object val, Class elementClass){
+        elementClass = FieldUtil.getRealType(elementClass, field);
+        Collection collection = (Collection)val;
         List<BuguEntity> result = new ArrayList<BuguEntity>();
         if(refList.cascade().toUpperCase().indexOf(Default.CASCADE_READ)==-1){
             for(Object item : collection){
                 if(item != null){
                     String refId = ReferenceUtil.fromDbReference(refList, item);
-                    BuguEntity refObj = (BuguEntity)ConstructorCache.getInstance().create(clazz);
+                    BuguEntity refObj = (BuguEntity)ConstructorCache.getInstance().create(elementClass);
                     refObj.setId(refId);
                     result.add(refObj);
                 }
@@ -147,7 +159,7 @@ public class RefListDecoder extends AbstractDecoder{
                     idList.add(refId);
                 }
             }
-            InternalDao dao = DaoCache.getInstance().get(clazz);
+            InternalDao dao = DaoCache.getInstance().get(elementClass);
             BuguQuery query = dao.query().in(Operator.ID, idList);
             String sort = refList.sort();
             if(!sort.equals(Default.SORT)){
@@ -155,48 +167,83 @@ public class RefListDecoder extends AbstractDecoder{
             }
             result = query.results();
         }
-        Class type = field.getType();
-        if(DataType.isListType(type)){
-            FieldUtil.set(obj, field, result);
-        }
-        else if(DataType.isSetType(type)){
-            FieldUtil.set(obj, field, new HashSet(result));
-        }
-        else if(DataType.isQueueType(type)){
-            FieldUtil.set(obj, field, new LinkedList(result));
-        }
+        return result;
     }
     
-    private void decodeMap(Object obj, Class clazz){
-        clazz = FieldUtil.getRealType(clazz, field);
-        Map map = (Map)value;
-        Map<Object, BuguEntity> result = new HashMap<Object, BuguEntity>();
-        if(refList.cascade().toUpperCase().indexOf(Default.CASCADE_READ)==-1){
-            for(Object key : map.keySet()){
-                Object item = map.get(key);
-                if(item != null){
-                    String refId = ReferenceUtil.fromDbReference(refList, item);
-                    BuguEntity refObj = (BuguEntity)ConstructorCache.getInstance().create(clazz);
-                    refObj.setId(refId);
-                    result.put(key, refObj);
-                }else{
-                    result.put(key, null);
-                }
-            }
+    private Map decodeMap(){
+        //for Map<K,V>, first to check the type of V
+        ParameterizedType paramType = (ParameterizedType)field.getGenericType();
+        Type[] types = paramType.getActualTypeArguments();
+        boolean isArray = false;
+        boolean isCollection = false;
+        boolean isSingle = false;
+        Class vType = null;
+        Class elementType = null;
+        if(types[1] instanceof GenericArrayType){
+            isArray = true;
+            GenericArrayType g = (GenericArrayType)types[1];
+            elementType = (Class)g.getGenericComponentType();
+        }else if(types[1] instanceof ParameterizedType){
+            isCollection = true;
+            ParameterizedType p = (ParameterizedType)types[1];
+            vType = (Class)p.getRawType();
+            elementType = (Class)p.getActualTypeArguments()[0];
         }else{
-            InternalDao dao = DaoCache.getInstance().get(clazz);
-            for(Object key : map.keySet()){
-                Object item = map.get(key);
-                if(item != null){
-                    String refId = ReferenceUtil.fromDbReference(refList, item);
-                    BuguEntity refObj = (BuguEntity)dao.findOne(refId);
-                    result.put(key, refObj);
+            //in JDK8, type[1] of array, is a class, not array
+            Class<?> actualType = FieldUtil.getClassOfType(types[1]);
+            if(actualType.isArray()){
+                isArray = true;
+                elementType = actualType.getComponentType();
+            }else{
+                isSingle = true;
+            }
+        }
+        //decode value by different type of V
+        Map map = (Map)value;
+        Map result = new HashMap();
+        boolean cascadeRead = false;
+        Class<?> cls  = null;
+        InternalDao dao = null;
+        if(isSingle){
+            cascadeRead = (refList.cascade().toUpperCase().indexOf(Default.CASCADE_READ) != -1);
+            if(cascadeRead){
+                cls  = FieldUtil.getRealType((Class)types[1], field);
+                dao = DaoCache.getInstance().get(cls);
+            }
+        }
+        for(Object key : map.keySet()){
+            Object entryValue = map.get(key);
+            if(entryValue == null){
+                result.put(key, null);
+                continue;
+            }
+            if(isSingle){
+                String refId = ReferenceUtil.fromDbReference(refList, entryValue);
+                BuguEntity refObj = null;
+                if(cascadeRead){
+                    refObj = (BuguEntity)dao.findOne(refId);
                 }else{
-                    result.put(key, null);
+                    refObj = (BuguEntity)ConstructorCache.getInstance().create(cls);
+                    refObj.setId(refId);
+                }
+                result.put(key, refObj);
+            }else if(isArray){
+                Object arr = decodeArray(entryValue, elementType);
+                result.put(key, arr);
+            }else if(isCollection){
+                List list = decodeCollection(entryValue, elementType);
+                if(DataType.isListType(vType)){
+                    result.put(key, list);
+                }
+                else if(DataType.isSetType(vType)){
+                    result.put(key, new HashSet(list));
+                }
+                else if(DataType.isQueueType(vType)){
+                    result.put(key, new LinkedList(list));
                 }
             }
         }
-        FieldUtil.set(obj, field, result);
+        return result;
     }
     
 }

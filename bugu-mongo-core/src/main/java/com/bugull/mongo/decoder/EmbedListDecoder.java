@@ -74,7 +74,7 @@ public class EmbedListDecoder extends AbstractDecoder{
                     FieldUtil.set(obj, field, new LinkedList(list));
                 }
             }else{
-                Object map = decodeMap();
+                Map map = decodeMap();
                 FieldUtil.set(obj, field, map);
             }
         }
@@ -108,7 +108,7 @@ public class EmbedListDecoder extends AbstractDecoder{
         return result;
     }
     
-    private Object decodeMap(){
+    private Map decodeMap(){
         //for Map<K,V>, first to check the type of V
         ParameterizedType paramType = (ParameterizedType)field.getGenericType();
         Type[] types = paramType.getActualTypeArguments();
@@ -140,19 +140,19 @@ public class EmbedListDecoder extends AbstractDecoder{
         Map map = (Map)value;
         Map result = new HashMap();
         for(Object key : map.keySet()){
-            Object val = map.get(key);
-            if(val == null){
+            Object entryValue = map.get(key);
+            if(entryValue == null){
                 result.put(key, null);
                 continue;
             }
             if(isSingle){
-                Object embedObj = MapperUtil.fromDBObject((Class)types[1], (DBObject)val);
+                Object embedObj = MapperUtil.fromDBObject((Class)types[1], (DBObject)entryValue);
                 result.put(key, embedObj);
             }else if(isArray){
-                Object arr = decodeArray(val, elementType);
+                Object arr = decodeArray(entryValue, elementType);
                 result.put(key, arr);
             }else if(isCollection){
-                List list = decodeCollection(val, elementType);
+                List list = decodeCollection(entryValue, elementType);
                 if(DataType.isListType(vType)){
                     result.put(key, list);
                 }

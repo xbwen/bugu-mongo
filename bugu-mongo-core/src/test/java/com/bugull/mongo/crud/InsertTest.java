@@ -18,12 +18,14 @@ package com.bugull.mongo.crud;
 
 import com.bugull.mongo.base.ReplicaSetBaseTest;
 import com.bugull.mongo.dao.GroupContactDao;
+import com.bugull.mongo.dao.GroupProductDao;
 import com.bugull.mongo.dao.OrderDao;
 import com.bugull.mongo.dao.ProductDao;
 import com.bugull.mongo.dao.UserDao;
 import com.bugull.mongo.entity.Address;
 import com.bugull.mongo.entity.Contact;
 import com.bugull.mongo.entity.GroupContact;
+import com.bugull.mongo.entity.GroupProduct;
 import com.bugull.mongo.entity.Order;
 import com.bugull.mongo.entity.Product;
 import com.bugull.mongo.entity.User;
@@ -44,18 +46,18 @@ public class InsertTest extends ReplicaSetBaseTest {
     public void testInsert(){
         connectDB();
         
-        ProductDao produectDao = new ProductDao();
+        ProductDao productDao = new ProductDao();
         Product p1 = new Product();
         p1.setName("iPhone 6");
         p1.setDescription("iPhone 6 is the first choice for your mobile phone, and bala bala bala...");
         p1.setPrice(5321.5F);
-        produectDao.save(p1);
+        productDao.save(p1);
         
         Product p2 = new Product();
         p2.setName("iPhone 6 Plus");
         p2.setDescription("iPhone 6 Plus is the second choice for your mobile phone, and bala bala bala...");
         p2.setPrice(6321.5F);
-        produectDao.save(p2);
+        productDao.save(p2);
         
         UserDao userDao = new UserDao();
         User user = new User();
@@ -108,8 +110,8 @@ public class InsertTest extends ReplicaSetBaseTest {
         disconnectDB();
     }
     
-    @Test
-    public void testComplexInsert(){
+    //@Test
+    public void testComplexEmbedList(){
         connectDB();
         
         UserDao userDao = new UserDao();
@@ -121,17 +123,47 @@ public class InsertTest extends ReplicaSetBaseTest {
         Contact c2 = new Contact();
         c2.setEmail("xiaobinwen@gmail.com");
         c2.setPhone("13600010002");
-        List<Contact> list = new ArrayList<>();
+        List<Contact> list = new ArrayList<Contact>();
         list.add(c1);
         list.add(c2);
-        Map<String, List<Contact>> contacts = new HashMap<>();
-        contacts.put("frank", list);
+        Map<String, List<Contact>> mapListContacts = new HashMap<String, List<Contact>>();
+        mapListContacts.put("frank", list);
+        
+        Map<String, Contact> mapContacts = new HashMap<String, Contact>();
+        mapContacts.put("c1", c1);
+        mapContacts.put("c2", c2);
         
         GroupContactDao gcDao = new GroupContactDao();
         GroupContact gc = new GroupContact();
         gc.setUser(user);
-        gc.setContacts(contacts);
+        gc.setMapContacts(mapContacts);
+        gc.setMapListContacts(mapListContacts);
         gcDao.save(gc);
+        
+        disconnectDB();
+    }
+    
+    @Test
+    public void testComplextRefList(){
+        connectDB();
+        
+        ProductDao productDao = new ProductDao();
+        Product p1 = productDao.findOne("name", "iPhone 6");
+        Product p2 = productDao.findOne("name", "iPhone 6 Plus");
+        List<Product> list = new ArrayList<Product>();
+        list.add(p1);
+        list.add(p2);
+        Map<String, List<Product>> mapList = new HashMap<String, List<Product>>();
+        mapList.put("iPhone", list);
+        Map<String, Product> map = new HashMap<String, Product>();
+        map.put("6", p1);
+        map.put("6P", p2);
+        GroupProduct gp = new GroupProduct();
+        gp.setMap(map);
+        gp.setMapList(mapList);
+        gp.setTotalPrice(10000);
+        GroupProductDao gpDao = new GroupProductDao();
+        gpDao.save(gp);
         
         disconnectDB();
     }

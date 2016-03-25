@@ -19,15 +19,20 @@ package com.bugull.mongo.crud;
 import com.bugull.mongo.BuguMapper;
 import com.bugull.mongo.base.ReplicaSetBaseTest;
 import com.bugull.mongo.dao.GroupContactDao;
+import com.bugull.mongo.dao.GroupProductDao;
 import com.bugull.mongo.dao.OrderDao;
+import com.bugull.mongo.dao.ProductDao;
 import com.bugull.mongo.dao.UserDao;
 import com.bugull.mongo.entity.Address;
 import com.bugull.mongo.entity.Contact;
 import com.bugull.mongo.entity.GroupContact;
+import com.bugull.mongo.entity.GroupProduct;
 import com.bugull.mongo.entity.Order;
 import com.bugull.mongo.entity.Product;
 import com.bugull.mongo.entity.User;
 import com.bugull.mongo.utils.SortUtil;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -88,19 +93,55 @@ public class QueryTest extends ReplicaSetBaseTest {
         disconnectDB();
     }
     
-    @Test
-    public void testComplexQuery(){
+    //@Test
+    public void testComplexEmbedList(){
         connectDB();
         
         GroupContactDao gcDao = new GroupContactDao();
         List<GroupContact> all = gcDao.findAll();
         for(GroupContact gc : all){
-            Map<String, List<Contact>> map = gc.getContacts();
-            for(Entry<String, List<Contact>> entry : map.entrySet()){
+            Map<String, Contact> map = gc.getMapContacts();
+            for(Entry<String, Contact> entry : map.entrySet()){
+                System.out.println("key: " + entry.getKey());
+                Contact c = entry.getValue();
+                System.out.println("email: " + c.getEmail());
+                System.out.println("phone: " + c.getPhone());
+            }
+            System.out.println();
+            Map<String, List<Contact>> mapList = gc.getMapListContacts();
+            for(Entry<String, List<Contact>> entry : mapList.entrySet()){
+                System.out.println("key: " + entry.getKey());
                 List<Contact> list = entry.getValue();
                 for(Contact c : list){
                     System.out.println("email: " + c.getEmail());
                     System.out.println("phone: " + c.getPhone());
+                }
+            }
+        }
+        
+        disconnectDB();
+    }
+    
+    @Test
+    public void testComplextRefList(){
+        connectDB();
+        
+        GroupProductDao gpDao = new GroupProductDao();
+        List<GroupProduct> all = gpDao.findAll();
+        for(GroupProduct gp : all){
+            Map<String, Product> map = gp.getMap();
+            for(Entry<String, Product> entry : map.entrySet()){
+                System.out.println("key: " + entry.getKey());
+                Product p = entry.getValue();
+                System.out.println("product name: " + p.getName());
+            }
+            System.out.println();
+            Map<String, List<Product>> mapList = gp.getMapList();
+            for(Entry<String, List<Product>> entry : mapList.entrySet()){
+                System.out.println("key: " + entry.getKey());
+                List<Product> list = entry.getValue();
+                for(Product p : list){
+                    System.out.println("product name: " + p.getName());
                 }
             }
         }

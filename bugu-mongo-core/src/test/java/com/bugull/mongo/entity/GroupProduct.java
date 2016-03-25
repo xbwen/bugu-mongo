@@ -27,18 +27,12 @@ import java.util.Map;
  */
 @Entity
 public class GroupProduct extends SimpleEntity {
-    @RefList
-    private Map<String, List<Product>> groups;
+    @RefList(cascade = "R")
+    private Map<String, Product> map;
+    @RefList(cascade = "R")
+    private Map<String, List<Product>> mapList;
     
     private double totalPrice;
-
-    public Map<String, List<Product>> getGroups() {
-        return groups;
-    }
-
-    public void setGroups(Map<String, List<Product>> groups) {
-        this.groups = groups;
-    }
 
     public double getTotalPrice() {
         return totalPrice;
@@ -47,6 +41,21 @@ public class GroupProduct extends SimpleEntity {
     public void setTotalPrice(double totalPrice) {
         this.totalPrice = totalPrice;
     }
-    
+
+    public Map<String, Product> getMap() {
+        return map;
+    }
+
+    public void setMap(Map<String, Product> map) {
+        this.map = map;
+    }
+
+    public Map<String, List<Product>> getMapList() {
+        return mapList;
+    }
+
+    public void setMapList(Map<String, List<Product>> mapList) {
+        this.mapList = mapList;
+    }
     
 }

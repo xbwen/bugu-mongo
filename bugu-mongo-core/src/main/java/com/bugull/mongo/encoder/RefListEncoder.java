@@ -25,6 +25,7 @@ import com.bugull.mongo.misc.InternalDao;
 import com.bugull.mongo.utils.ReferenceUtil;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
+import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -65,27 +66,27 @@ public class RefListEncoder extends AbstractEncoder{
         Object result = null;
         Class<?> type = field.getType();
         if(type.isArray()){
-            result = encodeArray(type.getComponentType());
+            result = encodeArray(type.getComponentType(), value);
         }else{
             ParameterizedType paramType = (ParameterizedType)field.getGenericType();
             Type[] types = paramType.getActualTypeArguments();
             int len = types.length;
             if(len == 1){
-                result = encodeCollection((Class)types[0]);
+                result = encodeCollection((Class)types[0], value);
             }else if(len == 2){
-                result = encodeMap((Class)types[1]);
+                result = encodeMap();
             }
         }
         return result;
     }
     
-    private Object encodeArray(Class<?> clazz){
-        clazz = FieldUtil.getRealType(clazz, field);
-        InternalDao dao = DaoCache.getInstance().get(clazz);
-        int len = Array.getLength(value);
+    private Object encodeArray(Class type, Object val){
+        Class<?> cls = FieldUtil.getRealType(type, field);
+        InternalDao dao = DaoCache.getInstance().get(cls);
+        int len = Array.getLength(val);
         List<Object> result = new ArrayList<Object>();
         for(int i=0; i<len; i++){
-            BuguEntity entity = (BuguEntity)Array.get(value, i);
+            BuguEntity entity = (BuguEntity)Array.get(val, i);
             if(entity != null){
                 if(cascadeCU){
                     dao.save(entity);
@@ -96,8 +97,8 @@ public class RefListEncoder extends AbstractEncoder{
         return result;
     }
     
-    private Object encodeCollection(Class type){
-        Collection<BuguEntity> collection = (Collection<BuguEntity>)value;
+    private Object encodeCollection(Class type, Object val){
+        Collection<BuguEntity> collection = (Collection<BuguEntity>)val;
         List<Object> result = new ArrayList<Object>();
         Class<?> cls = FieldUtil.getRealType(type, field);
         InternalDao dao = DaoCache.getInstance().get(cls);
@@ -112,20 +113,60 @@ public class RefListEncoder extends AbstractEncoder{
         return result;
     }
     
-    private Object encodeMap(Class type){
-        Map<Object, BuguEntity> map = (Map<Object, BuguEntity>)value;
-        Map<Object, Object> result = new HashMap<Object, Object>();
-        Class<?> cls = FieldUtil.getRealType(type, field);
-        InternalDao dao = DaoCache.getInstance().get(cls);
-        for(Entry<Object, BuguEntity> entry : map.entrySet()){
-            BuguEntity entity = entry.getValue();
-            if(entity != null){
-                if(cascadeCU){
-                    dao.save(entity);
-                }
-                result.put(entry.getKey(), ReferenceUtil.toDbReference(refList, entity.getClass(), entity.getId()));
+    private Object encodeMap(){
+        //for Map<K,V>, first to check the type of V
+        ParameterizedType paramType = (ParameterizedType)field.getGenericType();
+        Type[] types = paramType.getActualTypeArguments();
+        boolean isArray = false;
+        boolean isCollection = false;
+        boolean isSingle = false;
+        Class elementType = null;
+        if(types[1] instanceof GenericArrayType){
+            isArray = true;
+            GenericArrayType g = (GenericArrayType)types[1];
+            elementType = (Class)g.getGenericComponentType();
+        }else if(types[1] instanceof ParameterizedType){
+            isCollection = true;
+            ParameterizedType p = (ParameterizedType)types[1];
+            elementType = (Class)p.getActualTypeArguments()[0];
+        }else{
+            //in JDK8, type[1] of array, is a class, not array
+            Class<?> actualType = FieldUtil.getClassOfType(types[1]);
+            if(actualType.isArray()){
+                isArray = true;
+                elementType = actualType.getComponentType();
             }else{
-                result.put(entry.getKey(), null);
+                isSingle = true;
+            }
+        }
+        //encode value by different type of V
+        Map result = new HashMap();
+        InternalDao dao = null;
+        if(isSingle){
+            Class<?> cls = FieldUtil.getRealType((Class)types[1], field);
+            dao = DaoCache.getInstance().get(cls);
+        }
+        Map map = (Map)value;
+        for(Object key : map.keySet()){
+            Object entryValue = map.get(key);
+            if(isSingle){
+                BuguEntity entity = (BuguEntity)entryValue;
+                if(entity != null){
+                    if(cascadeCU){
+                        dao.save(entity);
+                    }
+                    result.put(key, ReferenceUtil.toDbReference(refList, entity.getClass(), entity.getId()));
+                }else{
+                    result.put(key, null);
+                }
+            }
+            else if(isArray){
+                Object arr = encodeArray(elementType, entryValue);
+                result.put(key, arr);
+            }
+            else if(isCollection){
+                Object arr = encodeCollection(elementType, entryValue);
+                result.put(key, arr);
             }
         }
         return result;
