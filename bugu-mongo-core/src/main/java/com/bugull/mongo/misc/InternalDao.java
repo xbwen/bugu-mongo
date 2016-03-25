@@ -26,7 +26,7 @@ import com.mongodb.DBObject;
 import java.util.List;
 
 /**
- * The dao used in BuguMongo framework itself. Do not use this in your application.
+ * The dao used in bugu-mongo framework itself. Do not use this in your application.
  * 
  * @author Frank Wen(xbwen@hotmail.com)
  */

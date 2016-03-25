@@ -48,6 +48,9 @@ public class UploadedFileServlet extends HttpServlet {
     
     private final static Logger logger = LogManager.getLogger(UploadedFileServlet.class.getName());
     
+    private final static long ONE_YEAR_SECONDS = 365L * 24L * 60L * 60L;
+    private final static long ONE_YEAR_MILLISECONDS = ONE_YEAR_SECONDS * 1000L;
+    
     private final static String SLASH = "/";
     
     private String password;
@@ -134,10 +137,9 @@ public class UploadedFileServlet extends HttpServlet {
                         return;
                     }
                 }
-                long maxAge = 365L * 24L * 60L * 60L;    //one year, in seconds
-                response.setHeader("Cache-Control", "max-age=" + maxAge);
+                response.setHeader("Cache-Control", "max-age=" + ONE_YEAR_SECONDS);
                 response.setHeader("Last-Modified", lastModified);
-                response.setDateHeader("Expires", uploadDate.getTime() + maxAge * 1000L);
+                response.setDateHeader("Expires", uploadDate.getTime() + ONE_YEAR_MILLISECONDS);
             }else{
                 response.setHeader("Pragma","no-cache");
                 response.setHeader("Cache-Control","no-cache");
@@ -186,7 +188,6 @@ public class UploadedFileServlet extends HttpServlet {
             }
             StreamUtil.safeClose(is);
         }
-        StreamUtil.safeClose(os);
     }
     
     @Override

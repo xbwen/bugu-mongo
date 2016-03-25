@@ -17,7 +17,6 @@
 package com.bugull.mongo.fs;
 
 import com.bugull.mongo.BuguFramework;
-import com.bugull.mongo.utils.MapperUtil;
 import com.bugull.mongo.utils.Operator;
 import com.bugull.mongo.utils.SortUtil;
 import com.mongodb.BasicDBObject;
@@ -50,10 +49,10 @@ public class BuguFS {
     
     private final static Logger logger = LogManager.getLogger(BuguFS.class.getName());
     
-    private GridFS fs;
-    private DBCollection files;
-    private String bucket;
-    private int chunkSize;
+    private final GridFS fs;
+    private final DBCollection files;
+    private final String bucket;
+    private final int chunkSize;
     
     public final static String BUCKET = "bucket";
     public final static String FILENAME = "filename";
