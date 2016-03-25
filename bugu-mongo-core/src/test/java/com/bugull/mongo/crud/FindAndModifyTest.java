@@ -17,7 +17,7 @@
 package com.bugull.mongo.crud;
 
 import com.bugull.mongo.BuguUpdater;
-import com.bugull.mongo.base.BaseTest;
+import com.bugull.mongo.base.ReplicaSetBaseTest;
 import com.bugull.mongo.dao.UserDao;
 import com.bugull.mongo.entity.User;
 import org.junit.Test;
@@ -26,7 +26,7 @@ import org.junit.Test;
  *
  * @author Frank Wen(xbwen@hotmail.com)
  */
-public class FindAndModifyTest extends BaseTest {
+public class FindAndModifyTest extends ReplicaSetBaseTest {
     
     //@Test
     public void testFindAndModify(){

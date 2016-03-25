@@ -16,6 +16,7 @@
 
 package com.bugull.mongo.replica;
 
+import com.bugull.mongo.base.ReplicaSetBaseTest;
 import com.bugull.mongo.dao.ProductDao;
 import com.bugull.mongo.entity.Product;
 import com.mongodb.ReadPreference;

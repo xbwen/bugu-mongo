@@ -155,6 +155,7 @@ public class PropertyDecoder extends AbstractDecoder{
     }
     
     private void processMapType(Object obj) throws IllegalArgumentException, IllegalAccessException {
+        //for Map<K,V>, first to check the type of V
         ParameterizedType paramType = (ParameterizedType)field.getGenericType();
         Type[] types = paramType.getActualTypeArguments();
         boolean isArray = false;
@@ -181,6 +182,7 @@ public class PropertyDecoder extends AbstractDecoder{
                 isPrimitive = true;
             }
         }
+        //decode value by different type of V
         if(isArray){
             Map src = (Map)value;
             Map map = new HashMap();

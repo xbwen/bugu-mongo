@@ -17,11 +17,13 @@
 package com.bugull.mongo.crud;
 
 import com.bugull.mongo.BuguMapper;
-import com.bugull.mongo.base.BaseTest;
+import com.bugull.mongo.base.ReplicaSetBaseTest;
+import com.bugull.mongo.dao.GroupContactDao;
 import com.bugull.mongo.dao.OrderDao;
 import com.bugull.mongo.dao.UserDao;
 import com.bugull.mongo.entity.Address;
 import com.bugull.mongo.entity.Contact;
+import com.bugull.mongo.entity.GroupContact;
 import com.bugull.mongo.entity.Order;
 import com.bugull.mongo.entity.Product;
 import com.bugull.mongo.entity.User;
@@ -36,9 +38,9 @@ import org.junit.Test;
  *
  * @author Frank Wen(xbwen@hotmail.com)
  */
-public class QueryTest extends BaseTest {
+public class QueryTest extends ReplicaSetBaseTest {
     
-    @Test
+    //@Test
     public void testQuery(){
         connectDB();
         
@@ -80,6 +82,26 @@ public class QueryTest extends BaseTest {
             List<Product> productList = order.getProductList();
             for(Product product : productList){
                 System.out.println("product name: " + product.getName());
+            }
+        }
+        
+        disconnectDB();
+    }
+    
+    @Test
+    public void testComplexQuery(){
+        connectDB();
+        
+        GroupContactDao gcDao = new GroupContactDao();
+        List<GroupContact> all = gcDao.findAll();
+        for(GroupContact gc : all){
+            Map<String, List<Contact>> map = gc.getContacts();
+            for(Entry<String, List<Contact>> entry : map.entrySet()){
+                List<Contact> list = entry.getValue();
+                for(Contact c : list){
+                    System.out.println("email: " + c.getEmail());
+                    System.out.println("phone: " + c.getPhone());
+                }
             }
         }
         

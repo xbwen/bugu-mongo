@@ -16,6 +16,7 @@
 
 package com.bugull.mongo.replica;
 
+import com.bugull.mongo.base.ReplicaSetBaseTest;
 import com.bugull.mongo.BuguMapper;
 import com.bugull.mongo.dao.OrderDao;
 import com.bugull.mongo.dao.UserDao;

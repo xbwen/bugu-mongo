@@ -16,7 +16,7 @@
 
 package com.bugull.mongo.crud;
 
-import com.bugull.mongo.base.BaseTest;
+import com.bugull.mongo.base.ReplicaSetBaseTest;
 import com.bugull.mongo.dao.OrderDao;
 import com.bugull.mongo.dao.ProductDao;
 import com.bugull.mongo.dao.UserDao;
@@ -30,7 +30,7 @@ import org.junit.Test;
  *
  * @author Frank Wen(xbwen@hotmail.com)
  */
-public class UpdateTest extends BaseTest {
+public class UpdateTest extends ReplicaSetBaseTest {
     
     @Test
     public void testUpdate(){

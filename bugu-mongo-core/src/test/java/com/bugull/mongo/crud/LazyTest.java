@@ -17,7 +17,7 @@
 package com.bugull.mongo.crud;
 
 import com.bugull.mongo.BuguMapper;
-import com.bugull.mongo.base.BaseTest;
+import com.bugull.mongo.base.ReplicaSetBaseTest;
 import com.bugull.mongo.dao.ProductDao;
 import com.bugull.mongo.entity.Product;
 import java.util.List;
@@ -27,7 +27,7 @@ import org.junit.Test;
  *
  * @author Frank Wen(xbwen@hotmail.com)
  */
-public class LazyTest extends BaseTest {
+public class LazyTest extends ReplicaSetBaseTest {
     
     @Test
     public void test(){

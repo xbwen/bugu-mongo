@@ -16,12 +16,14 @@
 
 package com.bugull.mongo.crud;
 
-import com.bugull.mongo.base.BaseTest;
+import com.bugull.mongo.base.ReplicaSetBaseTest;
+import com.bugull.mongo.dao.GroupContactDao;
 import com.bugull.mongo.dao.OrderDao;
 import com.bugull.mongo.dao.ProductDao;
 import com.bugull.mongo.dao.UserDao;
 import com.bugull.mongo.entity.Address;
 import com.bugull.mongo.entity.Contact;
+import com.bugull.mongo.entity.GroupContact;
 import com.bugull.mongo.entity.Order;
 import com.bugull.mongo.entity.Product;
 import com.bugull.mongo.entity.User;
@@ -36,9 +38,9 @@ import org.junit.Test;
  *
  * @author Frank Wen(xbwen@hotmail.com)
  */
-public class InsertTest extends BaseTest {
+public class InsertTest extends ReplicaSetBaseTest {
     
-    @Test
+    //@Test
     public void testInsert(){
         connectDB();
         
@@ -90,7 +92,7 @@ public class InsertTest extends BaseTest {
         user.setPermissions(permissions);
         float[] scores = new float[]{80F, 95.5F, 100F};
         user.setScores(scores);
-        userDao.save(user);
+        userDao.save(user);        
         
         OrderDao orderDao = new OrderDao();
         Order order = new Order();
@@ -102,6 +104,34 @@ public class InsertTest extends BaseTest {
         order.setMoney(9999.9);
         order.setNote("AA");
         orderDao.save(order);
+        
+        disconnectDB();
+    }
+    
+    @Test
+    public void testComplexInsert(){
+        connectDB();
+        
+        UserDao userDao = new UserDao();
+        User user = userDao.findOne("username", "frank");
+        
+        Contact c1 = new Contact();
+        c1.setEmail("xbwen@hotmail.com");
+        c1.setPhone("18900010002");
+        Contact c2 = new Contact();
+        c2.setEmail("xiaobinwen@gmail.com");
+        c2.setPhone("13600010002");
+        List<Contact> list = new ArrayList<>();
+        list.add(c1);
+        list.add(c2);
+        Map<String, List<Contact>> contacts = new HashMap<>();
+        contacts.put("frank", list);
+        
+        GroupContactDao gcDao = new GroupContactDao();
+        GroupContact gc = new GroupContact();
+        gc.setUser(user);
+        gc.setContacts(contacts);
+        gcDao.save(gc);
         
         disconnectDB();
     }

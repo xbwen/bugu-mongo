@@ -24,6 +24,7 @@ import com.bugull.mongo.utils.MapperUtil;
 import com.mongodb.DBObject;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
+import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -55,69 +56,115 @@ public class EmbedListDecoder extends AbstractDecoder{
     public void decode(Object obj) {
         Class<?> type = field.getType();
         if(type.isArray()){
-            decodeArray(obj, type.getComponentType());
+            Object arr = decodeArray(value, type.getComponentType());
+            FieldUtil.set(obj, field, arr);
         }else{
             ParameterizedType paramType = (ParameterizedType)field.getGenericType();
             Type[] types = paramType.getActualTypeArguments();
             int len = types.length;
             if(len == 1){
-                decodeCollection(obj, (Class)types[0]);
+                List list = decodeCollection(value, (Class)types[0]);
+                if(DataType.isListType(type)){
+                    FieldUtil.set(obj, field, list);
+                }
+                else if(DataType.isSetType(type)){
+                    FieldUtil.set(obj, field, new HashSet(list));
+                }
+                else if(DataType.isQueueType(type)){
+                    FieldUtil.set(obj, field, new LinkedList(list));
+                }
             }else{
-                decodeMap(obj, (Class)types[1]);
+                Object map = decodeMap();
+                FieldUtil.set(obj, field, map);
             }
         }
     }
     
-    private void decodeArray(Object obj, Class clazz){
-        List list = (ArrayList)value;
+    private Object decodeArray(Object val, Class elementClass){
+        List list = (ArrayList)val;
         int size = list.size();
-        Object arr = Array.newInstance(clazz, size);
+        Object arr = Array.newInstance(elementClass, size);
         for(int i=0; i<size; i++){
             Object item = list.get(i);
             if(item != null){
                 DBObject o = (DBObject)item;
-                Array.set(arr, i, MapperUtil.fromDBObject(clazz, o));
+                Array.set(arr, i, MapperUtil.fromDBObject(elementClass, o));
             }else{
                 Array.set(arr, i, null);
             }
         }
-        FieldUtil.set(obj, field, arr);
+        return arr;
     }
     
-    private void decodeCollection(Object obj, Class clazz){
-        List list = (ArrayList)value;
+    private List decodeCollection(Object val, Class elementClass){
+        List list = (ArrayList)val;
         List result = new ArrayList();
         for(Object o : list){
             if(o != null){
-                Object embedObj = MapperUtil.fromDBObject(clazz, (DBObject)o);
+                Object embedObj = MapperUtil.fromDBObject(elementClass, (DBObject)o);
                 result.add(embedObj);
             }
         }
-        Class type = field.getType();
-        if(DataType.isListType(type)){
-            FieldUtil.set(obj, field, result);
-        }
-        else if(DataType.isSetType(type)){
-            FieldUtil.set(obj, field, new HashSet(result));
-        }
-        else if(DataType.isQueueType(type)){
-            FieldUtil.set(obj, field, new LinkedList(result));
-        }
+        return result;
     }
     
-    private void decodeMap(Object obj, Class clazz){
+    private Object decodeMap(){
+        //for Map<K,V>, first to check the type of V
+        ParameterizedType paramType = (ParameterizedType)field.getGenericType();
+        Type[] types = paramType.getActualTypeArguments();
+        boolean isArray = false;
+        boolean isCollection = false;
+        boolean isSingle = false;
+        Class vType = null;
+        Class elementType = null;
+        if(types[1] instanceof GenericArrayType){
+            isArray = true;
+            GenericArrayType g = (GenericArrayType)types[1];
+            elementType = (Class)g.getGenericComponentType();
+        }else if(types[1] instanceof ParameterizedType){
+            isCollection = true;
+            ParameterizedType p = (ParameterizedType)types[1];
+            vType = (Class)p.getRawType();
+            elementType = (Class)p.getActualTypeArguments()[0];
+        }else{
+            //in JDK8, type[1] of array, is a class, not array
+            Class<?> actualType = FieldUtil.getClassOfType(types[1]);
+            if(actualType.isArray()){
+                isArray = true;
+                elementType = actualType.getComponentType();
+            }else{
+                isSingle = true;
+            }
+        }
+        //decode value by different type of V
         Map map = (Map)value;
         Map result = new HashMap();
         for(Object key : map.keySet()){
             Object val = map.get(key);
-            if(val != null){
-                Object embedObj = MapperUtil.fromDBObject(clazz, (DBObject)val);
-                result.put(key, embedObj);
-            }else{
+            if(val == null){
                 result.put(key, null);
+                continue;
+            }
+            if(isSingle){
+                Object embedObj = MapperUtil.fromDBObject((Class)types[1], (DBObject)val);
+                result.put(key, embedObj);
+            }else if(isArray){
+                Object arr = decodeArray(val, elementType);
+                result.put(key, arr);
+            }else if(isCollection){
+                List list = decodeCollection(val, elementType);
+                if(DataType.isListType(vType)){
+                    result.put(key, list);
+                }
+                else if(DataType.isSetType(vType)){
+                    result.put(key, new HashSet(list));
+                }
+                else if(DataType.isQueueType(vType)){
+                    result.put(key, new LinkedList(list));
+                }
             }
         }
-        FieldUtil.set(obj, field, result);
+        return result;
     }
     
 }

@@ -18,10 +18,12 @@ package com.bugull.mongo.encoder;
 
 import com.bugull.mongo.annotations.Default;
 import com.bugull.mongo.annotations.EmbedList;
+import com.bugull.mongo.utils.FieldUtil;
 import com.bugull.mongo.utils.MapperUtil;
 import com.mongodb.DBObject;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
+import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -57,13 +59,13 @@ public class EmbedListEncoder extends AbstractEncoder{
         Object result = null;
         Class<?> type = field.getType();
         if(type.isArray()){
-            result = encodeArray();
+            result = encodeArray(value);
         }else{
             ParameterizedType paramType = (ParameterizedType)field.getGenericType();
             Type[] types = paramType.getActualTypeArguments();
             int len = types.length;
             if(len == 1){
-                result = encodeCollection();
+                result = encodeCollection(value);
             }else if(len == 2){
                 result = encodeMap();
             }
@@ -71,11 +73,11 @@ public class EmbedListEncoder extends AbstractEncoder{
         return result;
     }
     
-    private Object encodeArray(){
-        int len = Array.getLength(value);
+    private Object encodeArray(Object arr){
+        int len = Array.getLength(arr);
         List<DBObject> result = new ArrayList<DBObject>();
         for(int i=0; i<len; i++){
-            Object o = Array.get(value, i);
+            Object o = Array.get(arr, i);
             if(o != null){
                 result.add(MapperUtil.toDBObject(o));
             }
@@ -83,9 +85,9 @@ public class EmbedListEncoder extends AbstractEncoder{
         return result;
     }
     
-    private Object encodeCollection(){
+    private Object encodeCollection(Object coll){
         List<DBObject> result = new ArrayList<DBObject>();
-        Collection collection = (Collection)value;
+        Collection collection = (Collection)coll;
         for(Object o : collection){
             if(o != null){
                 result.add(MapperUtil.toDBObject(o));
@@ -95,14 +97,40 @@ public class EmbedListEncoder extends AbstractEncoder{
     }
     
     private Object encodeMap(){
+        //for Map<K,V>, first to check the type of V
+        ParameterizedType paramType = (ParameterizedType)field.getGenericType();
+        Type[] types = paramType.getActualTypeArguments();
+        boolean isArray = false;
+        boolean isCollection = false;
+        boolean isSingle = false;
+        if(types[1] instanceof GenericArrayType){
+            isArray = true;
+        }else if(types[1] instanceof ParameterizedType){
+            isCollection = true;
+        }else{
+            //in JDK8, type[1] of array, is a class, not array
+            Class<?> actualType = FieldUtil.getClassOfType(types[1]);
+            if(actualType.isArray()){
+                isArray = true;
+            }else{
+                isSingle = true;
+            }
+        }
+        //encode value by different type of V
         Map map = (Map)value;
         Map result = new HashMap();
         for(Object key : map.keySet()){
             Object o = map.get(key);
-            if(o != null){
-                result.put(key, MapperUtil.toDBObject(o));
-            }else{
+            if(o == null){
                 result.put(key, null);
+                continue;
+            }
+            if(isSingle){
+                result.put(key, MapperUtil.toDBObject(o));
+            }else if(isArray){
+                result.put(key, encodeArray(o));
+            }else if(isCollection){
+                result.put(key, encodeCollection(o));
             }
         }
         return result;

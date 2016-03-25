@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.bugull.mongo.replica;
+package com.bugull.mongo.base;
 
 import com.bugull.mongo.BuguConnection;
 import com.bugull.mongo.BuguFramework;

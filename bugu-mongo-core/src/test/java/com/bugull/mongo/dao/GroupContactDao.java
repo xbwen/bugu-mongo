@@ -13,27 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.bugull.mongo.dao;
 
-package com.bugull.mongo.crud;
-
-import com.bugull.mongo.base.ReplicaSetBaseTest;
-import com.bugull.mongo.dao.UserDao;
-import org.junit.Test;
+import com.bugull.mongo.BuguDao;
+import com.bugull.mongo.entity.GroupContact;
 
 /**
  *
  * @author Frank Wen(xbwen@hotmail.com)
  */
-public class DeleteTest extends ReplicaSetBaseTest {
+public class GroupContactDao extends BuguDao<GroupContact> {
     
-    @Test
-    public void testDelete(){
-        connectDB();
-        
-        UserDao userDao = new UserDao();
-        userDao.remove("valide", false);
-        
-        disconnectDB();
+    public GroupContactDao(){
+        super(GroupContact.class);
     }
-
+    
 }
