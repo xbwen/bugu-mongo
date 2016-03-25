@@ -45,6 +45,11 @@ public class PropertyEncoder extends AbstractEncoder{
     
     @Override
     public Object encode(){
+        //if the field is enum type, save as String
+        Class<?> type = field.getType();
+        if(type.isEnum()){
+            return value.toString();
+        }
         return value;
     }
     

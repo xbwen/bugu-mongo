@@ -73,6 +73,8 @@ public class PropertyDecoder extends AbstractDecoder{
                 }else{
                     decodeArray(obj, type.getComponentType());
                 }
+            }else if(type.isEnum()){
+                decodeEnum(obj, (Class<Enum>)type);
             }else{
                 decodePrimitive(obj, type);
             }
@@ -91,6 +93,10 @@ public class PropertyDecoder extends AbstractDecoder{
         List list = (ArrayList)value;
         Object arr = convertToArrayValue(comType, list);
         field.set(obj, arr);
+    }
+    
+    private void decodeEnum(Object obj, Class<Enum> type) throws IllegalArgumentException, IllegalAccessException {
+        field.set(obj, Enum.valueOf(type, (String)value));
     }
     
     private void decodePrimitive(Object obj, Class type) throws IllegalArgumentException, IllegalAccessException {
