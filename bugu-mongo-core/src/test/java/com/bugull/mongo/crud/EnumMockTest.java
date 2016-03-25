@@ -43,7 +43,7 @@ public class EnumMockTest extends ReplicaSetBaseTest {
         connectDB();
         
         EnumMockDao dao = new EnumMockDao();
-        EnumMock e = dao.findOne();
+        EnumMock e = dao.query().is("appSize", EnumMock.AppSize.MEDIUM).result();
         System.out.println("size: " + e.getSize());
         System.out.println("app size: " + e.getAppSize());
         System.out.println(e.getAppSize()==EnumMock.AppSize.MEDIUM);

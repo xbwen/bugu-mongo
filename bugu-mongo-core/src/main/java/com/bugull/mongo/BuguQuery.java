@@ -88,6 +88,9 @@ public class BuguQuery<T> {
                 Object refObj = ReferenceUtil.toDbReference(clazz, key, ent.getClass(), ent.getId());
                 append(key, op, refObj);
             }
+            else if(f.getType().isEnum()){
+                append(key, op, value.toString());
+            }
             else{
                 append(key, op, value);
             }
@@ -140,6 +143,13 @@ public class BuguQuery<T> {
             }
             else if(values.length != 0 && values[0] instanceof BuguEntity){
                 append(key, op, toReferenceList(key, values));
+            }
+            else if(f.getType().isEnum()){
+                List<String> list = new ArrayList<String>();
+                for(Object obj : values){
+                    list.add(obj.toString());
+                }
+                append(key, op, list);
             }
             else{
                 append(key, op, values);
