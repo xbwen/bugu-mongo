@@ -36,7 +36,7 @@ import java.util.Set;
  */
 public class BuguUpdater<T> {
     
-    private BuguDao<T> dao;
+    private final BuguDao<T> dao;
     
     private final DBObject modifier = new BasicDBObject();
     

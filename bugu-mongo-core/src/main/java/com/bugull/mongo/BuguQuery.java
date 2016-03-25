@@ -47,7 +47,7 @@ public class BuguQuery<T> {
     
     private final static Logger logger = LogManager.getLogger(BuguQuery.class.getName());
     
-    private BuguDao<T> dao;
+    private final BuguDao<T> dao;
     
     private DBObject slices;
     private DBObject fields;

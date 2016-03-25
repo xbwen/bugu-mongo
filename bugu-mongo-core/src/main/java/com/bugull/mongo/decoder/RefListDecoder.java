@@ -48,7 +48,7 @@ import java.util.Map;
 @SuppressWarnings("unchecked")
 public class RefListDecoder extends AbstractDecoder{
     
-    private RefList refList;
+    private final RefList refList;
     
     public RefListDecoder(Field field, DBObject dbo){
         super(field);

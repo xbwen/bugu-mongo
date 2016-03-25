@@ -32,7 +32,7 @@ import java.lang.reflect.Field;
 @SuppressWarnings("unchecked")
 public class RefEncoder extends AbstractEncoder{
     
-    private Ref ref;
+    private final Ref ref;
     
     public RefEncoder(Object obj, Field field){
         super(obj, field);

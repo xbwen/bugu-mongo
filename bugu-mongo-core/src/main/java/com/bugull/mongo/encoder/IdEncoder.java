@@ -34,7 +34,7 @@ public class IdEncoder extends AbstractEncoder{
     
     private final static Logger logger = LogManager.getLogger(IdEncoder.class.getName());
     
-    private Id id;
+    private final Id id;
     
     public IdEncoder(Object obj, Field field){
         super(obj, field);

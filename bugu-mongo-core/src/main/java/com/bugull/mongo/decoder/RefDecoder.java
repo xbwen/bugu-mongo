@@ -33,7 +33,7 @@ import java.lang.reflect.Field;
  */
 public class RefDecoder extends AbstractDecoder{
     
-    private Ref ref;
+    private final Ref ref;
     
     public RefDecoder(Field field, DBObject dbo){
         super(field);

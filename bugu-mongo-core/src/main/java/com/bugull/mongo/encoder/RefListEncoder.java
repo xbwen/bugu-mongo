@@ -42,8 +42,8 @@ import java.util.Map.Entry;
 @SuppressWarnings("unchecked")
 public class RefListEncoder extends AbstractEncoder{
     
-    private RefList refList;
-    private boolean cascadeCU;
+    private final RefList refList;
+    private final boolean cascadeCU;
     
     public RefListEncoder(Object obj, Field field){
         super(obj, field);

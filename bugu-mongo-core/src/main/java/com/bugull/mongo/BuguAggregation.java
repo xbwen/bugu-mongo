@@ -33,7 +33,7 @@ import java.util.List;
  */
 public class BuguAggregation<T> {
     
-    private DBCollection coll;
+    private final DBCollection coll;
     private final List<DBObject> pipeline = new ArrayList<DBObject>();
     
     public BuguAggregation(DBCollection coll){
