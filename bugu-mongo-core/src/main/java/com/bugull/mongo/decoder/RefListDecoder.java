@@ -205,9 +205,9 @@ public class RefListDecoder extends AbstractDecoder{
         Class<?> cls  = null;
         InternalDao dao = null;
         if(isSingle){
+            cls  = FieldUtil.getRealType((Class)types[1], field);
             cascadeRead = (refList.cascade().toUpperCase().indexOf(Default.CASCADE_READ) != -1);
             if(cascadeRead){
-                cls  = FieldUtil.getRealType((Class)types[1], field);
                 dao = DaoCache.getInstance().get(cls);
             }
         }

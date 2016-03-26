@@ -51,7 +51,7 @@ public class LazyTest extends ReplicaSetBaseTest {
         System.out.println("description: " + p1.getDescription());
         
         //if you query with method notReturnFields(), the field will not contained even if only one record is return.
-        Product p2 = pDao.query().is("id", "55f3bae5a00803537bd092c6").notReturnFields("description").result();
+        Product p2 = pDao.query().is("id", "56f499725cad6e05e437fa15").notReturnFields("description").result();
         System.out.println("description: " + p2.getDescription());
         
         disconnectDB();

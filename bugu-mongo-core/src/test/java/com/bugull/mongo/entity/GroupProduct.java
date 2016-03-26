@@ -27,9 +27,9 @@ import java.util.Map;
  */
 @Entity
 public class GroupProduct extends SimpleEntity {
-    @RefList(cascade = "R")
+    @RefList
     private Map<String, Product> map;
-    @RefList(cascade = "R")
+    @RefList
     private Map<String, List<Product>> mapList;
     
     private double totalPrice;
