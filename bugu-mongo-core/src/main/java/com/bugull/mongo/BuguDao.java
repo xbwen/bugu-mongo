@@ -254,7 +254,7 @@ public class BuguDao<T> {
     
     /**
      * The default write concern is ACKNOWLEDGED, you can change it.
-     * @param concern 
+     * @param writeConcern 
      */
     public void setWriteConcern(WriteConcern writeConcern){
         coll.setWriteConcern(writeConcern);

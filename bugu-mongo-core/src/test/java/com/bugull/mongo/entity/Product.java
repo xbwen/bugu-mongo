@@ -31,7 +31,7 @@ public class Product implements BuguEntity {
     @Id
     private String id;
     private String name;
-    @Property(lazy = true)
+    @Property
     private String description;
     private Float price;
 
