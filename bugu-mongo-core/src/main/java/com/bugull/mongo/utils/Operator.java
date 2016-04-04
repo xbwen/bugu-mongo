@@ -45,11 +45,12 @@ public final class Operator {
     public static final String AND = "$and";
     public static final String OR = "$or";
     
-    //2d and geo
-    public static final String NEAR = "$near";
-    public static final String WITHIN = "$within";
-    public static final String CENTER = "$center";
-    public static final String BOX = "$box";
+    //geo query
+    public static final String GEOMETRY = "$geometry";
+    public static final String MAX_DISTANCE = "$maxDistance";
+    public static final String MIN_DISTANCE = "$minDistance";
+    public static final String NEAR_SPHERE = "$nearSphere";
+    public static final String GEO_WITHIN = "$geoWithin";
     
     //update
     public static final String SET = "$set";

@@ -19,12 +19,19 @@ package com.bugull.mongo.geo;
  *
  * @author Frank Wen (xbwen@hotmail.com)
  */
-public class Point extends Geometry {
+public class Point extends GeoJSON {
     
     private double[] coordinates;
     
     public Point(){
-        this.type = "Point";
+        type = "Point";
+    }
+    
+    public Point(double longtitude, double latitude){
+        type = "Point";
+        coordinates = new double[2];
+        coordinates[0] = longtitude;
+        coordinates[1] = latitude;
     }
 
     public double[] getCoordinates() {

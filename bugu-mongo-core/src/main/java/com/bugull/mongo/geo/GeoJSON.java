@@ -22,7 +22,7 @@ package com.bugull.mongo.geo;
  * 
  * @author Frank Wen (xbwen@hotmail.com)
  */
-public abstract class Geometry {
+public abstract class GeoJSON {
     
     protected String type;
 

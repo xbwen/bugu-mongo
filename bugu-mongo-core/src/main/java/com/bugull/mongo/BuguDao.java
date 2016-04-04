@@ -29,6 +29,7 @@ import com.bugull.mongo.annotations.RefList;
 import com.bugull.mongo.annotations.SplitType;
 import com.bugull.mongo.cache.FieldsCache;
 import com.bugull.mongo.exception.IdException;
+import com.bugull.mongo.geo.GeoQuery;
 import com.bugull.mongo.listener.CascadeDeleteListener;
 import com.bugull.mongo.listener.EntityListener;
 import com.bugull.mongo.utils.IdUtil;
@@ -187,7 +188,7 @@ public class BuguDao<T> {
                 String k = kv[0].trim();
                 String v = kv[1].trim();
                 //note: the following check order can't be changed!
-                if(v.equalsIgnoreCase("2d") || v.equalsIgnoreCase("text")){
+                if(v.equalsIgnoreCase("2dsphere") || v.equalsIgnoreCase("text")){
                     indexKeys.put(k, v);
                 }
                 else if(k.equalsIgnoreCase("expireAfterSeconds")){
@@ -798,6 +799,14 @@ public class BuguDao<T> {
      */
     public BuguQuery<T> query(){
         return new BuguQuery<T>(this);
+    }
+    
+    /**
+     * Create a geo query.
+     * @return 
+     */
+    public GeoQuery<T> geoQuery(){
+        return new GeoQuery<T>(this);
     }
     
     /**

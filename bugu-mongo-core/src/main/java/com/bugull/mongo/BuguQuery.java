@@ -47,17 +47,17 @@ public class BuguQuery<T> {
     
     private final static Logger logger = LogManager.getLogger(BuguQuery.class.getName());
     
-    private final BuguDao<T> dao;
+    protected final BuguDao<T> dao;
     
-    private DBObject slices;
-    private DBObject fields;
-    private boolean fieldsSpecified;  //default value is false
+    protected DBObject slices;
+    protected DBObject fields;
+    protected boolean fieldsSpecified;  //default value is false
     
-    private final DBObject condition = new BasicDBObject();
+    protected final DBObject condition = new BasicDBObject();
     
-    private String orderBy;
-    private int pageNumber;  //default value is zero
-    private int pageSize;  //default value is zero
+    protected String orderBy;
+    protected int pageNumber;  //default value is zero
+    protected int pageSize;  //default value is zero
     
     public BuguQuery(BuguDao<T> dao){
         this.dao = dao;
@@ -157,18 +157,23 @@ public class BuguQuery<T> {
         }
     }
     
-    private void append(String key, String op, Object value){
+    /**
+     * Be careful! this method is hard to understand, but it is correct.
+     * @param key
+     * @param op
+     * @param value 
+     */
+    protected void append(String key, String op, Object value){
         if(op == null) {
             condition.put(key, value);
             return;
         }
         Object obj = condition.get(key);
-        DBObject dbo;
         if(!(obj instanceof DBObject)) {
-            dbo = new BasicDBObject(op, value);
+            DBObject dbo = new BasicDBObject(op, value);
             condition.put(key, dbo);
         } else {
-            dbo = (DBObject)condition.get(key);
+            DBObject dbo = (DBObject)obj;
             dbo.put(op, value);
         }
     }
@@ -323,28 +328,6 @@ public class BuguQuery<T> {
     
     public BuguQuery<T> where(String whereStr){
         append(Operator.WHERE, null, whereStr);
-        return this;
-    }
-    
-    public BuguQuery<T> withinCenter(String key, double x, double y, double radius){
-        DBObject dbo = new BasicDBObject(Operator.CENTER, new Object[]{new Double[]{x, y}, radius});
-        append(key, Operator.WITHIN, dbo);
-        return this;
-    }
-    
-    public BuguQuery<T> withinBox(String key, double x1, double y1, double x2, double y2){
-        DBObject dbo = new BasicDBObject(Operator.BOX, new Object[]{new Double[]{x1, y1}, new Double[]{x2, y2} });
-    	append(key, Operator.WITHIN, dbo);
-    	return this;
-    }
-    
-    public BuguQuery<T> near(String key, double x, double y){
-        append(key, Operator.NEAR, new Double[]{x, y});
-        return this;
-    }
-
-    public BuguQuery<T> near(String key, double x, double y, double maxDistance){
-        append(key, Operator.NEAR, new Double[]{x, y, maxDistance});
         return this;
     }
     
