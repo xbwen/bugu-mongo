@@ -21,6 +21,7 @@ import com.bugull.mongo.annotations.Property;
 import com.bugull.mongo.utils.DataType;
 import com.bugull.mongo.utils.FieldUtil;
 import com.mongodb.DBObject;
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
@@ -67,12 +68,7 @@ public class PropertyDecoder extends AbstractDecoder{
         Class<?> type = field.getType();
         try{
             if(type.isArray()){
-                Class comType = type.getComponentType();
-                if(DataType.isByte(comType)){
-                    decodeBinary(obj);
-                }else{
-                    decodeArray(obj, type.getComponentType());
-                }
+                decodeArray(obj, type.getComponentType());
             }else if(type.isEnum()){
                 decodeEnum(obj, (Class<Enum>)type);
             }else{
@@ -85,14 +81,13 @@ public class PropertyDecoder extends AbstractDecoder{
         }
     }
     
-    private void decodeBinary(Object obj) throws IllegalArgumentException, IllegalAccessException {
-        field.set(obj, (byte[])value);
-    }
-    
     private void decodeArray(Object obj, Class comType) throws IllegalArgumentException, IllegalAccessException {
-        List list = (ArrayList)value;
-        Object arr = convertToArrayValue(comType, list);
-        field.set(obj, arr);
+        if(DataType.isByte(comType)){
+            field.set(obj, (byte[])value);
+        }else{
+            Object arr = convertToArrayValue(comType, (ArrayList)value);
+            field.set(obj, arr);
+        }
     }
     
     private void decodeEnum(Object obj, Class<Enum> type) throws IllegalArgumentException, IllegalAccessException {
@@ -124,21 +119,21 @@ public class PropertyDecoder extends AbstractDecoder{
         else if(DataType.isListType(type)){
             List src = (ArrayList)value;
             List list = new ArrayList();
-            moveCollectionElement(src, list);
+            processCollection(src, list);
             field.set(obj, list);
         }
         //convert for Set. default type is com.mongodb.BasicDBList(extends ArrayList)
         else if(DataType.isSetType(type)){
             List src = (ArrayList)value;
             Set set = new HashSet();
-            moveCollectionElement(src, set);
+            processCollection(src, set);
             field.set(obj, set);
         }
         //convert for Queue. default type is com.mongodb.BasicDBList(extends ArrayList)
         else if(DataType.isQueueType(type)){
             List src = (ArrayList)value;
             Queue queue = new LinkedList();
-            moveCollectionElement(src, queue);
+            processCollection(src, queue);
             field.set(obj, queue);
         }
         //process Map.
@@ -244,131 +239,142 @@ public class PropertyDecoder extends AbstractDecoder{
         }
     }
     
-    private Object convertToArrayValue(Class arrType, List list){
-        int size = list.size();
-        if(DataType.isString(arrType)){
+    private Object convertToArrayValue(Class comType, List val){
+        int size = val.size();
+        if(comType.isArray()){
+            //if each element is still an arry
+            Object arr = Array.newInstance(comType, size);
+            Class subType = comType.getComponentType();
+            for(int i=0; i<size; i++){
+                Object item = val.get(i);
+                Object result = convertToArrayValue(subType, (ArrayList)item);
+                Array.set(arr, i, result);
+            }
+            return arr;
+        }
+        else if(DataType.isString(comType)){
             String[] arr = new String[size];
             for(int i=0; i<size; i++){
-                arr[i] = list.get(i).toString();
+                arr[i] = val.get(i).toString();
             }
             return arr;
         }
-        else if(DataType.isInteger(arrType)){
+        else if(DataType.isInteger(comType)){
             int[] arr = new int[size];
             for(int i=0; i<size; i++){
-                arr[i] = Integer.parseInt(list.get(i).toString());
+                arr[i] = Integer.parseInt(val.get(i).toString());
             }
             return arr;
         }
-        else if(DataType.isIntegerObject(arrType)){
+        else if(DataType.isIntegerObject(comType)){
             Integer[] arr = new Integer[size];
             for(int i=0; i<size; i++){
-                arr[i] = Integer.valueOf(list.get(i).toString());
+                arr[i] = Integer.valueOf(val.get(i).toString());
             }
             return arr;
         }
-        else if(DataType.isLong(arrType)){
+        else if(DataType.isLong(comType)){
             long[] arr = new long[size];
             for(int i=0; i<size; i++){
-                arr[i] = Long.parseLong(list.get(i).toString());
+                arr[i] = Long.parseLong(val.get(i).toString());
             }
             return arr;
         }
-        else if(DataType.isLongObject(arrType)){
+        else if(DataType.isLongObject(comType)){
             Long[] arr = new Long[size];
             for(int i=0; i<size; i++){
-                arr[i] = Long.valueOf(list.get(i).toString());
+                arr[i] = Long.valueOf(val.get(i).toString());
             }
             return arr;
         }
-        else if(DataType.isShort(arrType)){
+        else if(DataType.isShort(comType)){
             short[] arr = new short[size];
             for(int i=0; i<size; i++){
-                arr[i] = Short.parseShort(list.get(i).toString());
+                arr[i] = Short.parseShort(val.get(i).toString());
             }
             return arr;
         }
-        else if(DataType.isShortObject(arrType)){
+        else if(DataType.isShortObject(comType)){
             Short[] arr = new Short[size];
             for(int i=0; i<size; i++){
-                arr[i] = Short.valueOf(list.get(i).toString());
+                arr[i] = Short.valueOf(val.get(i).toString());
             }
             return arr;
         }
-        else if(DataType.isByteObject(arrType)){
+        else if(DataType.isByteObject(comType)){
             Byte[] arr = new Byte[size];
             for(int i=0; i<size; i++){
-                arr[i] = Byte.valueOf(list.get(i).toString());
+                arr[i] = Byte.valueOf(val.get(i).toString());
             }
             return arr;
         }
-        else if(DataType.isFloat(arrType)){
+        else if(DataType.isFloat(comType)){
             float[] arr = new float[size];
             for(int i=0; i<size; i++){
-                arr[i] = Float.parseFloat(list.get(i).toString());
+                arr[i] = Float.parseFloat(val.get(i).toString());
             }
             return arr;
         }
-        else if(DataType.isFloatObject(arrType)){
+        else if(DataType.isFloatObject(comType)){
             Float[] arr = new Float[size];
             for(int i=0; i<size; i++){
-                arr[i] = Float.valueOf(list.get(i).toString());
+                arr[i] = Float.valueOf(val.get(i).toString());
             }
             return arr;
         }
-        else if(DataType.isDouble(arrType)){
+        else if(DataType.isDouble(comType)){
             double[] arr = new double[size];
             for(int i=0; i<size; i++){
-                arr[i] = Double.parseDouble(list.get(i).toString());
+                arr[i] = Double.parseDouble(val.get(i).toString());
             }
             return arr;
         }
-        else if(DataType.isDoubleObject(arrType)){
+        else if(DataType.isDoubleObject(comType)){
             Double[] arr = new Double[size];
             for(int i=0; i<size; i++){
-                arr[i] = Double.valueOf(list.get(i).toString());
+                arr[i] = Double.valueOf(val.get(i).toString());
             }
             return arr;
         }
-        else if(DataType.isBoolean(arrType)){
+        else if(DataType.isBoolean(comType)){
             boolean[] arr = new boolean[size];
             for(int i=0; i<size; i++){
-                arr[i] = Boolean.parseBoolean(list.get(i).toString());
+                arr[i] = Boolean.parseBoolean(val.get(i).toString());
             }
             return arr;
         }
-        else if(DataType.isBooleanObject(arrType)){
+        else if(DataType.isBooleanObject(comType)){
             Boolean[] arr = new Boolean[size];
             for(int i=0; i<size; i++){
-                arr[i] = Boolean.valueOf(list.get(i).toString());
+                arr[i] = Boolean.valueOf(val.get(i).toString());
             }
             return arr;
         }
-        else if(DataType.isChar(arrType)){
+        else if(DataType.isChar(comType)){
             char[] arr = new char[size];
             for(int i=0; i<size; i++){
-                arr[i] = list.get(i).toString().charAt(0);
+                arr[i] = val.get(i).toString().charAt(0);
             }
             return arr;
         }
-        else if(DataType.isCharObject(arrType)){
+        else if(DataType.isCharObject(comType)){
             Character[] arr = new Character[size];
             for(int i=0; i<size; i++){
-                arr[i] = list.get(i).toString().charAt(0);
+                arr[i] = val.get(i).toString().charAt(0);
             }
             return arr;
         }
-        else if(DataType.isDate(arrType)){
+        else if(DataType.isDate(comType)){
             Date[] arr = new Date[size];
             for(int i=0; i<size; i++){
-                arr[i] = (Date)list.get(i);
+                arr[i] = (Date)val.get(i);
             }
             return arr;
         }
-        else if(DataType.isTimestamp(arrType)){
+        else if(DataType.isTimestamp(comType)){
             Timestamp[] arr = new Timestamp[size];
             for(int i=0; i<size; i++){
-                arr[i] = (Timestamp)list.get(i);
+                arr[i] = (Timestamp)val.get(i);
             }
             return arr;
         }else{
@@ -376,37 +382,108 @@ public class PropertyDecoder extends AbstractDecoder{
         }
     }
     
-    private void moveCollectionElement(List list, Collection collection){
+    private void processCollection(List src, Collection target){
+        //for List<T>, first to check the type of T
         ParameterizedType paramType = (ParameterizedType)field.getGenericType();
         Type[] types = paramType.getActualTypeArguments();
-        Class actualType = (Class)types[0];
-        moveCollectionElement(actualType, list, collection);
+        boolean isArray = false;
+        boolean isCollection = false;
+        boolean isPrimitive = false;
+        Class tType = null;
+        Class elementType = null;
+        if(types[0] instanceof GenericArrayType){
+            isArray = true;
+            GenericArrayType g = (GenericArrayType)types[1];
+            elementType = (Class)g.getGenericComponentType();
+        }else if(types[0] instanceof ParameterizedType){
+            isCollection = true;
+            ParameterizedType p = (ParameterizedType)types[0];
+            tType = (Class)p.getRawType();
+            elementType = (Class)p.getActualTypeArguments()[0];
+        }else{
+            //in JDK8, type[0] of array, is a class, not array
+            Class<?> actualType = FieldUtil.getClassOfType(types[0]);
+            if(actualType.isArray()){
+                isArray = true;
+                elementType = actualType.getComponentType();
+            }else{
+                isPrimitive = true;
+            }
+        }
+        //decode value by different type of T
+        if(isArray){
+            //each element of collection is array
+            List temp = new ArrayList();
+            for(Object o : src){
+                List item = (ArrayList)o;
+                Object arr = convertToArrayValue(elementType, item);
+                temp.add(arr);
+            }
+            for(Object o : temp){
+                target.add(o);
+            }
+        }
+        else if(isCollection){
+            //eache element of collection is still a collection
+            List temp = new ArrayList();
+            if(DataType.isListType(tType)){
+                for(Object o : src){
+                    List item = (ArrayList)o;
+                    List list = new ArrayList();
+                    moveCollectionElement(elementType, item, list);
+                    temp.add(list);
+                }
+            }
+            else if(DataType.isSetType(tType)){
+                for(Object o : src){
+                    List item = (ArrayList)o;
+                    Set set = new HashSet();
+                    moveCollectionElement(elementType, item, set);
+                    temp.add(set);
+                }
+            }
+            else if(DataType.isQueueType(tType)){
+                for(Object o : src){
+                    List item = (ArrayList)o;
+                    Queue queue = new LinkedList();
+                    moveCollectionElement(elementType, item, queue);
+                    temp.add(queue);
+                }
+            }
+            for(Object o : temp){
+                target.add(o);
+            }
+        }else if(isPrimitive){
+            //each element of collection is primitive
+            Class actualType = (Class)types[0];
+            moveCollectionElement(actualType, src, target);
+        }
     }
     
-    private void moveCollectionElement(Class actualType, List list, Collection collection){
+    private void moveCollectionElement(Class actualType, List src, Collection target){
         if(DataType.isShortObject(actualType)){
-            for(Object o : list){
-                collection.add(Short.valueOf(o.toString()));
+            for(Object o : src){
+                target.add(Short.valueOf(o.toString()));
             }
         }
         else if(DataType.isByteObject(actualType)){
-            for(Object o : list){
-                collection.add(Byte.valueOf(o.toString()));
+            for(Object o : src){
+                target.add(Byte.valueOf(o.toString()));
             }
         }
         else if(DataType.isFloatObject(actualType)){
-            for(Object o : list){
-                collection.add(Float.valueOf(o.toString()));
+            for(Object o : src){
+                target.add(Float.valueOf(o.toString()));
             }
         }
         else if(DataType.isCharObject(actualType)){
-            for(Object o : list){
-                collection.add(o.toString().charAt(0));
+            for(Object o : src){
+                target.add(o.toString().charAt(0));
             }
         }
         else{
-            for(Object o : list){
-                collection.add(o);
+            for(Object o : src){
+                target.add(o);
             }
         }
     }

@@ -13,21 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.bugull.mongo.geo;
+package com.bugull.mongo.dao;
+
+import com.bugull.mongo.BuguDao;
+import com.bugull.mongo.entity.ArrayMock;
 
 /**
- * The basic class of all GeoJSON data. 
- * 
- * see: http://geojson.org/
- * 
- * @author Frank Wen (xbwen@hotmail.com)
+ *
+ * @author Frank Wen(xbwen@hotmail.com)
  */
-public abstract class Geometry {
+public class ArrayMockDao extends BuguDao<ArrayMock> {
     
-    protected String type;
-
-    public String getType() {
-        return type;
+    public ArrayMockDao() {
+        super(ArrayMock.class);
     }
     
 }

@@ -28,36 +28,56 @@ import org.junit.Test;
  */
 public class NullValueTest extends ReplicaSetBaseTest {
     
-    //@Test
+    @Test
     public void testInsert(){
         connectDB();
         
         ProductDao productDao = new ProductDao();
+        
         Product p1 = new Product();
         p1.setName("MI 3");
         p1.setPrice(1999F);
         productDao.save(p1);
         
         Product p2 = new Product();
-        p2.setName("MI 5");
-        p2.setDescription("MI 5");
-        p2.setPrice(2399F);
+        p2.setName("MI 4");
+        p2.setDescription("");
+        p2.setPrice(1999F);
         productDao.save(p2);
+        
+        Product p3 = new Product();
+        p3.setName("MI 5");
+        p3.setDescription("MI 5");
+        p3.setPrice(2399F);
+        productDao.save(p3);
+        
+        Product temp = productDao.findOne("name", "MI 4");
+        Product p = new Product();
+        p.setName(temp.getName());
+        p.setDescription(temp.getDescription());
+        productDao.save(p);
+        
+        String id = p.getId();
+        Product result = productDao.findOne(id);
+        System.out.println("result:" + result.getDescription());
         
         disconnectDB();
     }
     
-    @Test
+    //@Test
     public void testQuery(){
         connectDB();
         
         ProductDao dao = new ProductDao();
         
-//        List<Product> list = dao.query().is("description", null).results();
-//        for(Product p : list){
-//            System.out.println("name: " + p.getName());
-//            System.out.println("description: " + p.getDescription());
-//        }
+        List<Product> all = dao.findAll();
+        for(Product p : all){
+            if(p.getDescription()!=null && p.getDescription().equals("")){
+                System.out.println("find:" + p.getName());
+            }
+        }
+        
+        System.out.println();
         
         BuguQuery<Product> q1 = dao.query().notEquals("description", null);
         BuguQuery<Product> q2 = dao.query().notEquals("description", "MI 5");
