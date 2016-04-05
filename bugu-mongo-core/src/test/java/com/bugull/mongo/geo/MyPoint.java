@@ -17,6 +17,7 @@ package com.bugull.mongo.geo;
 
 import com.bugull.mongo.SimpleEntity;
 import com.bugull.mongo.annotations.Embed;
+import com.bugull.mongo.annotations.EnsureIndex;
 import com.bugull.mongo.annotations.Entity;
 
 /**
@@ -24,6 +25,7 @@ import com.bugull.mongo.annotations.Entity;
  * @author Frank Wen(xbwen@hotmail.com)
  */
 @Entity
+@EnsureIndex(value = "{location:2dsphere}")
 public class MyPoint extends SimpleEntity {
     
     private String deviceName;
