@@ -17,8 +17,8 @@
 package com.bugull.mongo.aggregation;
 
 import com.bugull.mongo.BuguAggregation;
-import com.bugull.mongo.BuguAggregation.Lookup;
 import com.bugull.mongo.BuguQuery;
+import com.bugull.mongo.agg.Lookup;
 import com.bugull.mongo.base.BaseTest;
 import com.mongodb.DBObject;
 import java.util.Date;

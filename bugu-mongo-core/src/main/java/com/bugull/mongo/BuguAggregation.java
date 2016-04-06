@@ -16,6 +16,8 @@
 
 package com.bugull.mongo;
 
+import com.bugull.mongo.agg.GeoNearOptions;
+import com.bugull.mongo.agg.Lookup;
 import com.bugull.mongo.utils.Operator;
 import com.bugull.mongo.utils.SortUtil;
 import com.mongodb.AggregationOutput;
@@ -115,6 +117,21 @@ public class BuguAggregation<T> {
         return this;
     }
     
+    public BuguAggregation geoNear(DBObject dbo){
+        pipeline.add(new BasicDBObject(Operator.GEO_NEAR, dbo));
+        return this;
+    }
+    
+    public BuguAggregation geoNear(String jsonString){
+        DBObject dbo = (DBObject)JSON.parse(jsonString);
+        return geoNear(dbo);
+    }
+    
+    public BuguAggregation geoNear(GeoNearOptions options){
+        DBObject dbo = options.toDBObject();
+        return geoNear(dbo);
+    }
+    
     public BuguAggregation group(DBObject dbo){
         pipeline.add(new BasicDBObject(Operator.GROUP, dbo));
         return this;
@@ -144,28 +161,6 @@ public class BuguAggregation<T> {
     public Iterable<DBObject> results(){
         AggregationOutput output = coll.aggregate(pipeline);
         return output.results();
-    }
-    
-    
-    public final static class Lookup{
-        
-        final static String FROM = "from";
-        final static String LOCAL_FIELD = "localField";
-        final static String FOREIGN_FIELD = "foreignField";
-        final static String AS = "as";
-        
-        String from;
-        String localField;
-        String foreignField;
-        String as;
-        
-        public Lookup(String from, String localField, String foreignField, String as){
-            this.from = from;
-            this.localField = localField;
-            this.foreignField = foreignField;
-            this.as = as;
-        }
-        
     }
 
 }
