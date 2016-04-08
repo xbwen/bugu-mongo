@@ -79,6 +79,10 @@ public class BuguAggregation<T> {
         return project(dbo);
     }
     
+    public BuguAggregation project(String key, Object val){
+        return project(new BasicDBObject(key, val));
+    }
+    
     public BuguAggregation match(String key, Object value){
         DBObject dbo = new BasicDBObject(key, value);
         pipeline.add(new BasicDBObject(Operator.MATCH, dbo));

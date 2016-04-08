@@ -18,8 +18,10 @@ package com.bugull.mongo.aggregation;
 
 import com.bugull.mongo.BuguAggregation;
 import com.bugull.mongo.BuguQuery;
+import com.bugull.mongo.agg.ExpressionBuilder;
 import com.bugull.mongo.agg.Lookup;
-import com.bugull.mongo.base.BaseTest;
+import com.bugull.mongo.base.ReplicaSetBaseTest;
+import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import java.util.Date;
 import org.junit.Test;
@@ -28,12 +30,12 @@ import org.junit.Test;
  *
  * @author Frank Wen(xbwen@hotmail.com)
  */
-public class AggregationTest extends BaseTest {
+public class AggregationTest extends ReplicaSetBaseTest {
     
     /**
      * insert records, for aggregate operation.
      */
-    //@Test
+    @Test
     public void testInsert(){
         connectDB();
         
@@ -44,7 +46,7 @@ public class AggregationTest extends BaseTest {
         b1.setTitle("About Java");
         b1.setAuthor("Frank");
         b1.setTags(new String[]{"Java", "Programming"});
-        b1.setPrice(50F);
+        b1.setPrice(5F);
         b1.setPublishDate(new Date());
         bookDao.save(b1);
         
@@ -67,7 +69,7 @@ public class AggregationTest extends BaseTest {
         b2.setTitle("About C++");
         b2.setAuthor("Frank");
         b2.setTags(new String[]{"C++", "Programming"});
-        b2.setPrice(40F);
+        b2.setPrice(9F);
         b2.setPublishDate(new Date());
         bookDao.save(b2);
         
@@ -75,7 +77,7 @@ public class AggregationTest extends BaseTest {
         b3.setTitle("About Android");
         b3.setAuthor("Tom");
         b3.setTags(new String[]{"Android", "Java", "C++", "Programming"});
-        b3.setPrice(60F);
+        b3.setPrice(15F);
         b3.setPublishDate(new Date());
         bookDao.save(b3);
         
@@ -93,7 +95,7 @@ public class AggregationTest extends BaseTest {
         b4.setTitle("About iPhone");
         b4.setAuthor("Jessica");
         b4.setTags(new String[]{"iPhone", "Objective-C", "Programming"});
-        b4.setPrice(70F);
+        b4.setPrice(20F);
         b4.setPublishDate(new Date());
         bookDao.save(b4);
         
@@ -101,7 +103,7 @@ public class AggregationTest extends BaseTest {
         b5.setTitle("About Network");
         b5.setAuthor("Tom");
         b5.setTags(new String[]{"Network"});
-        b5.setPrice(80F);
+        b5.setPrice(25F);
         b5.setPublishDate(new Date());
         bookDao.save(b5);
         
@@ -116,7 +118,7 @@ public class AggregationTest extends BaseTest {
     /**
      * test the basic aggregate operation.
      */
-    @Test
+    //@Test
     public void testBasic(){
         connectDB();
         
@@ -196,6 +198,68 @@ public class AggregationTest extends BaseTest {
         Iterable<DBObject> it = agg.results();
         for(DBObject dbo : it){
             System.out.println(dbo.get("_id"));
+            System.out.println(dbo.get("count"));
+        }
+        
+        disconnectDB();
+    }
+    
+    /**
+     * get the count of books by price. divide into two groups: 
+     * cheap - price less than 10
+     * expensive - price great than 10
+     */
+    //@Test
+    public void testCond(){
+        connectDB();
+        
+        BookDao dao = new BookDao();
+        
+        BuguAggregation agg = dao.aggregate();
+        DBObject cond = ExpressionBuilder.cond().ifCondition("{'$lt':['$price', 10]}").thenValue("cheap").elseValue("expensive").build();
+        agg.project(new BasicDBObject("price", cond));
+        agg.group("{_id:'$price', count:{$sum:1}}");
+        Iterable<DBObject> it = agg.results();
+        for(DBObject dbo : it){
+            System.out.println(dbo.get("_id"));
+            System.out.println(dbo.get("count"));
+        }
+
+        disconnectDB();
+    }
+    
+    /**
+     * get the count of books by price. divide into several groups: 
+     * 1-10
+     * 10-20
+     * 20-30
+     * ...
+     */
+    //@Test
+    public void testComplexCond(){
+        connectDB();
+        
+        BookDao dao = new BookDao();
+        
+        BuguAggregation agg = dao.aggregate();
+        
+        DBObject cond1 = ExpressionBuilder.cond().ifCondition("{'$lte':['$price', 10]}").thenValue(10).elseValue("$price").build();
+        
+        DBObject bool2 = ExpressionBuilder.bool().and("{'$gt':['$price', 10]}", "{'$lte':['$price', 20]}").build();
+        DBObject cond2 = ExpressionBuilder.cond().ifCondition(bool2).thenValue(20).elseValue("$price").build();
+        
+        DBObject bool3 = ExpressionBuilder.bool().and("{'$gt':['$price', 20]}", "{'$lte':['$price', 30]}").build();
+        DBObject cond3 = ExpressionBuilder.cond().ifCondition(bool3).thenValue(30).elseValue("$price").build();
+        
+        agg.project("price", cond1);
+        agg.project("price", cond2);
+        agg.project("price", cond3);
+        
+        agg.group("{_id:'$price', count:{$sum:1}}");
+        Iterable<DBObject> it = agg.results();
+        for(DBObject dbo : it){
+            System.out.print(dbo.get("_id"));
+            System.out.print(" : ");
             System.out.println(dbo.get("count"));
         }
         
