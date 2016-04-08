@@ -29,12 +29,8 @@ public abstract class AbstractBuilder implements Builder {
     protected final static String THEN = "then";
     protected final static String ELSE = "else";
     
-    protected String expression;
-    protected DBObject dbo = new BasicDBObject();
-    
-    @Override
-    public DBObject build(){
-        return new BasicDBObject(expression, dbo);
-    }
+    protected final static String AND = "$and";
+    protected final static String OR = "$or";
+    protected final static String NOT = "$not";
     
 }

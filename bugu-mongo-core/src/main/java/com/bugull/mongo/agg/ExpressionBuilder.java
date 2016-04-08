@@ -25,4 +25,10 @@ public class ExpressionBuilder {
         return new CondBuilder();
     }
     
+    public BooleanBuilder bool(){
+        return new BooleanBuilder();
+    }
+    
+    
+    
 }

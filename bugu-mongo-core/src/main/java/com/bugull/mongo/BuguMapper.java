@@ -61,8 +61,16 @@ public final class BuguMapper {
      * @return 
      */
     public static String toJsonString(Object obj){
-        DBObject dbo = MapperUtil.toDBObject(obj);
-        BasicDBObject bdbo = (BasicDBObject)dbo;
+        if(obj == null){
+            return null;
+        }
+        BasicDBObject bdbo;
+        if(obj instanceof DBObject){
+            bdbo = (BasicDBObject)obj;
+        }else{
+            DBObject dbo = MapperUtil.toDBObject(obj);
+            bdbo = (BasicDBObject)dbo;
+        }
         return bdbo.toString();
     }
     

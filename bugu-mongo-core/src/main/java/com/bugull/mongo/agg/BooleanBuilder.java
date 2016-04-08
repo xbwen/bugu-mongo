@@ -18,43 +18,49 @@ package com.bugull.mongo.agg;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
  * @author Frank Wen(xbwen@hotmail.com)
  */
-public class CondBuilder extends AbstractBuilder {
+public class BooleanBuilder extends AbstractBuilder {
     
-    private final DBObject dbo;
+    private String expression;
+    private final List<DBObject> list;
     
-    public CondBuilder(){
-        dbo = new BasicDBObject();
+    public BooleanBuilder(){
+        list = new ArrayList<DBObject>();
     }
     
-    public CondBuilder ifCondition(DBObject ifObj){
-        dbo.put(IF, ifObj);
+    public BooleanBuilder and(String json1, String json2){
+        this.expression = AND;
+        DBObject dbo1 = (DBObject)JSON.parse(json1);
+        DBObject dbo2 = (DBObject)JSON.parse(json2);
+        list.add(dbo1);
+        list.add(dbo2);
         return this;
     }
     
-    public CondBuilder ifCondition(String json){
-        DBObject ifObj = (DBObject)JSON.parse(json);
-        dbo.put(IF, ifObj);
+    public BooleanBuilder or(String json1, String json2){
+        this.expression = OR;
+        DBObject dbo1 = (DBObject)JSON.parse(json1);
+        DBObject dbo2 = (DBObject)JSON.parse(json2);
+        list.add(dbo1);
+        list.add(dbo2);
         return this;
     }
     
-    public CondBuilder thenValue(Object value){
-        dbo.put(THEN, value);
-        return this;
-    }
-    
-    public CondBuilder elseValue(Object value){
-        dbo.put(ELSE, value);
+    public BooleanBuilder not(String json){
+        this.expression = OR;
+        DBObject dbo = (DBObject)JSON.parse(json);
+        list.add(dbo);
         return this;
     }
     
     @Override
     public DBObject build(){
-        return new BasicDBObject(COND, dbo);
+        return new BasicDBObject(expression, list);
     }
-    
 }
