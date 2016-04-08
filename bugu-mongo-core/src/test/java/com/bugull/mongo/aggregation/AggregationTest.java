@@ -35,7 +35,7 @@ public class AggregationTest extends ReplicaSetBaseTest {
     /**
      * insert records, for aggregate operation.
      */
-    @Test
+    //@Test
     public void testInsert(){
         connectDB();
         
@@ -205,11 +205,9 @@ public class AggregationTest extends ReplicaSetBaseTest {
     }
     
     /**
-     * get the count of books by price. divide into two groups: 
-     * cheap - price less than 10
-     * expensive - price great than 10
+     * mark the book as cheap or expensive.
      */
-    //@Test
+    @Test
     public void testCond(){
         connectDB();
         
@@ -217,12 +215,14 @@ public class AggregationTest extends ReplicaSetBaseTest {
         
         BuguAggregation agg = dao.aggregate();
         DBObject cond = ExpressionBuilder.cond().ifCondition("{'$lt':['$price', 10]}").thenValue("cheap").elseValue("expensive").build();
-        agg.project(new BasicDBObject("price", cond));
-        agg.group("{_id:'$price', count:{$sum:1}}");
-        Iterable<DBObject> it = agg.results();
+        DBObject p = new BasicDBObject();
+        p.put("title", 1);
+        p.put("price", cond);
+        Iterable<DBObject> it = agg.project(p).results();
         for(DBObject dbo : it){
-            System.out.println(dbo.get("_id"));
-            System.out.println(dbo.get("count"));
+            System.out.print(dbo.get("title"));
+            System.out.print(" : ");
+            System.out.println(dbo.get("price"));
         }
 
         disconnectDB();
