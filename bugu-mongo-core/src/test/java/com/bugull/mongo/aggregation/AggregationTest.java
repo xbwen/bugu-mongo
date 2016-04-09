@@ -193,7 +193,7 @@ public class AggregationTest extends ReplicaSetBaseTest {
         BuguAggregation agg = dao.aggregate();
         agg.lookup(new Lookup("comment", "title", "title", "book_comment"));
         agg.unwind("$book_comment");
-        agg.group("{_id:'$title', averageStar:{$avg:'$book_comment.star'}}");
+        agg.group("{_id:'$author', averageStar:{$avg:'$book_comment.star'}}");
         agg.sort("{averageStar:-1}");
         Iterable<DBObject> it = agg.results();
         for(DBObject dbo : it){
@@ -256,6 +256,7 @@ public class AggregationTest extends ReplicaSetBaseTest {
         agg.project("price", cond3);
         
         agg.group("{_id:'$price', count:{$sum:1}}");
+        
         Iterable<DBObject> it = agg.results();
         for(DBObject dbo : it){
             System.out.print(dbo.get("_id"));
