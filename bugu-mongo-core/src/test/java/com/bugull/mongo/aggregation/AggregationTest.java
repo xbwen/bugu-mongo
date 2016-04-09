@@ -182,9 +182,9 @@ public class AggregationTest extends ReplicaSetBaseTest {
     }
     
     /**
-     * get the comments count of each book, and order by quantity
+     * calculate average star of eache book.
      */
-    //@Test
+    @Test
     public void testLookup(){
         connectDB();
         
@@ -193,12 +193,12 @@ public class AggregationTest extends ReplicaSetBaseTest {
         BuguAggregation agg = dao.aggregate();
         agg.lookup(new Lookup("comment", "title", "title", "book_comment"));
         agg.unwind("$book_comment");
-        agg.group("{_id:'$title', count:{$sum:1}}");
-        agg.sort("{count:-1}");
+        agg.group("{_id:'$title', averageStar:{$avg:'$book_comment.star'}}");
+        agg.sort("{averageStar:-1}");
         Iterable<DBObject> it = agg.results();
         for(DBObject dbo : it){
             System.out.println(dbo.get("_id"));
-            System.out.println(dbo.get("count"));
+            System.out.println(dbo.get("averageStar"));
         }
         
         disconnectDB();
@@ -207,7 +207,7 @@ public class AggregationTest extends ReplicaSetBaseTest {
     /**
      * mark the book as cheap or expensive.
      */
-    @Test
+    //@Test
     public void testCond(){
         connectDB();
         

@@ -42,8 +42,9 @@ public class UpdateTest extends ReplicaSetBaseTest {
         productDao.save(product);
         
         UserDao userDao = new UserDao();
-        User user = userDao.query().is("username", "frank").result();
-        userDao.update().set("username", "franky").inc("age", 1).execute(user);
+        User user = userDao.query().is("username", "franky").result();
+        System.out.println("user:" + user.getUsername());
+        userDao.update().set("username", "frank").inc("age", 1).execute(user);
         
         OrderDao orderDao = new OrderDao();
         orderDao.update().inc("money", -500).execute();
@@ -51,7 +52,7 @@ public class UpdateTest extends ReplicaSetBaseTest {
         disconnectDB();
     }
     
-    @Test
+    //@Test
     public void testSetManyFields(){
         connectDB();
         
@@ -66,7 +67,7 @@ public class UpdateTest extends ReplicaSetBaseTest {
         disconnectDB();
     }
     
-    @Test
+    //@Test
     public void testUnsetManyFields(){
         connectDB();
         
