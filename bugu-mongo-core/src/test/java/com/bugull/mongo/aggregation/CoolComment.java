@@ -13,19 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.bugull.mongo.aggregation;
 
-import com.bugull.mongo.BuguDao;
+import com.bugull.mongo.SimpleEntity;
+import com.bugull.mongo.annotations.Entity;
+import com.bugull.mongo.annotations.Ref;
 
 /**
  *
  * @author Frank Wen(xbwen@hotmail.com)
  */
-public class CommentDao extends BuguDao<Comment> {
+@Entity
+public class CoolComment extends SimpleEntity {
     
-    public CommentDao(){
-        super(Comment.class);
+    @Ref(reduced = true)
+    private Book book;
+    private int star;
+
+    public Book getBook() {
+        return book;
     }
 
+    public void setBook(Book book) {
+        this.book = book;
+    }
+
+    public int getStar() {
+        return star;
+    }
+
+    public void setStar(int star) {
+        this.star = star;
+    }
+    
 }

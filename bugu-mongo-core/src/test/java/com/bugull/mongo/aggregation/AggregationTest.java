@@ -41,6 +41,7 @@ public class AggregationTest extends ReplicaSetBaseTest {
         
         BookDao bookDao = new BookDao();
         CommentDao commentDao = new CommentDao();
+        CoolCommentDao ccDao = new CoolCommentDao();
         
         Book b1 = new Book();
         b1.setTitle("About Java");
@@ -64,6 +65,21 @@ public class AggregationTest extends ReplicaSetBaseTest {
         c3.setTitle("About Java");
         c3.setStar(3);
         commentDao.save(c3);
+        
+        CoolComment cc1 = new CoolComment();
+        cc1.setBook(b1);
+        cc1.setStar(5);
+        ccDao.save(cc1);
+        
+        CoolComment cc2 = new CoolComment();
+        cc2.setBook(b1);
+        cc2.setStar(4);
+        ccDao.save(cc2);
+        
+        CoolComment cc3 = new CoolComment();
+        cc3.setBook(b1);
+        cc3.setStar(3);
+        ccDao.save(cc3);
         
         Book b2 = new Book();
         b2.setTitle("About C++");
@@ -91,6 +107,16 @@ public class AggregationTest extends ReplicaSetBaseTest {
         c5.setStar(3);
         commentDao.save(c5);
         
+        CoolComment cc4 = new CoolComment();
+        cc4.setBook(b3);
+        cc4.setStar(4);
+        ccDao.save(cc4);
+        
+        CoolComment cc5 = new CoolComment();
+        cc5.setBook(b3);
+        cc5.setStar(3);
+        ccDao.save(cc5);
+        
         Book b4 = new Book();
         b4.setTitle("About iPhone");
         b4.setAuthor("Jessica");
@@ -111,6 +137,11 @@ public class AggregationTest extends ReplicaSetBaseTest {
         c6.setTitle("About Network");
         c6.setStar(5);
         commentDao.save(c6);
+        
+        CoolComment cc6 = new CoolComment();
+        cc6.setBook(b5);
+        cc6.setStar(5);
+        ccDao.save(cc6);
         
         disconnectDB();
     }
@@ -182,9 +213,9 @@ public class AggregationTest extends ReplicaSetBaseTest {
     }
     
     /**
-     * calculate average star of eache book.
+     * calculate average star of eache author.
      */
-    @Test
+    //@Test
     public void testLookup(){
         connectDB();
         
@@ -192,6 +223,29 @@ public class AggregationTest extends ReplicaSetBaseTest {
         
         BuguAggregation agg = dao.aggregate();
         agg.lookup(new Lookup("comment", "title", "title", "book_comment"));
+        agg.unwind("$book_comment");
+        agg.group("{_id:'$author', averageStar:{$avg:'$book_comment.star'}}");
+        agg.sort("{averageStar:-1}");
+        Iterable<DBObject> it = agg.results();
+        for(DBObject dbo : it){
+            System.out.println(dbo.get("_id"));
+            System.out.println(dbo.get("averageStar"));
+        }
+        
+        disconnectDB();
+    }
+    
+    /**
+     * calculate average star of eache author.
+     */
+    @Test
+    public void testLookupById(){
+        connectDB();
+        
+        BookDao dao = new BookDao();
+        
+        BuguAggregation agg = dao.aggregate();
+        agg.lookup(new Lookup("coolcomment", "_id", "book", "book_comment"));
         agg.unwind("$book_comment");
         agg.group("{_id:'$author', averageStar:{$avg:'$book_comment.star'}}");
         agg.sort("{averageStar:-1}");

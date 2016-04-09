@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.bugull.mongo.aggregation;
 
 import com.bugull.mongo.BuguDao;
@@ -22,10 +21,10 @@ import com.bugull.mongo.BuguDao;
  *
  * @author Frank Wen(xbwen@hotmail.com)
  */
-public class CommentDao extends BuguDao<Comment> {
+public class CoolCommentDao extends BuguDao<CoolComment>{
     
-    public CommentDao(){
-        super(Comment.class);
+    public CoolCommentDao(){
+        super(CoolComment.class);
     }
-
+    
 }
