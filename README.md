@@ -18,6 +18,7 @@ bugu-mongo由1个核心模块，外加2个扩展模块组成：
 * [lazy和cascade](https://github.com/xbwen/bugu-mongo/wiki/lazy%E5%92%8Ccascade)
 * [Collection拆分](https://github.com/xbwen/bugu-mongo/wiki/Collection%E6%8B%86%E5%88%86)
 * [数据库索引](https://github.com/xbwen/bugu-mongo/wiki/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B4%A2%E5%BC%95)
+* [地理位置数据](https://github.com/xbwen/bugu-mongo/wiki/%E5%9C%B0%E7%90%86%E4%BD%8D%E7%BD%AE%E6%95%B0%E6%8D%AE)
 * [GridFS文件操作](https://github.com/xbwen/bugu-mongo/wiki/GridFS%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C)
 * [Lucene索引和搜索](https://github.com/xbwen/bugu-mongo/wiki/Lucene%E7%B4%A2%E5%BC%95%E5%92%8C%E6%90%9C%E7%B4%A2)
 * [扩展bugu-mongo](https://github.com/xbwen/bugu-mongo/wiki/%E6%89%A9%E5%B1%95bugu-mongo)
