@@ -31,6 +31,13 @@ public final class Lookup {
     public String foreignField;
     public String as;
 
+    /**
+     * constructor
+     * @param from the collection in the same database to perform the join with.
+     * @param localField the field from the documents input to the $lookup stage.
+     * @param foreignField the field from the documents in the from collection.
+     * @param as the name of the new array field to add to the input documents.
+     */
     public Lookup(String from, String localField, String foreignField, String as){
         this.from = from;
         this.localField = localField;

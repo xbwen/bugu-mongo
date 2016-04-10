@@ -21,7 +21,7 @@ package com.bugull.mongo.geo;
  */
 public class Point extends GeoJSON {
     
-    private double[] coordinates;
+    private double[] coordinates;  //element 0 is longtitude, element 1 is latitude
     
     public Point(){
         type = "Point";
