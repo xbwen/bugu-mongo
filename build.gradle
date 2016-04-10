@@ -16,7 +16,7 @@ subprojects{
         testCompile group:'junit', name:'junit', version:'4.11'
     }
     
-    project.ext.set("junit", "false")
+    project.ext.set("junit", "true")
 
     test{
         onlyIf {
