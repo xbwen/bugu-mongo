@@ -15,6 +15,7 @@
  */
 package com.bugull.mongo;
 
+import com.bugull.mongo.bitwise.Bitwise;
 import com.bugull.mongo.cache.FieldsCache;
 import com.bugull.mongo.utils.IdUtil;
 import com.bugull.mongo.utils.MapperUtil;
@@ -342,7 +343,5 @@ public class BuguUpdater<T> {
         append(Operator.BIT, key, logic);
         return this;
     }
-    
-    public enum Bitwise { AND, OR, XOR }
     
 }

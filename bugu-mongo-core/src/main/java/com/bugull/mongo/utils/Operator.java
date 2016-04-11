@@ -52,6 +52,12 @@ public final class Operator {
     public static final String NEAR_SPHERE = "$nearSphere";
     public static final String GEO_WITHIN = "$geoWithin";
     
+    //bitwise query
+    public static final String BITS_ALL_SET = "$bitsAllSet";
+    public static final String BITS_ANY_SET = "$bitsAnySet";
+    public static final String BITS_ALL_CLEAR = "$bitsAllClear";
+    public static final String BITS_ANY_CLEAR = "$bitsAnyClear";
+    
     //update
     public static final String SET = "$set";
     public static final String UNSET = "$unset";
