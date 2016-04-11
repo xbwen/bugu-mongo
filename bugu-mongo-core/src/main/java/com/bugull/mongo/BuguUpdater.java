@@ -338,27 +338,9 @@ public class BuguUpdater<T> {
      * @return 
      */
     public BuguUpdater<T> bitwise(String key, int value, Bitwise bitwise){
-        DBObject logic = new BasicDBObject(checkBitwise(bitwise), value);
+        DBObject logic = new BasicDBObject(bitwise.toString().toLowerCase(), value);
         append(Operator.BIT, key, logic);
         return this;
-    }
-    
-    private String checkBitwise(Bitwise bitwise){
-        String result = null;
-        switch(bitwise){
-            case AND:
-                result = "and";
-                break;
-            case OR:
-                result = "or";
-                break;
-            case XOR:
-                result = "xor";
-                break;
-            default:
-                break;
-        }
-        return result;
     }
     
     public enum Bitwise { AND, OR, XOR }
