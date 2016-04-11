@@ -25,12 +25,12 @@ import com.mongodb.util.JSON;
  */
 public final class SortUtil {
     
-    public static String aescending(String key){
-        return key + ":1";
+    public static String aesc(String key){
+        return new StringBuilder().append("{").append(key).append(":1").append("}").toString();
     }
     
-    public static String descending(String key){
-        return key + ":-1";
+    public static String desc(String key){
+        return new StringBuilder().append("{").append(key).append(":-1").append("}").toString();
     }
 
     /**

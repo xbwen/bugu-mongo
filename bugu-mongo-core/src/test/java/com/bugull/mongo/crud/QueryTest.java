@@ -77,7 +77,7 @@ public class QueryTest extends ReplicaSetBaseTest {
         System.out.println();
         
         OrderDao orderDao = new OrderDao();
-        List<Order> orderList = orderDao.query().is("user", user).sort(SortUtil.descending("money")).results();
+        List<Order> orderList = orderDao.query().is("user", user).sort(SortUtil.desc("money")).results();
         BuguMapper.fetchCascade(orderList, "productList");
         for(Order order : orderList){
             System.out.println("total money: " + order.getMoney());
