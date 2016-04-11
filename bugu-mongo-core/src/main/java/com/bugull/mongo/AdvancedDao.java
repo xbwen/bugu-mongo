@@ -56,7 +56,7 @@ public class AdvancedDao<T> extends BuguDao<T>{
         Iterator it = agg.results().iterator();
         if(it.hasNext()){
             DBObject dbo = (DBObject)it.next();
-            result = Double.parseDouble(dbo.get("maxValue").toString());
+            result = (double)dbo.get("maxValue");
         }
         return result;
     }
@@ -78,7 +78,7 @@ public class AdvancedDao<T> extends BuguDao<T>{
         Iterator it = agg.results().iterator();
         if(it.hasNext()){
             DBObject dbo = (DBObject)it.next();
-            result = Double.parseDouble(dbo.get("minValue").toString());
+            result = (double)dbo.get("minValue");
         }
         return result;
     }
@@ -100,7 +100,7 @@ public class AdvancedDao<T> extends BuguDao<T>{
         Iterator it = agg.results().iterator();
         if(it.hasNext()){
             DBObject dbo = (DBObject)it.next();
-            result = Double.parseDouble(dbo.get("sumValue").toString());
+            result = (double)dbo.get("sumValue");
         }
         return result;
     }
@@ -122,7 +122,51 @@ public class AdvancedDao<T> extends BuguDao<T>{
         Iterator it = agg.results().iterator();
         if(it.hasNext()){
             DBObject dbo = (DBObject)it.next();
-            result = Double.parseDouble(dbo.get("avgValue").toString());
+            result = (double)dbo.get("avgValue");
+        }
+        return result;
+    }
+    
+    public double stdDevPop(String key){
+        return stdDevPop(key, new BasicDBObject());
+    }
+    
+    public double stdDevPop(String key, BuguQuery query){
+        return stdDevPop(key, query.getCondition());
+    }
+    
+    public double stdDevPop(String key, DBObject query){
+        double result = 0;
+        BuguAggregation agg = this.aggregate();
+        agg.match(query);
+        String json = "{_id:null, devValue:{$stdDevPop:'$" + key + "'}}";
+        agg.group(json);
+        Iterator it = agg.results().iterator();
+        if(it.hasNext()){
+            DBObject dbo = (DBObject)it.next();
+            result = (double)dbo.get("devValue");
+        }
+        return result;
+    }
+    
+    public double stdDevSamp(String key){
+        return stdDevSamp(key, new BasicDBObject());
+    }
+    
+    public double stdDevSamp(String key, BuguQuery query){
+        return stdDevSamp(key, query.getCondition());
+    }
+    
+    public double stdDevSamp(String key, DBObject query){
+        double result = 0;
+        BuguAggregation agg = this.aggregate();
+        agg.match(query);
+        String json = "{_id:null, devValue:{$stdDevSamp:'$" + key + "'}}";
+        agg.group(json);
+        Iterator it = agg.results().iterator();
+        if(it.hasNext()){
+            DBObject dbo = (DBObject)it.next();
+            result = (double)dbo.get("devValue");
         }
         return result;
     }

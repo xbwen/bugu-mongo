@@ -149,12 +149,12 @@ public class AggregationTest extends ReplicaSetBaseTest {
     /**
      * test the basic aggregate operation.
      */
-    //@Test
+    @Test
     public void testBasic(){
         connectDB();
         
         BookDao dao = new BookDao();
-        BuguQuery query = dao.query().is("title", "about");
+        BuguQuery query = dao.query().regex("title", "About");
         
         double maxValue = dao.max("price", query);
         System.out.println("max:" + maxValue);
@@ -238,7 +238,7 @@ public class AggregationTest extends ReplicaSetBaseTest {
     /**
      * calculate average star of eache author.
      */
-    @Test
+    //@Test
     public void testLookupById(){
         connectDB();
         
