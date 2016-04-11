@@ -23,7 +23,7 @@ import com.mongodb.util.JSON;
  *
  * @author Frank Wen(xbwen@hotmail.com)
  */
-public class CondBuilder extends AbstractBuilder {
+public final class CondBuilder extends AbstractBuilder {
     
     private final DBObject dbo;
     

@@ -19,13 +19,13 @@ package com.bugull.mongo.agg;
  *
  * @author Frank Wen(xbwen@hotmail.com)
  */
-public class ExpressionBuilder {
+public final class ExpressionBuilder {
     
-    public static CondBuilder cond(){
+    public final static CondBuilder cond(){
         return new CondBuilder();
     }
     
-    public static BooleanBuilder bool(){
+    public final static BooleanBuilder bool(){
         return new BooleanBuilder();
     }
 

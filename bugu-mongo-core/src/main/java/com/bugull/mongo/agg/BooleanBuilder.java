@@ -25,7 +25,7 @@ import java.util.List;
  *
  * @author Frank Wen(xbwen@hotmail.com)
  */
-public class BooleanBuilder extends AbstractBuilder {
+public final class BooleanBuilder extends AbstractBuilder {
     
     private String expression;
     private final List<DBObject> list;
