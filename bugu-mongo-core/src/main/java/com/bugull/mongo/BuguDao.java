@@ -839,6 +839,9 @@ public class BuguDao<T> {
      * @return
      */
     public List<Iterable> parallelExec(Parallelable... querys) {
+        if(querys.length <= 1){
+            logger.warn("You should NOT use parallelExec() when only one query");
+        }
         List<ParallelTask> taskList = new ArrayList<ParallelTask>();
         for(Parallelable query : querys){
             taskList.add(new ParallelTask(query));

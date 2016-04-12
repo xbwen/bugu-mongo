@@ -13,32 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.bugull.mongo.utils;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.TimeUnit;
+package com.bugull.mongo.parallel;
+
+import com.bugull.mongo.SimpleEntity;
+import com.bugull.mongo.annotations.Entity;
 
 /**
  *
  * @author Frank Wen(xbwen@hotmail.com)
  */
-public class ThreadUtil {
+@Entity
+public class LargeData extends SimpleEntity {
     
-    /**
-     * close the thread pool safely.
-     * @param pool 
-     */
-    public static void safeClose(ExecutorService pool) {
-        if(pool != null){
-            pool.shutdown();
-            try{
-                if (!pool.awaitTermination(5, TimeUnit.SECONDS)) {
-                    pool.shutdownNow();
-                }
-            }catch(InterruptedException ex){
-                //ignore the ex
-            }
-        }
+    private int num;
+    
+    private double randomValue;
+
+    public int getNum() {
+        return num;
+    }
+
+    public void setNum(int num) {
+        this.num = num;
+    }
+
+    public double getRandomValue() {
+        return randomValue;
+    }
+
+    public void setRandomValue(double randomValue) {
+        this.randomValue = randomValue;
     }
     
 }
