@@ -33,12 +33,15 @@ import com.bugull.mongo.exception.IdException;
 import com.bugull.mongo.geo.GeoQuery;
 import com.bugull.mongo.listener.CascadeDeleteListener;
 import com.bugull.mongo.listener.EntityListener;
+import com.bugull.mongo.parallel.ParallelTask;
+import com.bugull.mongo.parallel.Parallelable;
 import com.bugull.mongo.utils.IdUtil;
 import com.bugull.mongo.utils.MapperUtil;
 import com.bugull.mongo.utils.Operator;
 import com.bugull.mongo.utils.ReferenceUtil;
 import com.bugull.mongo.utils.SortUtil;
 import com.bugull.mongo.utils.StringUtil;
+import com.bugull.mongo.utils.ThreadUtil;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
@@ -52,6 +55,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -824,6 +831,33 @@ public class BuguDao<T> {
      */
     public BuguUpdater<T> update(){
         return new BuguUpdater(this);
+    }
+    
+    /**
+     * Execute BuguQuery or BuguAggregation in parallel.
+     * @param querys
+     * @return
+     */
+    public List<Iterable> parallelExec(Parallelable... querys) {
+        List<ParallelTask> taskList = new ArrayList<ParallelTask>();
+        for(Parallelable query : querys){
+            taskList.add(new ParallelTask(query));
+        }
+        List<Iterable> result = new ArrayList<Iterable>();
+        ExecutorService es = Executors.newFixedThreadPool(querys.length);
+        try{
+            List<Future<Iterable>> futureList = es.invokeAll(taskList);
+            for(Future<Iterable> future : futureList){
+                result.add(future.get());
+            }
+        }catch(InterruptedException ie){
+            logger.error(ie.getMessage(), ie);
+        }catch(ExecutionException ee){
+            logger.error(ee.getMessage(), ee);
+        }finally{
+            ThreadUtil.safeClose(es);
+        }
+        return result;
     }
     
 }

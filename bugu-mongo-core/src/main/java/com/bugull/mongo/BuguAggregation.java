@@ -18,6 +18,7 @@ package com.bugull.mongo;
 
 import com.bugull.mongo.agg.GeoNearOptions;
 import com.bugull.mongo.agg.Lookup;
+import com.bugull.mongo.parallel.Parallelable;
 import com.bugull.mongo.utils.Operator;
 import com.bugull.mongo.utils.SortUtil;
 import com.mongodb.AggregationOutput;
@@ -33,7 +34,7 @@ import java.util.List;
  * 
  * @author Frank Wen(xbwen@hotmail.com)
  */
-public class BuguAggregation<T> {
+public class BuguAggregation<T> implements Parallelable {
     
     private final DBCollection coll;
     private final List<DBObject> pipeline = new ArrayList<DBObject>();
@@ -162,6 +163,7 @@ public class BuguAggregation<T> {
         return this;
     }
     
+    @Override
     public Iterable<DBObject> results(){
         AggregationOutput output = coll.aggregate(pipeline);
         return output.results();

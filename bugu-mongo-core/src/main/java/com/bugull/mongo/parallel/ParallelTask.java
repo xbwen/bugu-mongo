@@ -22,11 +22,17 @@ import java.util.concurrent.Callable;
  *
  * @author Frank Wen(xbwen@hotmail.com)
  */
-public class ParallelTask implements Callable<Iterable<Object>> {
+public class ParallelTask implements Callable<Iterable> {
+    
+    private Parallelable query;
+    
+    public ParallelTask(Parallelable query){
+        this.query = query;
+    }
 
     @Override
-    public Iterable<Object> call() throws Exception {
-        return null;
+    public Iterable call() throws Exception {
+        return query.results();
     }
     
 }

@@ -22,4 +22,6 @@ package com.bugull.mongo.parallel;
  */
 public interface Parallelable {
     
+    public Iterable results();
+    
 }

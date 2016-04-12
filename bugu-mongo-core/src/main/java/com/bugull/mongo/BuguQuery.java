@@ -20,6 +20,7 @@ import com.bugull.mongo.annotations.Id;
 import com.bugull.mongo.cache.FieldsCache;
 import com.bugull.mongo.exception.DBQueryException;
 import com.bugull.mongo.exception.FieldException;
+import com.bugull.mongo.parallel.Parallelable;
 import com.bugull.mongo.utils.IdUtil;
 import com.bugull.mongo.utils.MapperUtil;
 import com.bugull.mongo.utils.Operator;
@@ -43,7 +44,7 @@ import org.apache.logging.log4j.Logger;
  * @author Frank Wen(xbwen@hotmail.com)
  */
 @SuppressWarnings("unchecked")
-public class BuguQuery<T> {
+public class BuguQuery<T> implements Parallelable {
     
     private final static Logger logger = LogManager.getLogger(BuguQuery.class.getName());
     
@@ -415,6 +416,7 @@ public class BuguQuery<T> {
         return MapperUtil.fromDBObject(dao.getEntityClass(), dbo);
     }
     
+    @Override
     public List<T> results(){
         DBCollection coll = dao.getCollection();
         DBCursor cursor;
