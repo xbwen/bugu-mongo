@@ -13,20 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.bugull.mongo.agg;
+
+package com.bugull.mongo.parallel;
+
+import java.util.concurrent.Callable;
 
 /**
  *
  * @author Frank Wen(xbwen@hotmail.com)
  */
-public final class ExpressionBuilder {
-    
-    public final static CondBuilder cond(){
-        return new CondBuilder();
-    }
-    
-    public final static BoolBuilder bool(){
-        return new BoolBuilder();
-    }
+public class ParallelTask implements Callable<Iterable<Object>> {
 
+    @Override
+    public Iterable<Object> call() throws Exception {
+        return null;
+    }
+    
 }

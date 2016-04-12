@@ -27,6 +27,7 @@ import com.bugull.mongo.annotations.Property;
 import com.bugull.mongo.annotations.Ref;
 import com.bugull.mongo.annotations.RefList;
 import com.bugull.mongo.annotations.SplitType;
+import com.bugull.mongo.bitwise.BitwiseQuery;
 import com.bugull.mongo.cache.FieldsCache;
 import com.bugull.mongo.exception.IdException;
 import com.bugull.mongo.geo.GeoQuery;
@@ -807,6 +808,14 @@ public class BuguDao<T> {
      */
     public GeoQuery<T> geoQuery(){
         return new GeoQuery<T>(this);
+    }
+    
+    /**
+     * Create a bitwise query.
+     * @return 
+     */
+    public BitwiseQuery<T> bitwiseQuery(){
+        return new BitwiseQuery<T>(this);
     }
     
     /**

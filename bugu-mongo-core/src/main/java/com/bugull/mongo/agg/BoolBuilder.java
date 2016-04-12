@@ -25,16 +25,16 @@ import java.util.List;
  *
  * @author Frank Wen(xbwen@hotmail.com)
  */
-public final class BooleanBuilder extends AbstractBuilder {
+public final class BoolBuilder extends AbstractBuilder {
     
     private String expression;
     private final List<DBObject> list;
     
-    public BooleanBuilder(){
+    public BoolBuilder(){
         list = new ArrayList<DBObject>();
     }
     
-    public BooleanBuilder and(String json1, String json2){
+    public BoolBuilder and(String json1, String json2){
         this.expression = AND;
         DBObject dbo1 = (DBObject)JSON.parse(json1);
         DBObject dbo2 = (DBObject)JSON.parse(json2);
@@ -43,7 +43,7 @@ public final class BooleanBuilder extends AbstractBuilder {
         return this;
     }
     
-    public BooleanBuilder or(String json1, String json2){
+    public BoolBuilder or(String json1, String json2){
         this.expression = OR;
         DBObject dbo1 = (DBObject)JSON.parse(json1);
         DBObject dbo2 = (DBObject)JSON.parse(json2);
@@ -52,7 +52,7 @@ public final class BooleanBuilder extends AbstractBuilder {
         return this;
     }
     
-    public BooleanBuilder not(String json){
+    public BoolBuilder not(String json){
         this.expression = OR;
         DBObject dbo = (DBObject)JSON.parse(json);
         list.add(dbo);

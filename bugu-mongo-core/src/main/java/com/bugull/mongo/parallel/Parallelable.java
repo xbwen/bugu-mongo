@@ -13,20 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.bugull.mongo.agg;
+
+package com.bugull.mongo.parallel;
 
 /**
  *
  * @author Frank Wen(xbwen@hotmail.com)
  */
-public final class ExpressionBuilder {
+public interface Parallelable {
     
-    public final static CondBuilder cond(){
-        return new CondBuilder();
-    }
-    
-    public final static BoolBuilder bool(){
-        return new BoolBuilder();
-    }
-
 }
