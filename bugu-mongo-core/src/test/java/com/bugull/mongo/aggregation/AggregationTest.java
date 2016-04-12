@@ -165,8 +165,11 @@ public class AggregationTest extends ReplicaSetBaseTest {
         double sumValue = dao.sum("price", query);
         System.out.println("sum:" + sumValue);
         
-        double avgValue = dao.average("price", query);
+        double avgValue = dao.average("price");
         System.out.println("average: " + avgValue);
+        
+        double stdDevPop = dao.stdDevPop("price");
+        System.out.println("deviation:" + stdDevPop);
         
         disconnectDB();
     }

@@ -56,7 +56,7 @@ public class AdvancedDao<T> extends BuguDao<T>{
         Iterator it = agg.results().iterator();
         if(it.hasNext()){
             DBObject dbo = (DBObject)it.next();
-            result = (double)dbo.get("maxValue");
+            result = (Double)dbo.get("maxValue");
         }
         return result;
     }
@@ -78,7 +78,7 @@ public class AdvancedDao<T> extends BuguDao<T>{
         Iterator it = agg.results().iterator();
         if(it.hasNext()){
             DBObject dbo = (DBObject)it.next();
-            result = (double)dbo.get("minValue");
+            result = (Double)dbo.get("minValue");
         }
         return result;
     }
@@ -100,7 +100,7 @@ public class AdvancedDao<T> extends BuguDao<T>{
         Iterator it = agg.results().iterator();
         if(it.hasNext()){
             DBObject dbo = (DBObject)it.next();
-            result = (double)dbo.get("sumValue");
+            result = (Double)dbo.get("sumValue");
         }
         return result;
     }
@@ -122,7 +122,7 @@ public class AdvancedDao<T> extends BuguDao<T>{
         Iterator it = agg.results().iterator();
         if(it.hasNext()){
             DBObject dbo = (DBObject)it.next();
-            result = (double)dbo.get("avgValue");
+            result = (Double)dbo.get("avgValue");
         }
         return result;
     }
@@ -144,7 +144,7 @@ public class AdvancedDao<T> extends BuguDao<T>{
         Iterator it = agg.results().iterator();
         if(it.hasNext()){
             DBObject dbo = (DBObject)it.next();
-            result = (double)dbo.get("devValue");
+            result = (Double)dbo.get("devValue");
         }
         return result;
     }
@@ -166,7 +166,7 @@ public class AdvancedDao<T> extends BuguDao<T>{
         Iterator it = agg.results().iterator();
         if(it.hasNext()){
             DBObject dbo = (DBObject)it.next();
-            result = (double)dbo.get("devValue");
+            result = (Double)dbo.get("devValue");
         }
         return result;
     }
