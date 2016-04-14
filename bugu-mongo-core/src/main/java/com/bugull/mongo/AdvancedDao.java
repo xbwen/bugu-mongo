@@ -27,12 +27,12 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Not used anymore. Please just use BuguDao.
+ * Not used anymore. Just use BuguDao as instead.
  * 
  * @author Frank Wen(xbwen@hotmail.com)
  */
 @Deprecated
-public class AdvancedDao<T> extends BuguDao<T>{
+public class AdvancedDao<T> extends BuguDao<T> {
     
     public AdvancedDao(Class<T> clazz){
         super(clazz);

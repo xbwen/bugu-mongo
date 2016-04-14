@@ -782,10 +782,21 @@ public class BuguDao<T> {
         return coll.count(new BasicDBObject(key, value));
     }
     
+    /**
+     * Get the maximum value of a field.
+     * @param key
+     * @return 
+     */
     public double max(String key){
         return max(key, new BasicDBObject());
     }
     
+    /**
+     * Get the maximum value of a field, with particular query condition.
+     * @param key
+     * @param query
+     * @return 
+     */
     public double max(String key, BuguQuery query){
         return max(key, query.getCondition());
     }
@@ -804,10 +815,21 @@ public class BuguDao<T> {
         return result;
     }
     
+    /**
+     * Get the minimum value of a field.
+     * @param key
+     * @return 
+     */
     public double min(String key){
         return min(key, new BasicDBObject());
     }
     
+    /**
+     * Get the minimum value of a field, with particular query condition.
+     * @param key
+     * @param query
+     * @return 
+     */
     public double min(String key, BuguQuery query){
         return min(key, query.getCondition());
     }
@@ -826,10 +848,21 @@ public class BuguDao<T> {
         return result;
     }
     
+    /**
+     * Get the sum value of a field.
+     * @param key
+     * @return 
+     */
     public double sum(String key){
         return sum(key, new BasicDBObject());
     }
     
+    /**
+     * Get the sum value of a field, with particular query condition.
+     * @param key
+     * @param query
+     * @return 
+     */
     public double sum(String key, BuguQuery query){
         return sum(key, query.getCondition());
     }
@@ -848,10 +881,21 @@ public class BuguDao<T> {
         return result;
     }
     
+    /**
+     * Get the average value of a field.
+     * @param key
+     * @return 
+     */
     public double average(String key){
         return average(key, new BasicDBObject());
     }
     
+    /**
+     * Get the average value of a field, with particular query condition.
+     * @param key
+     * @param query
+     * @return 
+     */
     public double average(String key, BuguQuery query){
         return average(key, query.getCondition());
     }
@@ -870,15 +914,26 @@ public class BuguDao<T> {
         return result;
     }
     
+    /**
+     * Get the population standard deviation of a field.
+     * @param key
+     * @return 
+     */
     public double stdDevPop(String key){
         return stdDevPop(key, new BasicDBObject());
     }
     
+    /**
+     * Get the population standard deviation of a field, with particular query condition.
+     * @param key
+     * @param query
+     * @return 
+     */
     public double stdDevPop(String key, BuguQuery query){
         return stdDevPop(key, query.getCondition());
     }
     
-    public double stdDevPop(String key, DBObject query){
+    private double stdDevPop(String key, DBObject query){
         double result = 0;
         BuguAggregation agg = this.aggregate();
         agg.match(query);
@@ -892,15 +947,26 @@ public class BuguDao<T> {
         return result;
     }
     
+    /**
+     * Get the sample standard deviation of a field.
+     * @param key
+     * @return 
+     */
     public double stdDevSamp(String key){
         return stdDevSamp(key, new BasicDBObject());
     }
     
+    /**
+     * Get the sample standard deviation of a field, with particular query condition.
+     * @param key
+     * @param query
+     * @return 
+     */
     public double stdDevSamp(String key, BuguQuery query){
         return stdDevSamp(key, query.getCondition());
     }
     
-    public double stdDevSamp(String key, DBObject query){
+    private double stdDevSamp(String key, DBObject query){
         double result = 0;
         BuguAggregation agg = this.aggregate();
         agg.match(query);
