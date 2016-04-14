@@ -19,7 +19,7 @@ package com.bugull.mongo.misc;
 import com.bugull.mongo.utils.Operator;
 import com.bugull.mongo.utils.MapperUtil;
 import com.bugull.mongo.utils.IdUtil;
-import com.bugull.mongo.AdvancedDao;
+import com.bugull.mongo.BuguDao;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
@@ -30,7 +30,7 @@ import java.util.List;
  * 
  * @author Frank Wen(xbwen@hotmail.com)
  */
-public final class InternalDao<T> extends AdvancedDao<T> {
+public final class InternalDao<T> extends BuguDao<T> {
     
     public InternalDao(Class<T> clazz){
         super(clazz);

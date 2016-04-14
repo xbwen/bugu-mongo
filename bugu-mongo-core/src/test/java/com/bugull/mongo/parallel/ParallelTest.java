@@ -16,7 +16,6 @@
 
 package com.bugull.mongo.parallel;
 
-import com.bugull.mongo.AdvancedDao;
 import com.bugull.mongo.BuguAggregation;
 import com.bugull.mongo.BuguDao;
 import com.bugull.mongo.BuguQuery;
@@ -56,7 +55,7 @@ public class ParallelTest extends ReplicaSetBaseTest {
     public void testNormalQuery(){
         connectDB();
         
-        AdvancedDao<LargeData> dao = new AdvancedDao(LargeData.class);
+        BuguDao<LargeData> dao = new BuguDao(LargeData.class);
         long begin = System.currentTimeMillis();
         Iterable<DBObject> list1 = dao.aggregate().group("{_id:null, maxValue:{$max:'$randomValue'}}").results();
         long step1 = System.currentTimeMillis();
@@ -79,13 +78,13 @@ public class ParallelTest extends ReplicaSetBaseTest {
     public void testParallelQuery(){
         connectDB();
         
-        AdvancedDao<LargeData> dao = new AdvancedDao(LargeData.class);
+        BuguDao<LargeData> dao = new BuguDao(LargeData.class);
         long begin = System.currentTimeMillis();
         BuguAggregation<LargeData> agg1 = dao.aggregate().group("{_id:null, maxValue:{$max:'$randomValue'}}");
         BuguAggregation<LargeData> agg2 = dao.aggregate().group("{_id:null, minValue:{$min:'$randomValue'}}");
         BuguAggregation<LargeData> agg3 = dao.aggregate().group("{_id:null, avgValue:{$avg:'$randomValue'}}");
         BuguQuery<LargeData> q4 = dao.query().greaterThan("randomValue", 0.8).sort(SortUtil.aesc("randomValue")).pageNumber(1).pageSize(10);
-        List<Iterable> list = dao.parallelExec(agg1, agg2, agg3, q4);
+        List<Iterable> list = dao.parallelQuery(agg1, agg2, agg3, q4);
         long end = System.currentTimeMillis();
         System.out.println("use time:" + (end - begin));
         

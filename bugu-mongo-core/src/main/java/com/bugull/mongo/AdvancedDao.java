@@ -17,158 +17,25 @@
 package com.bugull.mongo;
 
 import com.bugull.mongo.utils.SortUtil;
-import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.MapReduceCommand;
-import com.mongodb.MapReduceCommand.OutputType;
 import com.mongodb.MapReduceOutput;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 /**
- * Aggregation and MapReduce.
+ * Not used anymore. Please just use BuguDao.
  * 
  * @author Frank Wen(xbwen@hotmail.com)
  */
+@Deprecated
 public class AdvancedDao<T> extends BuguDao<T>{
     
     public AdvancedDao(Class<T> clazz){
         super(clazz);
-    }
-    
-    public double max(String key){
-        return max(key, new BasicDBObject());
-    }
-    
-    public double max(String key, BuguQuery query){
-        return max(key, query.getCondition());
-    }
-    
-    private double max(String key, DBObject query){
-        double result = 0;
-        BuguAggregation agg = this.aggregate();
-        agg.match(query);
-        String json = "{_id:null, maxValue:{$max:'$" + key + "'}}";
-        agg.group(json);
-        Iterator it = agg.results().iterator();
-        if(it.hasNext()){
-            DBObject dbo = (DBObject)it.next();
-            result = (Double)dbo.get("maxValue");
-        }
-        return result;
-    }
-    
-    public double min(String key){
-        return min(key, new BasicDBObject());
-    }
-    
-    public double min(String key, BuguQuery query){
-        return min(key, query.getCondition());
-    }
-    
-    private double min(String key, DBObject query){
-        double result = 0;
-        BuguAggregation agg = this.aggregate();
-        agg.match(query);
-        String json = "{_id:null, minValue:{$min:'$" + key + "'}}";
-        agg.group(json);
-        Iterator it = agg.results().iterator();
-        if(it.hasNext()){
-            DBObject dbo = (DBObject)it.next();
-            result = (Double)dbo.get("minValue");
-        }
-        return result;
-    }
-    
-    public double sum(String key){
-        return sum(key, new BasicDBObject());
-    }
-    
-    public double sum(String key, BuguQuery query){
-        return sum(key, query.getCondition());
-    }
-    
-    private double sum(String key, DBObject query){
-        double result = 0;
-        BuguAggregation agg = this.aggregate();
-        agg.match(query);
-        String json = "{_id:null, sumValue:{$sum:'$" + key + "'}}";
-        agg.group(json);
-        Iterator it = agg.results().iterator();
-        if(it.hasNext()){
-            DBObject dbo = (DBObject)it.next();
-            result = (Double)dbo.get("sumValue");
-        }
-        return result;
-    }
-    
-    public double average(String key){
-        return average(key, new BasicDBObject());
-    }
-    
-    public double average(String key, BuguQuery query){
-        return average(key, query.getCondition());
-    }
-    
-    private double average(String key, DBObject query){
-        double result = 0;
-        BuguAggregation agg = this.aggregate();
-        agg.match(query);
-        String json = "{_id:null, avgValue:{$avg:'$" + key + "'}}";
-        agg.group(json);
-        Iterator it = agg.results().iterator();
-        if(it.hasNext()){
-            DBObject dbo = (DBObject)it.next();
-            result = (Double)dbo.get("avgValue");
-        }
-        return result;
-    }
-    
-    public double stdDevPop(String key){
-        return stdDevPop(key, new BasicDBObject());
-    }
-    
-    public double stdDevPop(String key, BuguQuery query){
-        return stdDevPop(key, query.getCondition());
-    }
-    
-    public double stdDevPop(String key, DBObject query){
-        double result = 0;
-        BuguAggregation agg = this.aggregate();
-        agg.match(query);
-        String json = "{_id:null, devValue:{$stdDevPop:'$" + key + "'}}";
-        agg.group(json);
-        Iterator it = agg.results().iterator();
-        if(it.hasNext()){
-            DBObject dbo = (DBObject)it.next();
-            result = (Double)dbo.get("devValue");
-        }
-        return result;
-    }
-    
-    public double stdDevSamp(String key){
-        return stdDevSamp(key, new BasicDBObject());
-    }
-    
-    public double stdDevSamp(String key, BuguQuery query){
-        return stdDevSamp(key, query.getCondition());
-    }
-    
-    public double stdDevSamp(String key, DBObject query){
-        double result = 0;
-        BuguAggregation agg = this.aggregate();
-        agg.match(query);
-        String json = "{_id:null, devValue:{$stdDevSamp:'$" + key + "'}}";
-        agg.group(json);
-        Iterator it = agg.results().iterator();
-        if(it.hasNext()){
-            DBObject dbo = (DBObject)it.next();
-            result = (Double)dbo.get("devValue");
-        }
-        return result;
     }
     
     public Iterable<DBObject> mapReduce(MapReduceCommand cmd) {
@@ -177,7 +44,7 @@ public class AdvancedDao<T> extends BuguDao<T>{
     }
     
     public Iterable<DBObject> mapReduce(String map, String reduce) {
-        MapReduceOutput output = coll.mapReduce(map, reduce, null, OutputType.INLINE, null);
+        MapReduceOutput output = coll.mapReduce(map, reduce, null, MapReduceCommand.OutputType.INLINE, null);
         return output.results();
     }
     
@@ -186,7 +53,7 @@ public class AdvancedDao<T> extends BuguDao<T>{
     }
     
     private Iterable<DBObject> mapReduce(String map, String reduce, DBObject query) {
-        MapReduceOutput output = coll.mapReduce(map, reduce, null, OutputType.INLINE, query);
+        MapReduceOutput output = coll.mapReduce(map, reduce, null, MapReduceCommand.OutputType.INLINE, query);
         return output.results();
     }
     
@@ -228,14 +95,6 @@ public class AdvancedDao<T> extends BuguDao<T>{
             list.add(it.next());
         }
         return list;
-    }
-    
-    /**
-     * Create an aggregation.
-     * @return a new BuguQuery object
-     */
-    public BuguAggregation<T> aggregate(){
-        return new BuguAggregation<T>(coll);
     }
     
 }

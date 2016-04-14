@@ -16,13 +16,13 @@
 
 package com.bugull.mongo.aggregation;
 
-import com.bugull.mongo.AdvancedDao;
+import com.bugull.mongo.BuguDao;
 
 /**
  *
  * @author Frank Wen(xbwen@hotmail.com)
  */
-public class BookDao extends AdvancedDao<Book> {
+public class BookDao extends BuguDao<Book> {
     
     public BookDao(){
         super(Book.class);

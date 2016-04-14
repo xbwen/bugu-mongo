@@ -54,6 +54,7 @@ import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -781,6 +782,138 @@ public class BuguDao<T> {
         return coll.count(new BasicDBObject(key, value));
     }
     
+    public double max(String key){
+        return max(key, new BasicDBObject());
+    }
+    
+    public double max(String key, BuguQuery query){
+        return max(key, query.getCondition());
+    }
+    
+    private double max(String key, DBObject query){
+        double result = 0;
+        BuguAggregation agg = this.aggregate();
+        agg.match(query);
+        String json = "{_id:null, maxValue:{$max:'$" + key + "'}}";
+        agg.group(json);
+        Iterator it = agg.results().iterator();
+        if(it.hasNext()){
+            DBObject dbo = (DBObject)it.next();
+            result = (Double)dbo.get("maxValue");
+        }
+        return result;
+    }
+    
+    public double min(String key){
+        return min(key, new BasicDBObject());
+    }
+    
+    public double min(String key, BuguQuery query){
+        return min(key, query.getCondition());
+    }
+    
+    private double min(String key, DBObject query){
+        double result = 0;
+        BuguAggregation agg = this.aggregate();
+        agg.match(query);
+        String json = "{_id:null, minValue:{$min:'$" + key + "'}}";
+        agg.group(json);
+        Iterator it = agg.results().iterator();
+        if(it.hasNext()){
+            DBObject dbo = (DBObject)it.next();
+            result = (Double)dbo.get("minValue");
+        }
+        return result;
+    }
+    
+    public double sum(String key){
+        return sum(key, new BasicDBObject());
+    }
+    
+    public double sum(String key, BuguQuery query){
+        return sum(key, query.getCondition());
+    }
+    
+    private double sum(String key, DBObject query){
+        double result = 0;
+        BuguAggregation agg = this.aggregate();
+        agg.match(query);
+        String json = "{_id:null, sumValue:{$sum:'$" + key + "'}}";
+        agg.group(json);
+        Iterator it = agg.results().iterator();
+        if(it.hasNext()){
+            DBObject dbo = (DBObject)it.next();
+            result = (Double)dbo.get("sumValue");
+        }
+        return result;
+    }
+    
+    public double average(String key){
+        return average(key, new BasicDBObject());
+    }
+    
+    public double average(String key, BuguQuery query){
+        return average(key, query.getCondition());
+    }
+    
+    private double average(String key, DBObject query){
+        double result = 0;
+        BuguAggregation agg = this.aggregate();
+        agg.match(query);
+        String json = "{_id:null, avgValue:{$avg:'$" + key + "'}}";
+        agg.group(json);
+        Iterator it = agg.results().iterator();
+        if(it.hasNext()){
+            DBObject dbo = (DBObject)it.next();
+            result = (Double)dbo.get("avgValue");
+        }
+        return result;
+    }
+    
+    public double stdDevPop(String key){
+        return stdDevPop(key, new BasicDBObject());
+    }
+    
+    public double stdDevPop(String key, BuguQuery query){
+        return stdDevPop(key, query.getCondition());
+    }
+    
+    public double stdDevPop(String key, DBObject query){
+        double result = 0;
+        BuguAggregation agg = this.aggregate();
+        agg.match(query);
+        String json = "{_id:null, devValue:{$stdDevPop:'$" + key + "'}}";
+        agg.group(json);
+        Iterator it = agg.results().iterator();
+        if(it.hasNext()){
+            DBObject dbo = (DBObject)it.next();
+            result = (Double)dbo.get("devValue");
+        }
+        return result;
+    }
+    
+    public double stdDevSamp(String key){
+        return stdDevSamp(key, new BasicDBObject());
+    }
+    
+    public double stdDevSamp(String key, BuguQuery query){
+        return stdDevSamp(key, query.getCondition());
+    }
+    
+    public double stdDevSamp(String key, DBObject query){
+        double result = 0;
+        BuguAggregation agg = this.aggregate();
+        agg.match(query);
+        String json = "{_id:null, devValue:{$stdDevSamp:'$" + key + "'}}";
+        agg.group(json);
+        Iterator it = agg.results().iterator();
+        if(it.hasNext()){
+            DBObject dbo = (DBObject)it.next();
+            result = (Double)dbo.get("devValue");
+        }
+        return result;
+    }
+    
     /**
      * Get the DBCollection object, supplied by the mongodb java driver.
      * @return 
@@ -834,11 +967,19 @@ public class BuguDao<T> {
     }
     
     /**
+     * Create an aggregation.
+     * @return a new BuguQuery object
+     */
+    public BuguAggregation<T> aggregate(){
+        return new BuguAggregation<T>(coll);
+    }
+    
+    /**
      * Execute BuguQuery or BuguAggregation in parallel.
      * @param querys
      * @return
      */
-    public List<Iterable> parallelExec(Parallelable... querys) {
+    public List<Iterable> parallelQuery(Parallelable... querys) {
         if(querys.length <= 1){
             logger.warn("You should NOT use parallelExec() when only one query");
         }
