@@ -18,6 +18,7 @@ package com.bugull.mongo;
 
 import com.bugull.mongo.annotations.Id;
 import com.bugull.mongo.utils.StringUtil;
+import java.io.Serializable;
 import org.bson.types.ObjectId;
 
 /**
@@ -27,11 +28,14 @@ import org.bson.types.ObjectId;
  * 1. It contains the id field, and getId(), setId() method.<br/>
  * 2. It contains getTimestamp() method, telling when the document is inserted into mongoDB.<br/>
  * 3. It implements equals(), hashCode(), and toString() method. <br/>
+ * 4. It is serializable. <br/>
  * </p>
  * 
  * @author Frank Wen(xbwen@hotmail.com)
  */
-public abstract class SimpleEntity implements BuguEntity {
+public abstract class SimpleEntity implements BuguEntity, Serializable {
+    
+    private static final long serialVersionUID = 1L;
     
     @Id
     protected String id;
