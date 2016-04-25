@@ -240,6 +240,18 @@ public class BuguQuery<T> implements Parallelable {
         return this;
     }
     
+    public BuguQuery<T> nor(BuguQuery... querys){
+        List list = (List)condition.get(Operator.NOR);
+        if(list == null){
+            list = new ArrayList();
+            condition.put(Operator.NOR, list);
+        }
+        for(BuguQuery q : querys){
+            list.add(q.getCondition());
+        }
+        return this;
+    }
+    
     public BuguQuery<T> greaterThan(String key, Object value){
         appendThan(key, Operator.GT, value);
         return this;

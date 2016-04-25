@@ -44,6 +44,7 @@ public final class Operator {
     //query logic
     public static final String AND = "$and";
     public static final String OR = "$or";
+    public static final String NOR = "$nor";
     
     //geo query
     public static final String GEOMETRY = "$geometry";
