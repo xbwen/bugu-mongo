@@ -40,6 +40,7 @@ import java.util.Map;
  *
  * @author Frank Wen(xbwen@hotmail.com)
  */
+@SuppressWarnings("unchecked")
 public class CascadeDeleteListener implements EntityListener {
     
     private final List<Field> refFields = new ArrayList<Field>();
