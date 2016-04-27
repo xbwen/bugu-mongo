@@ -1,0 +1,44 @@
+2.4.0:
+
+* 新增：BuguDao新增parallelQuery()方法，用于并行执行多个查询，以便加快查询速度。
+* 新增：BuguQuery新增nor()方法，用于组合查询条件。
+* 新增：BuguDao新增stdDevPop()和stdDevSamp()两个方法，用于计算标准差。
+* 新增：增加BitwiseQuery类，用于Bitwise数据的查询。
+* 改进：SimpleEntity实现Serializable接口。
+* 变更：AdvancedDao中的聚合方法移动到BuguDao中。
+* 变更：把AdvancedDao标记为@Deprecated。
+
+
+
+2.3.0:
+
+* 新增：@EmbedList支持诸如Map<String, List<EmbedObject>>这样的数据类型。
+* 新增：@RefList支持诸如Map<String, List<BuguEntity>>这样的数据类型。
+* 新增：@Property支持enum枚举类型。
+* 新增：@Property支持多维数组。
+* 新增：@Property支持诸如List<String[]>和List<List<String>>这样的数据类型。
+* 新增：支持地理位置数据的存储、索引、查询。
+* 新增：增加CondBuilder、BoolBuilder等工具类，便于构建Aggregation查询。
+
+
+
+2.2.0:
+
+* 变更：MongoDB Java Driver升级到3.2.2版本，支持MongoDB 3.2。
+* 新增：BuguDao支持findAndModify、findAndRemove等操作。
+* 新增：BuguAggregation增加对lookup的支持。
+* 新增：新增ReplicaSet的单元测试代码。
+* 改进：优化BuguUpdater批量更新的性能。
+* 改进：优化排序字符串的解析。
+* 解决bug：移除BuguUpdater中min，max，pop等方法中不必要的id值。 
+* 解决bug：对Map<K,V[]>数据类型的映射在JDK8中不兼容。
+
+
+2.1.0:
+
+* 新增：BuguUpdater新增方法：set(Map<String, Object> map)，用于一次设置多个属性。
+* 新增：BuguUpdater新增方法：unset(String... keys)，用于一次移除多个字段。
+* 新增：BuguAggregation新增多个方法，功能更强大。
+* 新增：新增若干单元测试代码。
+* 改进：用Aggregation框架重新实现AdvancedDao中的min、max、sum、average等方法，性能更好。
+* 解决bug：当用@Property映射Map<K,V>属性时，如果V是数组、List、Set等类型，会出错。
