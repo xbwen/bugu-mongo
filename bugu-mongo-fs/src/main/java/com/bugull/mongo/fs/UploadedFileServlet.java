@@ -77,8 +77,12 @@ public class UploadedFileServlet extends HttpServlet {
             }
         }
         String uri = request.getRequestURI();
+        //ignore redundant slash
+        uri = uri.replaceAll("//", SLASH);
+        //skip the servlet name
         int second = uri.indexOf(SLASH, 1);
         uri = uri.substring(second);
+        //get the file name
         int last = uri.lastIndexOf(SLASH);
         String filename = uri.substring(last+1);
         DBObject query = new BasicDBObject(BuguFS.FILENAME, filename);
