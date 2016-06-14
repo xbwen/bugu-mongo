@@ -79,9 +79,10 @@ public class UploadedFileServlet extends HttpServlet {
         String uri = request.getRequestURI();
         //ignore redundant slash
         uri = uri.replaceAll("//", SLASH);
+        String servlet = request.getServletPath();
         //skip the servlet name
-        int second = uri.indexOf(SLASH, 1);
-        uri = uri.substring(second);
+        int start = uri.indexOf(servlet);
+        uri = uri.substring(start + servlet.length());
         //get the file name
         int last = uri.lastIndexOf(SLASH);
         String filename = uri.substring(last+1);
@@ -136,7 +137,7 @@ public class UploadedFileServlet extends HttpServlet {
                     }catch(ParseException ex){
                         logger.error("Can not parse the Date", ex);
                     }
-                    if(modifiedDate.compareTo(sinceDate) <= 0){
+                    if(modifiedDate!=null && sinceDate!=null && modifiedDate.compareTo(sinceDate) <= 0){
                         response.setStatus(304);    //Not Modified
                         return;
                     }
@@ -176,21 +177,24 @@ public class UploadedFileServlet extends HttpServlet {
             response.setContentLength(contentLength);
             response.setHeader("Content-Range", "bytes " + begin + "-" + end + "/" + contentLength);
             InputStream is = f.getInputStream();
-            is.skip(begin);
-            int read = -1;
-            int bufferSize = (int)f.getChunkSize();
-            byte[] buffer = new byte[bufferSize];
-            int remain = contentLength;
-            int readSize = Math.min(bufferSize, remain);
-            while( (read = is.read(buffer, 0, readSize)) != -1 ){
-                os.write(buffer, 0, read);
-                remain -= read;
-                if(remain <= 0){
-                    break;
+            try{
+                is.skip(begin);
+                int read = -1;
+                int bufferSize = (int)f.getChunkSize();
+                byte[] buffer = new byte[bufferSize];
+                int remain = contentLength;
+                int readSize = Math.min(bufferSize, remain);
+                while( (read = is.read(buffer, 0, readSize)) != -1 ){
+                    os.write(buffer, 0, read);
+                    remain -= read;
+                    if(remain <= 0){
+                        break;
+                    }
+                    readSize = Math.min(bufferSize, remain);
                 }
-                readSize = Math.min(bufferSize, remain);
+            }finally{
+                StreamUtil.safeClose(is);
             }
-            StreamUtil.safeClose(is);
         }
     }
     
