@@ -21,8 +21,11 @@ import com.bugull.mongo.utils.StringUtil;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.mongodb.gridfs.GridFSDBFile;
-import com.sun.image.codec.jpeg.*;
-import java.awt.*;
+import java.awt.AlphaComposite;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -193,21 +196,22 @@ public class ImageUploader extends Uploader{
         return bi;
     }
     
-    private void saveImage(BufferedImage bi){
+    private void saveImage(BufferedImage bi) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(baos);
-        JPEGEncodeParam param = encoder.getDefaultJPEGEncodeParam(bi);
-        param.setQuality(1.0f, true);
-        try {
-            encoder.encode(bi, param);
-        } catch (ImageFormatException ex) {
-            logger.error("Can not encode the JPEGImageEncoder", ex);
-        } catch (IOException ex) {
-            logger.error("Can not encode the JPEGImageEncoder", ex);
+        String ext = "jpg";
+        String t = StringUtil.getExtention(filename);
+        if(!StringUtil.isEmpty(t)){
+            ext = t;
         }
-        BuguFS fs = BuguFSFactory.getInstance().create(bucket, chunkSize);
-        fs.save(baos.toByteArray(), filename, attributes);
-        StreamUtil.safeClose(baos);
+        try{
+            ImageIO.write(bi, ext, baos);
+            BuguFS fs = BuguFSFactory.getInstance().create(bucket, chunkSize);
+            fs.save(baos.toByteArray(), filename, attributes);
+        }catch(IOException ex){
+            logger.error("Can not save the buffered image", ex);
+        }finally{
+            StreamUtil.safeClose(baos);
+        }
     }
     
     /**
