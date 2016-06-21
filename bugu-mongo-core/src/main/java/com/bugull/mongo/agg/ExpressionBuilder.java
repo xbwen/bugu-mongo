@@ -21,11 +21,11 @@ package com.bugull.mongo.agg;
  */
 public final class ExpressionBuilder {
     
-    public final static CondBuilder cond(){
+    public static CondBuilder cond(){
         return new CondBuilder();
     }
     
-    public final static BoolBuilder bool(){
+    public static BoolBuilder bool(){
         return new BoolBuilder();
     }
 

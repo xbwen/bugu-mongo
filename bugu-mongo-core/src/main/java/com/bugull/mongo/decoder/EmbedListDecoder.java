@@ -64,7 +64,7 @@ public class EmbedListDecoder extends AbstractDecoder{
             int len = types.length;
             if(len == 1){
                 List list = decodeCollection(value, (Class)types[0]);
-                if(DataType.isListType(type)){
+                if(DataType.isListType(type) || DataType.isCollectionType(type)){
                     FieldUtil.set(obj, field, list);
                 }
                 else if(DataType.isSetType(type)){
@@ -153,7 +153,7 @@ public class EmbedListDecoder extends AbstractDecoder{
                 result.put(key, arr);
             }else if(isCollection){
                 List list = decodeCollection(entryValue, elementType);
-                if(DataType.isListType(vType)){
+                if(DataType.isListType(vType) || DataType.isCollectionType(vType)){
                     result.put(key, list);
                 }
                 else if(DataType.isSetType(vType)){

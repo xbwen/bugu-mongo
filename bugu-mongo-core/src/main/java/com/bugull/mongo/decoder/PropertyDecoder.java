@@ -115,8 +115,8 @@ public class PropertyDecoder extends AbstractDecoder{
         else if(DataType.isByteObject(type)){
             field.setByte(obj, Byte.valueOf(value.toString()));
         }
-        //process List.
-        else if(DataType.isListType(type)){
+        //process List and Collection.
+        else if(DataType.isListType(type) || DataType.isCollectionType(type)){
             List src = (ArrayList)value;
             List list = new ArrayList();
             processCollection(src, list);
@@ -195,11 +195,12 @@ public class PropertyDecoder extends AbstractDecoder{
                 map.put(k, arr);
             }
             field.set(obj, map);
-        }else if(isCollection){
-            if(DataType.isListType(vType)){
-                Map src = (Map)value;
-                Map map = new HashMap();
-                Set<Entry> entrySet = src.entrySet();
+        }
+        else if(isCollection){
+            Map src = (Map)value;
+            Map map = new HashMap();
+            Set<Entry> entrySet = src.entrySet();
+            if(DataType.isListType(vType) || DataType.isCollectionType(vType)){
                 for(Entry entry : entrySet){
                     Object k = entry.getKey();
                     List v = (ArrayList)entry.getValue();
@@ -207,11 +208,7 @@ public class PropertyDecoder extends AbstractDecoder{
                     moveCollectionElement(elementType, v, list);
                     map.put(k, list);
                 }
-                field.set(obj, map);
             }else if(DataType.isSetType(vType)){
-                Map src = (Map)value;
-                Map map = new HashMap();
-                Set<Entry> entrySet = src.entrySet();
                 for(Entry entry : entrySet){
                     Object k = entry.getKey();
                     List v = (ArrayList)entry.getValue();
@@ -219,11 +216,7 @@ public class PropertyDecoder extends AbstractDecoder{
                     moveCollectionElement(elementType, v, set);
                     map.put(k, set);
                 }
-                field.set(obj, map);
             }else if(DataType.isQueueType(vType)){
-                Map src = (Map)value;
-                Map map = new HashMap();
-                Set<Entry> entrySet = src.entrySet();
                 for(Entry entry : entrySet){
                     Object k = entry.getKey();
                     List v = (ArrayList)entry.getValue();
@@ -231,8 +224,8 @@ public class PropertyDecoder extends AbstractDecoder{
                     moveCollectionElement(elementType, v, queue);
                     map.put(k, queue);
                 }
-                field.set(obj, map);
             }
+            field.set(obj, map);
         }
         else if(isPrimitive){
             field.set(obj, value);
@@ -426,7 +419,7 @@ public class PropertyDecoder extends AbstractDecoder{
         else if(isCollection){
             //eache element of collection is still a collection
             List temp = new ArrayList();
-            if(DataType.isListType(tType)){
+            if(DataType.isListType(tType) || DataType.isCollectionType(tType)){
                 for(Object o : src){
                     List item = (ArrayList)o;
                     List list = new ArrayList();
@@ -453,7 +446,8 @@ public class PropertyDecoder extends AbstractDecoder{
             for(Object o : temp){
                 target.add(o);
             }
-        }else if(isPrimitive){
+        }
+        else if(isPrimitive){
             //each element of collection is primitive
             Class actualType = (Class)types[0];
             moveCollectionElement(actualType, src, target);

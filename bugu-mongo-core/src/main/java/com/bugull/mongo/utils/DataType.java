@@ -134,4 +134,13 @@ public final class DataType {
         return type.equals(java.util.Queue.class) || type.equals(java.util.Deque.class) || type.equals(java.util.LinkedList.class);
     }
     
+    /**
+     * Only Collection is supported now.
+     * @param type
+     * @return 
+     */
+    public static boolean isCollectionType(Class type){
+        return type.equals(java.util.Collection.class);
+    }
+    
 }
