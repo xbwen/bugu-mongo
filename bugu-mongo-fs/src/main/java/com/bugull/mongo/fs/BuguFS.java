@@ -71,15 +71,15 @@ public class BuguFS {
         return fs;
     }
     
-    public void save(File file){
-        save(file, file.getName(), null);
+    public String save(File file){
+        return save(file, file.getName(), null);
     }
     
-    public void save(File file, String filename){
-        save(file, filename, null);
+    public String save(File file, String filename){
+        return save(file, filename, null);
     }
     
-    public void save(File file, String filename, Map<String, Object> attributes){
+    public String save(File file, String filename, Map<String, Object> attributes){
         GridFSInputFile f = null;
         try{
             f = fs.createFile(file);
@@ -92,30 +92,33 @@ public class BuguFS {
             setAttributes(f, attributes);
             f.save();
         }
+        return f.getId().toString();
     }
     
-    public void save(InputStream is, String filename){
-        save(is, filename, null);
+    public String save(InputStream is, String filename){
+        return save(is, filename, null);
     }
     
-    public void save(InputStream is, String filename, Map<String, Object> attributes){
+    public String save(InputStream is, String filename, Map<String, Object> attributes){
         GridFSInputFile f = fs.createFile(is);
         f.setChunkSize(chunkSize);
         f.setFilename(filename);
         setAttributes(f, attributes);
         f.save();
+        return f.getId().toString();
     }
     
-    public void save(byte[] data, String filename){
-        save(data, filename, null);
+    public String save(byte[] data, String filename){
+        return save(data, filename, null);
     }
     
-    public void save(byte[] data, String filename, Map<String, Object> attributes){
+    public String save(byte[] data, String filename, Map<String, Object> attributes){
         GridFSInputFile f = fs.createFile(data);
         f.setChunkSize(chunkSize);
         f.setFilename(filename);
         setAttributes(f, attributes);
         f.save();
+        return f.getId().toString();
     }
     
     private void setAttributes(GridFSInputFile f, Map<String, Object> attributes){
@@ -131,8 +134,17 @@ public class BuguFS {
         return f != null;
     }
     
+    public boolean existsId(String id){
+        GridFSDBFile f = fs.findOne(new ObjectId(id));
+        return f != null;
+    }
+    
     public GridFSDBFile findOne(String filename){
         return fs.findOne(filename);
+    }
+    
+    public GridFSDBFile findOneById(String id){
+        return fs.findOne(new ObjectId(id));
     }
     
     public GridFSDBFile findOne(DBObject query){
@@ -166,6 +178,13 @@ public class BuguFS {
         files.save(dbo);
     }
     
+    public void renameById(String id, String newName){
+        DBObject query = new BasicDBObject(Operator.ID, new ObjectId(id));
+        DBObject dbo = files.findOne(query);
+        dbo.put(FILENAME, newName);
+        files.save(dbo);
+    }
+    
     public void rename(GridFSDBFile file, String newName){
         ObjectId id = (ObjectId)file.getId();
         DBObject query = new BasicDBObject(Operator.ID, id);
@@ -176,6 +195,10 @@ public class BuguFS {
     
     public void remove(String filename){
         fs.remove(filename);
+    }
+    
+    public void removeById(String id){
+        fs.remove(new ObjectId(id));
     }
     
     public void remove(DBObject query){

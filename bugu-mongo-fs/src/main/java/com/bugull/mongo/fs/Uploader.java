@@ -46,6 +46,7 @@ public class Uploader {
     protected String bucket = GridFS.DEFAULT_BUCKET;
     protected int chunkSize = GridFS.DEFAULT_CHUNKSIZE;
     protected String filename;
+    protected String fileId;
     protected Map<String, Object> attributes;
     
     public Uploader(File file, String originalName){
@@ -99,11 +100,15 @@ public class Uploader {
     
     public void save(){
         processFilename();
-        saveInputStream();
+        fileId = saveInputStream();
     }
 
     public String getFilename() {
         return filename;
+    }
+    
+    public String getFileId() {
+        return fileId;
     }
     
     protected void processFilename(){
@@ -120,10 +125,11 @@ public class Uploader {
         }
     }
     
-    protected void saveInputStream(){
+    protected String saveInputStream(){
         BuguFS fs = BuguFSFactory.getInstance().create(bucket, chunkSize);
-        fs.save(input, filename, attributes);
+        String fid = fs.save(input, filename, attributes);
         StreamUtil.safeClose(input);
+        return fid;
     }
     
 }
