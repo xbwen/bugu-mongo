@@ -19,6 +19,7 @@ import com.bugull.mongo.base.ReplicaSetBaseTest;
 import com.bugull.mongo.dao.ListMockDao;
 import com.bugull.mongo.entity.ListMock;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -56,9 +57,15 @@ public class ListMockTest extends ReplicaSetBaseTest {
         listlist.add(subList1);
         listlist.add(subList2);
         
+        Collection<String> collection = new ArrayList<String>();
+        collection.add("a");
+        collection.add("b");
+        collection.add("c");
+        
         mock.setSet(set);
         mock.setList(list);
         mock.setListlist(listlist);
+        mock.setCollection(collection);
         
         dao.save(mock);
         
@@ -91,6 +98,14 @@ public class ListMockTest extends ReplicaSetBaseTest {
         for(List<String> subList : listlist){
             System.out.println("sub list:");
             for(String s : subList){
+                System.out.println(s);
+            }
+        }
+        
+        Collection<String> collection = mock.getCollection();
+        System.out.println("collection:");
+        if(collection != null){
+            for(String s : collection){
                 System.out.println(s);
             }
         }

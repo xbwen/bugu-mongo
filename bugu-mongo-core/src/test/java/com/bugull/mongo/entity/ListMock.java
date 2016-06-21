@@ -17,6 +17,7 @@ package com.bugull.mongo.entity;
 
 import com.bugull.mongo.SimpleEntity;
 import com.bugull.mongo.annotations.Entity;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -32,6 +33,8 @@ public class ListMock extends SimpleEntity {
     private List<Boolean[]> list;
     
     private List<List<String>> listlist;
+
+    private Collection<String> collection;
 
     public Set<Integer> getSet() {
         return set;
@@ -55,6 +58,14 @@ public class ListMock extends SimpleEntity {
 
     public void setListlist(List<List<String>> listlist) {
         this.listlist = listlist;
+    }
+
+    public Collection<String> getCollection() {
+        return collection;
+    }
+
+    public void setCollection(Collection<String> collection) {
+        this.collection = collection;
     }
     
 }

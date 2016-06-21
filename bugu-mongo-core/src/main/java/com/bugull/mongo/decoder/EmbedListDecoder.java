@@ -117,6 +117,7 @@ public class EmbedListDecoder extends AbstractDecoder{
         boolean isSingle = false;
         Class vType = null;
         Class elementType = null;
+        //in JDK6, type[1] of array, is instanceof GenericArrayType
         if(types[1] instanceof GenericArrayType){
             isArray = true;
             GenericArrayType g = (GenericArrayType)types[1];

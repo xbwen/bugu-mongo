@@ -164,6 +164,7 @@ public class PropertyDecoder extends AbstractDecoder{
         boolean isPrimitive = false;
         Class vType = null;
         Class elementType = null;
+        //in JDK6, type[1] of array, is instanceof GenericArrayType
         if(types[1] instanceof GenericArrayType){
             isArray = true;
             GenericArrayType g = (GenericArrayType)types[1];
@@ -384,9 +385,10 @@ public class PropertyDecoder extends AbstractDecoder{
         boolean isPrimitive = false;
         Class tType = null;
         Class elementType = null;
+        //in JDK 6, type[0] of array, is instanceof GenericArrayType
         if(types[0] instanceof GenericArrayType){
             isArray = true;
-            GenericArrayType g = (GenericArrayType)types[1];
+            GenericArrayType g = (GenericArrayType)types[0];
             elementType = (Class)g.getGenericComponentType();
         }else if(types[0] instanceof ParameterizedType){
             isCollection = true;
