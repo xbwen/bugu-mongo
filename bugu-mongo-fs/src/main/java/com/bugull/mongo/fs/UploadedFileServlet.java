@@ -117,71 +117,71 @@ public class UploadedFileServlet extends HttpServlet {
         if(f == null){
             return;
         }
+        InputStream is = f.getInputStream();
         OutputStream os = response.getOutputStream();
-        int fileLength = (int)f.getLength();
-        String ext = StringUtil.getExtention(filename);
-        response.setContentType(getContentType(ext));
-        String range = request.getHeader("Range");
-        //normal http request, no "range" in header.
-        if(StringUtil.isEmpty(range)){
-            response.setStatus(HttpServletResponse.SC_OK);
-            response.setContentLength(fileLength);
-            if(needCache(ext)){
-                String modifiedSince = request.getHeader("If-Modified-Since");
-                DateFormat df = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z", Locale.ENGLISH);
-                df.setTimeZone(TimeZone.getTimeZone("GMT"));
-                Date uploadDate = f.getUploadDate();
-                String lastModified = df.format(uploadDate);
-                if(modifiedSince != null){
-                    Date modifiedDate = null;
-                    Date sinceDate = null;
-                    try{
-                        modifiedDate = df.parse(lastModified);
-                        sinceDate = df.parse(modifiedSince);
-                    }catch(ParseException ex){
-                        logger.error("Can not parse the Date", ex);
-                    }
-                    if(modifiedDate!=null && sinceDate!=null && modifiedDate.compareTo(sinceDate) <= 0){
-                        response.setStatus(304);    //Not Modified
-                        return;
-                    }
-                }
-                response.setHeader("Cache-Control", "max-age=" + ONE_YEAR_SECONDS);
-                response.setHeader("Last-Modified", lastModified);
-                response.setDateHeader("Expires", uploadDate.getTime() + ONE_YEAR_MILLISECONDS);
-            }else{
-                response.setHeader("Pragma","no-cache");
-                response.setHeader("Cache-Control","no-cache");
-                response.setDateHeader("Expires", 0);
-            }
-            f.writeTo(os);
-        }
-        //has "range" in header
-        else{
-            range = range.substring("bytes=".length());
+        try{
+            int fileLength = (int)f.getLength();
+            String ext = StringUtil.getExtention(filename);
+            response.setContentType(getContentType(ext));
+            String range = request.getHeader("Range");
+            //normal http request, no "range" in header.
             if(StringUtil.isEmpty(range)){
-                return;
-            }
-            int begin = 0;
-            int end = fileLength - 1;
-            boolean onlyLast = range.startsWith("-");
-            String[] rangeArray = range.split("-");
-            if(rangeArray.length == 1){
-                if(onlyLast){
-                    begin = fileLength - Integer.parseInt(rangeArray[0]);
+                response.setStatus(HttpServletResponse.SC_OK);
+                response.setContentLength(fileLength);
+                if(needCache(ext)){
+                    String modifiedSince = request.getHeader("If-Modified-Since");
+                    DateFormat df = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z", Locale.ENGLISH);
+                    df.setTimeZone(TimeZone.getTimeZone("GMT"));
+                    Date uploadDate = f.getUploadDate();
+                    String lastModified = df.format(uploadDate);
+                    if(modifiedSince != null){
+                        Date modifiedDate = null;
+                        Date sinceDate = null;
+                        try{
+                            modifiedDate = df.parse(lastModified);
+                            sinceDate = df.parse(modifiedSince);
+                        }catch(ParseException ex){
+                            logger.error("Can not parse the Date", ex);
+                        }
+                        if(modifiedDate!=null && sinceDate!=null && modifiedDate.compareTo(sinceDate) <= 0){
+                            response.setStatus(304);    //Not Modified
+                            return;
+                        }
+                    }
+                    response.setHeader("Cache-Control", "max-age=" + ONE_YEAR_SECONDS);
+                    response.setHeader("Last-Modified", lastModified);
+                    response.setDateHeader("Expires", uploadDate.getTime() + ONE_YEAR_MILLISECONDS);
                 }else{
-                    begin = Integer.parseInt(rangeArray[0]);
+                    response.setHeader("Pragma","no-cache");
+                    response.setHeader("Cache-Control","no-cache");
+                    response.setDateHeader("Expires", 0);
                 }
-            }else if(rangeArray.length == 2){
-                begin = Integer.parseInt(rangeArray[0]);
-                end = Integer.parseInt(rangeArray[1]);
+                f.writeTo(os);
             }
-            response.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
-            int contentLength = end - begin + 1;
-            response.setContentLength(contentLength);
-            response.setHeader("Content-Range", "bytes " + begin + "-" + end + "/" + contentLength);
-            InputStream is = f.getInputStream();
-            try{
+            //has "range" in header
+            else{
+                range = range.substring("bytes=".length());
+                if(StringUtil.isEmpty(range)){
+                    return;
+                }
+                int begin = 0;
+                int end = fileLength - 1;
+                boolean onlyLast = range.startsWith("-");
+                String[] rangeArray = range.split("-");
+                if(rangeArray.length == 1){
+                    if(onlyLast){
+                        begin = fileLength - Integer.parseInt(rangeArray[0]);
+                    }else{
+                        begin = Integer.parseInt(rangeArray[0]);
+                    }
+                }else if(rangeArray.length == 2){
+                    begin = Integer.parseInt(rangeArray[0]);
+                    end = Integer.parseInt(rangeArray[1]);
+                }
+                response.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
+                int contentLength = end - begin + 1;
+                response.setContentLength(contentLength);
+                response.setHeader("Content-Range", "bytes " + begin + "-" + end + "/" + contentLength);
                 is.skip(begin);
                 int read = -1;
                 int bufferSize = (int)f.getChunkSize();
@@ -196,30 +196,21 @@ public class UploadedFileServlet extends HttpServlet {
                     }
                     readSize = Math.min(bufferSize, remain);
                 }
-            }finally{
-                StreamUtil.safeClose(is);
             }
+        }finally{
+            StreamUtil.safeClose(is);
+            StreamUtil.safeClose(os);
         }
     }
     
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        try{
-            processRequest(request, response);
-        }finally{
-            OutputStream os = response.getOutputStream();
-            StreamUtil.safeClose(os);
-        }
+        processRequest(request, response);
     }
     
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        try{
-            processRequest(request, response);
-        }finally{
-            OutputStream os = response.getOutputStream();
-            StreamUtil.safeClose(os);
-        }
+        processRequest(request, response);
     }
     
     /**
