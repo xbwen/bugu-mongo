@@ -67,7 +67,7 @@ public class AccessRestrictedServlet extends UploadedFileServlet {
             try{
                 semaphore.acquire();
                 processRequest(request, response);
-            }catch(InterruptedException ex){
+            }catch(Exception ex){
                 logger.error(ex.getMessage(), ex);
             }finally{
                 semaphore.release();

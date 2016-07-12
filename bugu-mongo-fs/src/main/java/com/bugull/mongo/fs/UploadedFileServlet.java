@@ -83,6 +83,10 @@ public class UploadedFileServlet extends HttpServlet {
         //skip the servlet name
         int start = uri.indexOf(servlet);
         uri = uri.substring(start + servlet.length());
+        //check if the url is valid
+        if(uri.length() < 2){
+            return;
+        }
         //get the file name
         int last = uri.lastIndexOf(SLASH);
         String filename = uri.substring(last+1);
@@ -200,7 +204,22 @@ public class UploadedFileServlet extends HttpServlet {
     
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        processRequest(request, response);
+        try{
+            processRequest(request, response);
+        }finally{
+            OutputStream os = response.getOutputStream();
+            StreamUtil.safeClose(os);
+        }
+    }
+    
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        try{
+            processRequest(request, response);
+        }finally{
+            OutputStream os = response.getOutputStream();
+            StreamUtil.safeClose(os);
+        }
     }
     
     /**
