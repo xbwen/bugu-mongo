@@ -15,11 +15,15 @@
  */
 package com.bugull.mongo.geo;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Frank Wen (xbwen@hotmail.com)
  */
-public class Point extends GeoJSON {
+public class Point extends GeoJSON implements Serializable {
+    
+    private static final long serialVersionUID = 1L;
     
     private double[] coordinates;  //element 0 is longtitude, element 1 is latitude
     

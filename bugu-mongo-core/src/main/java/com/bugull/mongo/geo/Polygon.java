@@ -15,13 +15,17 @@
  */
 package com.bugull.mongo.geo;
 
+import java.io.Serializable;
+
 /**
  * A polygon area on map, consists of points sequence.
  * Note: for a polygon, the first point must be equal to the last point.
  * 
  * @author Frank Wen (xbwen@hotmail.com)
  */
-public class Polygon extends GeoJSON {
+public class Polygon extends GeoJSON implements Serializable {
+    
+    private static final long serialVersionUID = 1L;
     
     private double[][][] coordinates;
     
