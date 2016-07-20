@@ -77,6 +77,8 @@ public class BuguDao<T> {
     protected Class<T> clazz;
     protected DBObject keys;  //non-lazy fields
     
+    protected boolean hasUserListener = false;
+    
     protected final List<EntityListener> listenerList = new ArrayList<EntityListener>();
     
     public BuguDao(Class<T> clazz){
@@ -91,7 +93,7 @@ public class BuguDao<T> {
         //for keys
         keys = getLazyFields();
         //for cascade delete
-        if(needCascadeListener()){
+        if(hasCascadeDelete()){
             listenerList.add(new CascadeDeleteListener(clazz));
         }
     }
@@ -132,7 +134,23 @@ public class BuguDao<T> {
         return lazyKeys;
     }
     
-    private boolean needCascadeListener(){
+    private DBObject getReturnFields(String... fields){
+        DBObject dbo = new BasicDBObject();
+        for(String f : fields){
+            dbo.put(f, 1);
+        }
+        return dbo;
+    }
+    
+    private DBObject getNotReturnFields(String... fields){
+        DBObject dbo = new BasicDBObject();
+        for(String f : fields){
+            dbo.put(f, 0);
+        }
+        return dbo;
+    }
+    
+    private boolean hasCascadeDelete(){
         boolean result = false;
         Field[] fields = FieldsCache.getInstance().get(clazz);
         for(Field f : fields){
@@ -279,6 +297,7 @@ public class BuguDao<T> {
     }
     
     public void addEntityListener(EntityListener listener){
+        hasUserListener = true;
         listenerList.add(listener);
     }
     
@@ -341,7 +360,7 @@ public class BuguDao<T> {
         String id = dbo.get(Operator.ID).toString();
         BuguEntity ent = (BuguEntity)t;
         ent.setId(id);
-        if(!listenerList.isEmpty()){
+        if(hasUserListener){
             notifyInserted(ent);
         }
         return wr;
@@ -364,7 +383,7 @@ public class BuguDao<T> {
             BuguEntity ent = (BuguEntity)(list.get(i));
             ent.setId(id);
         }
-        if(!listenerList.isEmpty()){
+        if(hasUserListener){
             for(T t : list){
                 notifyInserted((BuguEntity)t);
             }
@@ -408,7 +427,7 @@ public class BuguDao<T> {
     }
     
     private WriteResult doSave(BuguEntity ent){
-        if(!listenerList.isEmpty()){
+        if(hasUserListener){
             notifyUpdated(ent);
         }
         return coll.save(MapperUtil.toDBObject(ent));
@@ -569,6 +588,64 @@ public class BuguDao<T> {
         DBObject dbo = coll.findOne(query);
         return MapperUtil.fromDBObject(clazz, dbo);
     }
+    
+    /**
+     * Find a single document by id, only return specified fields.
+     * @param id
+     * @param keys
+     * @return 
+     */
+    public T findOneReturnFields(String id, String[] keys){
+        DBObject returnFields = getReturnFields(keys);
+        DBObject query = new BasicDBObject();
+        query.put(Operator.ID, IdUtil.toDbId(clazz, id));
+        DBObject result = coll.findOne(query, returnFields);
+        return MapperUtil.fromDBObject(clazz, result);
+    }
+    
+    /**
+     * Find a single document by key-value, only return specified fields.
+     * @param key
+     * @param value
+     * @param keys
+     * @return 
+     */
+    public T findOneReturnFields(String key, Object value, String[] keys){
+        DBObject returnFields = getReturnFields(keys);
+        value = checkSpecialValue(key, value);
+        DBObject query = new BasicDBObject(key, value);
+        DBObject dbo = coll.findOne(query, returnFields);
+        return MapperUtil.fromDBObject(clazz, dbo);
+    }
+    
+    /**
+     * Find a single document by id, not return the specified fields.
+     * @param id
+     * @param keys
+     * @return 
+     */
+    public T findOneNotReturnFields(String id, String[] keys){
+        DBObject notReturnFields = getNotReturnFields(keys);
+        DBObject query = new BasicDBObject();
+        query.put(Operator.ID, IdUtil.toDbId(clazz, id));
+        DBObject result = coll.findOne(query, notReturnFields);
+        return MapperUtil.fromDBObject(clazz, result);
+    }
+    
+    /**
+     * Find a single document by key-value, not return the specified fields.
+     * @param key
+     * @param value
+     * @param keys
+     * @return 
+     */
+    public T findOneNotReturnFields(String key, Object value, String[] keys){
+        DBObject notReturnFields = getNotReturnFields(keys);
+        value = checkSpecialValue(key, value);
+        DBObject query = new BasicDBObject(key, value);
+        DBObject dbo = coll.findOne(query, notReturnFields);
+        return MapperUtil.fromDBObject(clazz, dbo);
+    }
 
     /**
      * Find all document by natural order
@@ -636,7 +713,7 @@ public class BuguDao<T> {
         query.put(Operator.ID, IdUtil.toDbId(clazz, id));
         DBObject result = coll.findAndModify(query, null, null, false, updater.getModifier(), returnNew, false);
         T t = MapperUtil.fromDBObject(clazz, result);
-        if(!listenerList.isEmpty()){
+        if(hasUserListener){
             if(returnNew){
                 notifyUpdated((BuguEntity)t);
             }else{
@@ -671,7 +748,7 @@ public class BuguDao<T> {
         DBObject query = new BasicDBObject(key, value);
         DBObject result = coll.findAndModify(query, null, null, false, updater.getModifier(), returnNew, false);
         T t = MapperUtil.fromDBObject(clazz, result);
-        if(!listenerList.isEmpty()){
+        if(hasUserListener){
             if(returnNew){
                 notifyUpdated((BuguEntity)t);
             }else{
@@ -702,7 +779,7 @@ public class BuguDao<T> {
     public T findAndModify(BuguQuery query, BuguUpdater updater, boolean returnNew){
         DBObject result = coll.findAndModify(query.getCondition(), null, query.getSort(), false, updater.getModifier(), returnNew, false);
         T t = MapperUtil.fromDBObject(clazz, result);
-        if(!listenerList.isEmpty()){
+        if(hasUserListener){
             if(returnNew){
                 notifyUpdated((BuguEntity)t);
             }else{
@@ -994,10 +1071,6 @@ public class BuguDao<T> {
 
     public DBObject getKeyFields() {
         return keys;
-    }
-
-    public List<EntityListener> getListenerList() {
-        return listenerList;
     }
     
     /**
