@@ -21,6 +21,7 @@ import com.bugull.mongo.base.ReplicaSetBaseTest;
 import com.bugull.mongo.dao.GroupContactDao;
 import com.bugull.mongo.dao.GroupProductDao;
 import com.bugull.mongo.dao.OrderDao;
+import com.bugull.mongo.dao.ProductDao;
 import com.bugull.mongo.dao.UserDao;
 import com.bugull.mongo.entity.Address;
 import com.bugull.mongo.entity.Contact;
@@ -30,6 +31,7 @@ import com.bugull.mongo.entity.Order;
 import com.bugull.mongo.entity.Product;
 import com.bugull.mongo.entity.User;
 import com.bugull.mongo.utils.SortUtil;
+import com.mongodb.ReadPreference;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -144,6 +146,17 @@ public class QueryTest extends ReplicaSetBaseTest {
         }
         
         disconnectDB();
+    }
+    
+    public void t(String id){
+        
+        ProductDao productDao = new ProductDao();
+        
+        productDao.setReadPreference(ReadPreference.secondary());
+        Product p = productDao.findOne(id);
+        
+        
+        System.out.println(p.getDescription());
     }
 
 }

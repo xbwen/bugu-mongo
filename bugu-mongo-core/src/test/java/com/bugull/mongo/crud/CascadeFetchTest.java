@@ -56,7 +56,7 @@ public class CascadeFetchTest extends ReplicaSetBaseTest {
         disconnectDB();
     }
     
-    @Test
+    //@Test
     public void testComplexRefList(){
         connectDB();
         
