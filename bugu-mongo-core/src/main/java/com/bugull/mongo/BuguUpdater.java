@@ -106,7 +106,7 @@ public class BuguUpdater<T> {
         Class<T> clazz = dao.getEntityClass();
         DBObject condition = new BasicDBObject(Operator.ID, IdUtil.toDbId(clazz, id));
         WriteResult wr = dao.getCollection().update(condition, modifier, false, false); //update one
-        if(!dao.getListenerList().isEmpty()){
+        if(dao.hasUserListener){
             BuguEntity entity = (BuguEntity)dao.findOne(id);
             dao.notifyUpdated(entity);
         }
@@ -132,11 +132,11 @@ public class BuguUpdater<T> {
     
     private WriteResult execute(DBObject condition){
         List ids = null;
-        if(!dao.getListenerList().isEmpty()){
+        if(dao.hasUserListener){
             ids = dao.getCollection().distinct(Operator.ID, condition);
         }
         WriteResult wr = dao.getCollection().update(condition, modifier, false, true);  //update multi
-        if(!dao.getListenerList().isEmpty() && ids != null){
+        if(dao.hasUserListener && ids != null){
             DBObject in = new BasicDBObject(Operator.IN, ids);
             DBCursor cursor = dao.getCollection().find(new BasicDBObject(Operator.ID, in));
             List<T> list = MapperUtil.toList(dao.getEntityClass(), cursor);
@@ -226,6 +226,7 @@ public class BuguUpdater<T> {
      * @return 
      */
     public BuguUpdater<T> addToSet(String key, Object value){
+        value = checkArrayValue(key, value);
         append(Operator.ADD_TO_SET, key, value);
         return this;
     }
