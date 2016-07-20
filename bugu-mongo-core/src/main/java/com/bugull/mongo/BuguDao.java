@@ -77,7 +77,7 @@ public class BuguDao<T> {
     protected Class<T> clazz;
     protected DBObject keys;  //non-lazy fields
     
-    protected boolean hasUserListener = false;
+    protected boolean hasCustomListener = false;
     
     protected final List<EntityListener> listenerList = new ArrayList<EntityListener>();
     
@@ -297,7 +297,7 @@ public class BuguDao<T> {
     }
     
     public void addEntityListener(EntityListener listener){
-        hasUserListener = true;
+        hasCustomListener = true;
         listenerList.add(listener);
     }
     
@@ -360,7 +360,7 @@ public class BuguDao<T> {
         String id = dbo.get(Operator.ID).toString();
         BuguEntity ent = (BuguEntity)t;
         ent.setId(id);
-        if(hasUserListener){
+        if(hasCustomListener){
             notifyInserted(ent);
         }
         return wr;
@@ -383,7 +383,7 @@ public class BuguDao<T> {
             BuguEntity ent = (BuguEntity)(list.get(i));
             ent.setId(id);
         }
-        if(hasUserListener){
+        if(hasCustomListener){
             for(T t : list){
                 notifyInserted((BuguEntity)t);
             }
@@ -427,7 +427,7 @@ public class BuguDao<T> {
     }
     
     private WriteResult doSave(BuguEntity ent){
-        if(hasUserListener){
+        if(hasCustomListener){
             notifyUpdated(ent);
         }
         return coll.save(MapperUtil.toDBObject(ent));
@@ -713,7 +713,7 @@ public class BuguDao<T> {
         query.put(Operator.ID, IdUtil.toDbId(clazz, id));
         DBObject result = coll.findAndModify(query, null, null, false, updater.getModifier(), returnNew, false);
         T t = MapperUtil.fromDBObject(clazz, result);
-        if(hasUserListener){
+        if(hasCustomListener){
             if(returnNew){
                 notifyUpdated((BuguEntity)t);
             }else{
@@ -748,7 +748,7 @@ public class BuguDao<T> {
         DBObject query = new BasicDBObject(key, value);
         DBObject result = coll.findAndModify(query, null, null, false, updater.getModifier(), returnNew, false);
         T t = MapperUtil.fromDBObject(clazz, result);
-        if(hasUserListener){
+        if(hasCustomListener){
             if(returnNew){
                 notifyUpdated((BuguEntity)t);
             }else{
@@ -779,7 +779,7 @@ public class BuguDao<T> {
     public T findAndModify(BuguQuery query, BuguUpdater updater, boolean returnNew){
         DBObject result = coll.findAndModify(query.getCondition(), null, query.getSort(), false, updater.getModifier(), returnNew, false);
         T t = MapperUtil.fromDBObject(clazz, result);
-        if(hasUserListener){
+        if(hasCustomListener){
             if(returnNew){
                 notifyUpdated((BuguEntity)t);
             }else{

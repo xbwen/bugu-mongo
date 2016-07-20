@@ -106,7 +106,7 @@ public class BuguUpdater<T> {
         Class<T> clazz = dao.getEntityClass();
         DBObject condition = new BasicDBObject(Operator.ID, IdUtil.toDbId(clazz, id));
         WriteResult wr = dao.getCollection().update(condition, modifier, false, false); //update one
-        if(dao.hasUserListener){
+        if(dao.hasCustomListener){
             BuguEntity entity = (BuguEntity)dao.findOne(id);
             dao.notifyUpdated(entity);
         }
@@ -132,11 +132,11 @@ public class BuguUpdater<T> {
     
     private WriteResult execute(DBObject condition){
         List ids = null;
-        if(dao.hasUserListener){
+        if(dao.hasCustomListener){
             ids = dao.getCollection().distinct(Operator.ID, condition);
         }
         WriteResult wr = dao.getCollection().update(condition, modifier, false, true);  //update multi
-        if(dao.hasUserListener && ids != null){
+        if(dao.hasCustomListener && ids != null){
             DBObject in = new BasicDBObject(Operator.IN, ids);
             DBCursor cursor = dao.getCollection().find(new BasicDBObject(Operator.ID, in));
             List<T> list = MapperUtil.toList(dao.getEntityClass(), cursor);
