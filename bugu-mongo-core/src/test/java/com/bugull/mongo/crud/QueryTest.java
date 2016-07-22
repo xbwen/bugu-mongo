@@ -31,7 +31,6 @@ import com.bugull.mongo.entity.Order;
 import com.bugull.mongo.entity.Product;
 import com.bugull.mongo.entity.User;
 import com.bugull.mongo.utils.SortUtil;
-import com.mongodb.ReadPreference;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -44,7 +43,7 @@ import org.junit.Test;
  */
 public class QueryTest extends ReplicaSetBaseTest {
     
-    @Test
+    //@Test
     public void testQuery(){
         connectDB();
         
@@ -148,15 +147,18 @@ public class QueryTest extends ReplicaSetBaseTest {
         disconnectDB();
     }
     
-    public void t(String id){
+    @Test
+    public void queryForManyTimes() throws Exception {
+        connectDB();
         
         ProductDao productDao = new ProductDao();
         
-        productDao.setReadPreference(ReadPreference.secondary());
-        Product p = productDao.findOne(id);
+        for(int i=0; i<1200; i++){
+            Product p = productDao.findOne("name", "MI 3");
+            Thread.sleep(100);
+        }
         
-        
-        System.out.println(p.getDescription());
+        disconnectDB();
     }
 
 }
