@@ -33,11 +33,7 @@ public abstract class BaseTest {
         conn.setUsername("test");
         conn.setPassword("test");
         conn.setDatabase("test");
-        try{
-            conn.connect();
-        }catch(UnknownHostException ex){
-            
-        }
+        conn.connect();
     }
     
     protected void disconnectDB(){

@@ -21,7 +21,6 @@ import com.bugull.mongo.BuguFramework;
 import com.mongodb.MongoClientOptions;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,47 +31,39 @@ import java.util.List;
 public class ReplicaSetBaseTest {
     
     protected void connectDB(){
-        try{
-            List<ServerAddress> serverList = new ArrayList<ServerAddress>();
-            serverList.add(new ServerAddress("192.168.0.200", 27017));
-            serverList.add(new ServerAddress("192.168.0.200", 27018));
-            serverList.add(new ServerAddress("192.168.0.200", 27019));
-            List<MongoCredential> credentialList = new ArrayList<MongoCredential>();
-            MongoCredential credentialA = MongoCredential.createCredential("test", "test", "test".toCharArray());
-            MongoCredential credentialB = MongoCredential.createCredential("test", "test", "test".toCharArray());
-            MongoCredential credentialC = MongoCredential.createCredential("test", "test", "test".toCharArray());
-            credentialList.add(credentialA);
-            credentialList.add(credentialB);
-            credentialList.add(credentialC);
-            BuguConnection conn = BuguFramework.getInstance().createConnection();
-            conn.setServerList(serverList).setCredentialList(credentialList).setDatabase("test").connect();
-        }catch(UnknownHostException ex){
-            ex.printStackTrace();
-        }
+        List<ServerAddress> serverList = new ArrayList<ServerAddress>();
+        serverList.add(new ServerAddress("192.168.0.200", 27017));
+        serverList.add(new ServerAddress("192.168.0.200", 27018));
+        serverList.add(new ServerAddress("192.168.0.200", 27019));
+        List<MongoCredential> credentialList = new ArrayList<MongoCredential>();
+        MongoCredential credentialA = MongoCredential.createCredential("test", "test", "test".toCharArray());
+        MongoCredential credentialB = MongoCredential.createCredential("test", "test", "test".toCharArray());
+        MongoCredential credentialC = MongoCredential.createCredential("test", "test", "test".toCharArray());
+        credentialList.add(credentialA);
+        credentialList.add(credentialB);
+        credentialList.add(credentialC);
+        BuguConnection conn = BuguFramework.getInstance().createConnection();
+        conn.setServerList(serverList).setCredentialList(credentialList).setDatabase("test").connect();
     }
     
     protected void connectDBWithOptions(MongoClientOptions options){
-        try{
-            List<ServerAddress> serverList = new ArrayList<ServerAddress>();
-            serverList.add(new ServerAddress("192.168.0.200", 27017));
-            serverList.add(new ServerAddress("192.168.0.200", 27018));
-            serverList.add(new ServerAddress("192.168.0.200", 27019));
-            List<MongoCredential> credentialList = new ArrayList<MongoCredential>();
-            MongoCredential credentialA = MongoCredential.createCredential("test", "test", "test".toCharArray());
-            MongoCredential credentialB = MongoCredential.createCredential("test", "test", "test".toCharArray());
-            MongoCredential credentialC = MongoCredential.createCredential("test", "test", "test".toCharArray());
-            credentialList.add(credentialA);
-            credentialList.add(credentialB);
-            credentialList.add(credentialC);
-            BuguConnection conn = BuguFramework.getInstance().createConnection();
-            conn.setOptions(options);
-            conn.setServerList(serverList);
-            conn.setCredentialList(credentialList);
-            conn.setDatabase("test");
-            conn.connect();
-        }catch(UnknownHostException ex){
-            ex.printStackTrace();
-        }
+        List<ServerAddress> serverList = new ArrayList<ServerAddress>();
+        serverList.add(new ServerAddress("192.168.0.200", 27017));
+        serverList.add(new ServerAddress("192.168.0.200", 27018));
+        serverList.add(new ServerAddress("192.168.0.200", 27019));
+        List<MongoCredential> credentialList = new ArrayList<MongoCredential>();
+        MongoCredential credentialA = MongoCredential.createCredential("test", "test", "test".toCharArray());
+        MongoCredential credentialB = MongoCredential.createCredential("test", "test", "test".toCharArray());
+        MongoCredential credentialC = MongoCredential.createCredential("test", "test", "test".toCharArray());
+        credentialList.add(credentialA);
+        credentialList.add(credentialB);
+        credentialList.add(credentialC);
+        BuguConnection conn = BuguFramework.getInstance().createConnection();
+        conn.setOptions(options);
+        conn.setServerList(serverList);
+        conn.setCredentialList(credentialList);
+        conn.setDatabase("test");
+        conn.connect();
     }
     
     protected void disconnectDB(){
