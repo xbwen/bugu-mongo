@@ -14,34 +14,22 @@
  * limitations under the License.
  */
 
-package com.bugull.mongo.base;
+package com.bugull.mongo.connection;
 
-import com.bugull.mongo.BuguConnection;
-import com.bugull.mongo.BuguFramework;
-import java.net.UnknownHostException;
+import com.bugull.mongo.base.ReplicaSetBaseTest;
+import org.junit.Test;
 
 /**
  *
  * @author Frank Wen(xbwen@hotmail.com)
  */
-public abstract class BaseTest {
+public class ConnectionTest extends ReplicaSetBaseTest {
     
-    protected void connectDB(){
-        BuguConnection conn = BuguFramework.getInstance().createConnection();
-        conn.setHost("127.0.0.1");
-        conn.setPort(27017);
-        conn.setUsername("test");
-        conn.setPassword("test");
-        conn.setDatabase("test");
-        try{
-            conn.connect();
-        }catch(UnknownHostException ex){
-            
-        }
-    }
-    
-    protected void disconnectDB(){
-        BuguFramework.getInstance().destroy();
+    @Test
+    public void test(){
+        connectDB();
+        
+        disconnectDB();
     }
 
 }

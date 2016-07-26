@@ -21,6 +21,7 @@ import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -44,12 +45,17 @@ public class BuguConnection {
     private String username;
     private String password;
     private MongoClient mongoClient;
+    private DB db;
     
     public void connect(String host, int port, String database){
         this.host = host;
         this.port = port;
         this.database = database;
-        connect();
+        try {
+            doConnect();
+        } catch (UnknownHostException ex) {
+            logger.error(ex.getMessage(), ex);
+        }
     }
     
     public void connect(String host, int port, String database, String username, String password){
@@ -58,17 +64,33 @@ public class BuguConnection {
         this.database = database;
         this.username = username;
         this.password = password;
-        connect();
+        try {
+            doConnect();
+        } catch (UnknownHostException ex) {
+            logger.error(ex.getMessage(), ex);
+        }
     }
     
     public void connect(List<ServerAddress> serverList, List<MongoCredential> credentialList, String database){
         this.serverList = serverList;
         this.credentialList = credentialList;
         this.database = database;
-        connect();
+        try {
+            doConnect();
+        } catch (UnknownHostException ex) {
+            logger.error(ex.getMessage(), ex);
+        }
     }
     
     public void connect(){
+        try {
+            doConnect();
+        } catch (UnknownHostException ex) {
+            logger.error(ex.getMessage(), ex);
+        }
+    }
+    
+    private void doConnect() throws UnknownHostException{
         if(host != null && serverList != null){
             logger.error("Error when connect to database server! You should set database host or server list, but not both!");
             return;
@@ -109,6 +131,8 @@ public class BuguConnection {
                 }
             }
         }
+        //get the database
+        db = mongoClient.getDB(database);
     }
     
     public void close(){
@@ -159,7 +183,7 @@ public class BuguConnection {
     }
 
     public DB getDB() {
-        return mongoClient.getDB(database);
+        return db;
     }
 
     public MongoClient getMongoClient() {

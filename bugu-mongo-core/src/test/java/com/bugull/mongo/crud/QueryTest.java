@@ -153,10 +153,11 @@ public class QueryTest extends ReplicaSetBaseTest {
         
         ProductDao productDao = new ProductDao();
         
-        for(int i=0; i<1200; i++){
-            Product p = productDao.findOne("name", "MI 3");
-            Thread.sleep(100);
-        }
+        Product p = productDao.findOne("name", "iPhone 6");
+        
+        System.out.println("p: " + p.getId());
+        System.out.println("p: " + p.getName());
+        System.out.println("p: " + p.getDescription());
         
         disconnectDB();
     }
