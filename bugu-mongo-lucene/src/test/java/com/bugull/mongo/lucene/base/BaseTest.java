@@ -19,7 +19,6 @@ package com.bugull.mongo.lucene.base;
 import com.bugull.mongo.BuguConnection;
 import com.bugull.mongo.BuguFramework;
 import com.bugull.mongo.lucene.BuguIndex;
-import java.net.UnknownHostException;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.util.Version;
 
@@ -36,11 +35,7 @@ public abstract class BaseTest {
         conn.setUsername("test");
         conn.setPassword("test");
         conn.setDatabase("test");
-        try{
-            conn.connect();
-        }catch(UnknownHostException ex){
-            
-        }
+        conn.connect();
         
         BuguIndex index = BuguIndex.getInstance();
 
