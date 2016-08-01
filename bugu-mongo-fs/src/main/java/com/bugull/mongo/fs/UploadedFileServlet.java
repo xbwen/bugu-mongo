@@ -57,7 +57,7 @@ public class UploadedFileServlet extends HttpServlet {
     private String password;
     private String allowBucket;
     private String forbidBucket;
-    private boolean contentMD5;
+    private boolean contentMD5 = false;
     
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -73,7 +73,9 @@ public class UploadedFileServlet extends HttpServlet {
         }
         
         String md5 = config.getInitParameter("contentMD5");
-        contentMD5 = Boolean.getBoolean(md5);
+        if(! StringUtil.isEmpty(md5)){
+            contentMD5 = Boolean.getBoolean(md5);
+        }
     }
     
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
