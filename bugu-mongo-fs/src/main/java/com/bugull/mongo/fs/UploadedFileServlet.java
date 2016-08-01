@@ -22,6 +22,7 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.mongodb.gridfs.GridFS;
 import com.mongodb.gridfs.GridFSDBFile;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -56,17 +57,23 @@ public class UploadedFileServlet extends HttpServlet {
     private String password;
     private String allowBucket;
     private String forbidBucket;
+    private boolean contentMD5;
     
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
+        
         String p = config.getInitParameter("password");
         password = StringUtil.encodeMD5(p);
+        
         allowBucket = config.getInitParameter("allowBucket");
         forbidBucket = config.getInitParameter("forbidBucket");
         if(!StringUtil.isEmpty(allowBucket) && !StringUtil.isEmpty(forbidBucket)){
             throw new ServletException("You can set only one param, allowBucket or forbidBucket.");
         }
+        
+        String md5 = config.getInitParameter("contentMD5");
+        contentMD5 = Boolean.getBoolean(md5);
     }
     
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -128,6 +135,9 @@ public class UploadedFileServlet extends HttpServlet {
             if(StringUtil.isEmpty(range)){
                 response.setStatus(HttpServletResponse.SC_OK);
                 response.setContentLength(fileLength);
+                if(contentMD5){
+                    response.setHeader("Content-MD5", f.getMD5());
+                }
                 if(needCache(ext)){
                     String modifiedSince = request.getHeader("If-Modified-Since");
                     DateFormat df = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z", Locale.ENGLISH);
@@ -188,14 +198,22 @@ public class UploadedFileServlet extends HttpServlet {
                 byte[] buffer = new byte[bufferSize];
                 int remain = contentLength;
                 int readSize = Math.min(bufferSize, remain);
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 while( (read = is.read(buffer, 0, readSize)) != -1 ){
-                    os.write(buffer, 0, read);
+                    baos.write(buffer, 0, read);
                     remain -= read;
                     if(remain <= 0){
                         break;
                     }
                     readSize = Math.min(bufferSize, remain);
                 }
+                byte[] bytes = baos.toByteArray();
+                if(contentMD5){
+                    String md5 = StringUtil.encodeMD5(bytes);
+                    response.setHeader("Content-MD5", md5);
+                }
+                os.write(bytes);
+                os.flush();
             }
         }finally{
             StreamUtil.safeClose(is);
