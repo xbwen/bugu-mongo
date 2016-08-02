@@ -74,7 +74,7 @@ public class UploadedFileServlet extends HttpServlet {
         
         String md5 = config.getInitParameter("contentMD5");
         if(! StringUtil.isEmpty(md5)){
-            contentMD5 = Boolean.getBoolean(md5);
+            contentMD5 = Boolean.valueOf(md5);
         }
     }
     
@@ -193,7 +193,7 @@ public class UploadedFileServlet extends HttpServlet {
                 response.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
                 int contentLength = end - begin + 1;
                 response.setContentLength(contentLength);
-                response.setHeader("Content-Range", "bytes " + begin + "-" + end + "/" + contentLength);
+                response.setHeader("Content-Range", "bytes " + begin + "-" + end + "/" + fileLength);
                 is.skip(begin);
                 int read = -1;
                 int bufferSize = (int)f.getChunkSize();
@@ -212,7 +212,9 @@ public class UploadedFileServlet extends HttpServlet {
                 byte[] bytes = baos.toByteArray();
                 if(contentMD5){
                     String md5 = StringUtil.encodeMD5(bytes);
-                    response.setHeader("Content-MD5", md5);
+                    if(! StringUtil.isEmpty(md5)){
+                        response.setHeader("Content-MD5", md5.toLowerCase());
+                    }
                 }
                 os.write(bytes);
                 os.flush();
