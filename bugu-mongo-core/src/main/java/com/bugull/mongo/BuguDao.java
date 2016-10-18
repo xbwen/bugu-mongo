@@ -372,6 +372,9 @@ public class BuguDao<T> {
      * @return 
      */
     public WriteResult insert(List<T> list){
+        if(list==null || list.isEmpty()){
+            return null;
+        }
         List<DBObject> dboList = new ArrayList<DBObject>();
         for(T t : list){
             dboList.add(MapperUtil.toDBObject(t));
