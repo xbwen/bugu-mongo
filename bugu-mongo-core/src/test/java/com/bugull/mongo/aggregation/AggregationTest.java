@@ -22,7 +22,6 @@ import com.bugull.mongo.agg.ExpressionBuilder;
 import com.bugull.mongo.agg.Lookup;
 import com.bugull.mongo.base.ReplicaSetBaseTest;
 import com.mongodb.AggregationOptions;
-import static com.mongodb.AggregationOptions.Builder;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import java.util.Date;
