@@ -21,6 +21,8 @@ import com.bugull.mongo.BuguQuery;
 import com.bugull.mongo.agg.ExpressionBuilder;
 import com.bugull.mongo.agg.Lookup;
 import com.bugull.mongo.base.ReplicaSetBaseTest;
+import com.mongodb.AggregationOptions;
+import static com.mongodb.AggregationOptions.Builder;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import java.util.Date;
@@ -149,7 +151,7 @@ public class AggregationTest extends ReplicaSetBaseTest {
     /**
      * test the basic aggregate operation.
      */
-    @Test
+    //@Test
     public void testBasic(){
         connectDB();
         
@@ -319,6 +321,23 @@ public class AggregationTest extends ReplicaSetBaseTest {
             System.out.print(dbo.get("_id"));
             System.out.print(" : ");
             System.out.println(dbo.get("count"));
+        }
+        
+        disconnectDB();
+    }
+    
+    @Test
+    public void testWithOptions(){
+        connectDB();
+        
+        BookDao dao = new BookDao();
+        Iterable<DBObject> it = dao.aggregate()
+                .setOptions(AggregationOptions.builder().allowDiskUse(Boolean.TRUE).build())
+                .sort("{price : -1}")
+                .results();
+                
+        for(DBObject dbo : it){
+            System.out.println(dbo.get("price"));
         }
         
         disconnectDB();

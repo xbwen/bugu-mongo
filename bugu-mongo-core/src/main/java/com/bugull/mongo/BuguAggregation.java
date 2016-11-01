@@ -21,12 +21,14 @@ import com.bugull.mongo.agg.Lookup;
 import com.bugull.mongo.parallel.Parallelable;
 import com.bugull.mongo.utils.Operator;
 import com.bugull.mongo.utils.SortUtil;
+import com.mongodb.AggregationOptions;
 import com.mongodb.AggregationOutput;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -39,8 +41,15 @@ public class BuguAggregation<T> implements Parallelable {
     private final DBCollection coll;
     private final List<DBObject> pipeline = new ArrayList<DBObject>();
     
+    private AggregationOptions options;
+    
     public BuguAggregation(DBCollection coll){
         this.coll = coll;
+    }
+    
+    public BuguAggregation setOptions(AggregationOptions options){
+        this.options = options;
+        return this;
     }
     
     public BuguAggregation lookup(DBObject dbo){
@@ -165,8 +174,18 @@ public class BuguAggregation<T> implements Parallelable {
     
     @Override
     public Iterable<DBObject> results(){
-        AggregationOutput output = coll.aggregate(pipeline);
-        return output.results();
+        if(options == null){
+            AggregationOutput output = coll.aggregate(pipeline);
+            return output.results();
+        }else{
+            final Iterator<DBObject> it = coll.aggregate(pipeline, options);
+            return new Iterable<DBObject>() {
+                @Override
+                public Iterator<DBObject> iterator() {
+                    return it;
+                }
+            };
+        }
     }
 
 }
