@@ -54,7 +54,7 @@ public class BuguQuery<T> implements Parallelable {
     protected DBObject fields;
     protected boolean fieldsSpecified;  //default value is false
     
-    protected final DBObject condition = new BasicDBObject();
+    protected DBObject condition = new BasicDBObject();
     
     protected String orderBy;
     protected int pageNumber;  //default value is zero
@@ -461,6 +461,10 @@ public class BuguQuery<T> implements Parallelable {
 
     public DBObject getCondition() {
         return condition;
+    }
+    
+    public void setCondition(DBObject condition) {
+        this.condition = condition;
     }
     
     public DBObject getSort(){

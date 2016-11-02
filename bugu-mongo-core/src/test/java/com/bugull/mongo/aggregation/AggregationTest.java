@@ -325,6 +325,9 @@ public class AggregationTest extends ReplicaSetBaseTest {
         disconnectDB();
     }
     
+    /**
+     * Do aggregation with options.
+     */
     @Test
     public void testWithOptions(){
         connectDB();
