@@ -34,7 +34,7 @@ public class ManyListTest {
         MyVO father = new MyVO();
         father.setName("name");
         father.setValue(Double.MAX_VALUE);
-        List<MyVO> list = new ArrayList<>();
+        List<MyVO> list = new ArrayList<MyVO>();
         MyVO son = new MyVO();
         son.setName("son");
         son.setValue(Double.MIN_VALUE);
