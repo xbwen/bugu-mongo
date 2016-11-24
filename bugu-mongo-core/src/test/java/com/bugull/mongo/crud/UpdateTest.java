@@ -22,7 +22,9 @@ import com.bugull.mongo.dao.ProductDao;
 import com.bugull.mongo.dao.UserDao;
 import com.bugull.mongo.entity.Product;
 import com.bugull.mongo.entity.User;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.junit.Test;
 
@@ -32,7 +34,7 @@ import org.junit.Test;
  */
 public class UpdateTest extends ReplicaSetBaseTest {
     
-    @Test
+    //@Test
     public void testUpdate(){
         connectDB();
         
@@ -42,12 +44,29 @@ public class UpdateTest extends ReplicaSetBaseTest {
         productDao.save(product);
         
         UserDao userDao = new UserDao();
-        User user = userDao.query().is("username", "franky").result();
+        User user = userDao.query().is("username", "frank").result();
         System.out.println("user:" + user.getUsername());
-        userDao.update().set("username", "frank").inc("age", 1).execute(user);
+        userDao.update().set("username", "frank...").inc("age", 1).execute(user);
         
         OrderDao orderDao = new OrderDao();
         orderDao.update().inc("money", -500).execute();
+        
+        disconnectDB();
+    }
+    
+    @Test
+    public void testUpdateListValue(){
+        connectDB();
+        
+        ProductDao productDao = new ProductDao();
+        Product product1 = productDao.findOne("56fe36705cad6e1e24dd1cda");
+        Product product2 = productDao.findOne("56fe36705cad6e1e24dd1cdb");
+        List<Product> list = new ArrayList<Product>();
+        list.add(product1);
+        list.add(product2);
+        
+        OrderDao orderDao = new OrderDao();
+        orderDao.update().set("productList", list).execute("56f499725cad6e05e437fa17");
         
         disconnectDB();
     }

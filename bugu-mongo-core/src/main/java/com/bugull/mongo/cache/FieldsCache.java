@@ -165,6 +165,7 @@ public class FieldsCache {
      * @throws FieldException 
      */
     public Field getField(Class<?> clazz, String fieldName) throws FieldException {
+        //first, search by java object attribute name
         Field field = null;
         Field[] fields = get(clazz);
         for(Field f : fields){
@@ -173,6 +174,7 @@ public class FieldsCache {
                 break;
             }
         }
+        //second, if not found, search by mongodb's column name
         if(field == null){
             for(Field f : fields){
                 Property property = f.getAnnotation(Property.class);
@@ -237,6 +239,24 @@ public class FieldsCache {
         Field[] fields = get(clazz);
         for(Field f : fields){
             if(f.getName().equals(fieldName) && f.getAnnotation(EmbedList.class)!=null){
+                result = true;
+                break;
+            }
+        }
+        return result;
+    }
+    
+    /**
+     * check if the field is annotated by @RefList
+     * @param clazz
+     * @param fieldName
+     * @return 
+     */
+    public boolean isRefListField(Class<?> clazz, String fieldName){
+        boolean result = false;
+        Field[] fields = get(clazz);
+        for(Field f : fields){
+            if(f.getName().equals(fieldName) && f.getAnnotation(RefList.class)!=null){
                 result = true;
                 break;
             }

@@ -25,6 +25,8 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.WriteResult;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -67,6 +69,25 @@ public class BuguUpdater<T> {
         }else if(!(value instanceof DBObject) && 
                 FieldsCache.getInstance().isEmbedListField(clazz, key)){
             result = MapperUtil.toDBObject(value);
+        }
+        return result;
+    }
+    
+    private List checkRefListValue(String key, Collection collection){
+        Class<T> clazz = dao.getEntityClass();
+        List result = new ArrayList();
+        for(Object o : collection){
+            BuguEntity be = (BuguEntity) o;
+            Object temp = ReferenceUtil.toDbReference(clazz, key, be.getClass(), be.getId());
+            result.add(temp);
+        }
+        return result;
+    }
+    
+    private List checkEmbedListValue(Collection collection){
+        List result = new ArrayList();
+        for(Object o : collection){
+            result.add(MapperUtil.toDBObject(o));
         }
         return result;
     }
@@ -149,20 +170,30 @@ public class BuguUpdater<T> {
     
     /**
      * Update entity's attribute.
-     * Notice: EmbedList and RefList fields is not supported yet.
      * @param key the field's name
      * @param value the field's new value
      * @return 
      */
     public BuguUpdater<T> set(String key, Object value){
-        value = checkSingleValue(key, value);
+        Class<T> clazz = dao.getEntityClass();
+        FieldsCache cache = FieldsCache.getInstance();
+        if(cache.isEmbedListField(clazz, key)) {
+            Collection c = (Collection) value;
+            value = checkEmbedListValue(c);
+        }
+        else if(cache.isRefListField(clazz, key)){
+            Collection c = (Collection) value;
+            value = checkRefListValue(key, c);
+        }
+        else{
+            value = checkSingleValue(key, value);
+        }
         append(Operator.SET, key, value);
         return this;
     }
     
     /**
      * Update entities with new key/value pairs.
-     * Notice: the Map values must can be converted to DBObject.
      * @param map
      * @return 
      */
