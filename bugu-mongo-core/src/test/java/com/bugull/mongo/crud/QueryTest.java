@@ -148,16 +148,14 @@ public class QueryTest extends ReplicaSetBaseTest {
     }
     
     @Test
-    public void queryForManyTimes() throws Exception {
+    public void queryWithInvalidID() throws Exception {
         connectDB();
         
         ProductDao productDao = new ProductDao();
         
-        Product p = productDao.findOne("name", "iPhone 6");
+        Product p = productDao.findOne("abc");
         
-        System.out.println("p: " + p.getId());
-        System.out.println("p: " + p.getName());
-        System.out.println("p: " + p.getDescription());
+        System.out.println("p==null: " + (p==null));
         
         disconnectDB();
     }

@@ -50,16 +50,22 @@ public final class IdUtil {
             logger.error(ex.getMessage(), ex);
         }
         Id idAnnotation = idField.getAnnotation(Id.class);
-        switch(idAnnotation.type()){
-            case AUTO_GENERATE:
-                result = new ObjectId(idStr);
-                break;
-            case AUTO_INCREASE:
-                result = Long.parseLong(idStr);
-                break;
-            case USER_DEFINE:
-                result = idStr;
-                break;
+        
+        //the idStr maybe illegal value, have to catch exception here
+        try{
+            switch(idAnnotation.type()){
+                case AUTO_GENERATE:
+                    result = new ObjectId(idStr);
+                    break;
+                case AUTO_INCREASE:
+                    result = Long.parseLong(idStr);
+                    break;
+                case USER_DEFINE:
+                    result = idStr;
+                    break;
+            }
+        }catch(Exception ex){
+            logger.error(ex.getMessage(), ex);
         }
         return result;
     }
