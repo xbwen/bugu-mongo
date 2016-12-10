@@ -159,6 +159,7 @@ public class PropertyDecoder extends AbstractDecoder{
         //for Map<K,V>, first to check the type of V
         ParameterizedType paramType = (ParameterizedType)field.getGenericType();
         Type[] types = paramType.getActualTypeArguments();
+        //3 different types of V
         boolean isArray = false;
         boolean isCollection = false;
         boolean isPrimitive = false;

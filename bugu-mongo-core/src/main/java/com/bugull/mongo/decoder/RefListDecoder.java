@@ -97,6 +97,7 @@ public class RefListDecoder extends AbstractDecoder{
             return null;
         }
         Object arr = Array.newInstance(elementClass, size);
+        //not cascade read
         if(refList.cascade().toUpperCase().indexOf(Default.CASCADE_READ)==-1){
             for(int i=0; i<size; i++){
                 Object item = list.get(i);
@@ -110,6 +111,7 @@ public class RefListDecoder extends AbstractDecoder{
                 }
             }
         }
+        //cascade read
         else{
             List<String> idList = new ArrayList<String>();
             for(int i=0; i<size; i++){
@@ -142,6 +144,7 @@ public class RefListDecoder extends AbstractDecoder{
         elementClass = FieldUtil.getRealType(elementClass, field);
         Collection collection = (Collection)val;
         List<BuguEntity> result = new ArrayList<BuguEntity>();
+        //not cascade read
         if(refList.cascade().toUpperCase().indexOf(Default.CASCADE_READ)==-1){
             for(Object item : collection){
                 if(item != null){
@@ -151,7 +154,9 @@ public class RefListDecoder extends AbstractDecoder{
                     result.add(refObj);
                 }
             }
-        }else{
+        }
+        //cascade read
+        else{
             List<String> idList = new ArrayList<String>();
             for(Object item : collection){
                 if(item != null){
@@ -174,6 +179,7 @@ public class RefListDecoder extends AbstractDecoder{
         //for Map<K,V>, first to check the type of V
         ParameterizedType paramType = (ParameterizedType)field.getGenericType();
         Type[] types = paramType.getActualTypeArguments();
+        //3 different types of V
         boolean isArray = false;
         boolean isCollection = false;
         boolean isSingle = false;
@@ -222,7 +228,7 @@ public class RefListDecoder extends AbstractDecoder{
                 String refId = ReferenceUtil.fromDbReference(refList, entryValue);
                 BuguEntity refObj = null;
                 if(cascadeRead){
-                    refObj = (BuguEntity)dao.findOne(refId);
+                    refObj = (BuguEntity)dao.findOneLazily(refId);
                 }else{
                     refObj = (BuguEntity)ConstructorCache.getInstance().create(cls);
                     refObj.setId(refId);
