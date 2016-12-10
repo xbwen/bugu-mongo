@@ -85,5 +85,8 @@ public final class Operator {
     public static final String GROUP = "$group";
     public static final String SORT = "$sort";
     public static final String OUT = "$out";
+    public static final String ADD_FIELDS = "$addFields";
+    public static final String COUNT = "$count";
+    public static final String SORT_BY_COUNT = "$sortByCount";
     
 }

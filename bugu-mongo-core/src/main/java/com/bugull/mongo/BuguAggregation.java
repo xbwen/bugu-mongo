@@ -52,23 +52,19 @@ public class BuguAggregation<T> implements Parallelable {
         return this;
     }
     
-    public BuguAggregation lookup(DBObject dbo){
-        pipeline.add(new BasicDBObject(Operator.LOOKUP, dbo));
+    /**
+     * Since MongoDB 3.4
+     * @param dbo
+     * @return 
+     */
+    public BuguAggregation addFields(DBObject dbo){
+        pipeline.add(new BasicDBObject(Operator.ADD_FIELDS, dbo));
         return this;
     }
     
-    public BuguAggregation lookup(String jsonString){
+    public BuguAggregation addFields(String jsonString){
         DBObject dbo = (DBObject)JSON.parse(jsonString);
-        return lookup(dbo);
-    }
-    
-    public BuguAggregation lookup(Lookup lookup){
-        DBObject dbo = new BasicDBObject();
-        dbo.put(Lookup.FROM, lookup.from);
-        dbo.put(Lookup.LOCAL_FIELD, lookup.localField);
-        dbo.put(Lookup.FOREIGN_FIELD, lookup.foreignField);
-        dbo.put(Lookup.AS, lookup.as);
-        return lookup(dbo);
+        return addFields(dbo);
     }
     
     public BuguAggregation project(DBObject dbo){
@@ -81,6 +77,10 @@ public class BuguAggregation<T> implements Parallelable {
         return project(dbo);
     }
     
+    public BuguAggregation project(String key, Object val){
+        return project(new BasicDBObject(key, val));
+    }
+    
     public BuguAggregation projectInclude(String... fields){
         DBObject dbo = new BasicDBObject();
         for(String field : fields){
@@ -89,8 +89,17 @@ public class BuguAggregation<T> implements Parallelable {
         return project(dbo);
     }
     
-    public BuguAggregation project(String key, Object val){
-        return project(new BasicDBObject(key, val));
+    /**
+     * Since MongoDB 3.4
+     * @param fields
+     * @return 
+     */
+    public BuguAggregation projectExclude(String... fields){
+        DBObject dbo = new BasicDBObject();
+        for(String field : fields){
+            dbo.put(field, 0);
+        }
+        return project(dbo);
     }
     
     public BuguAggregation match(String key, Object value){
@@ -111,6 +120,25 @@ public class BuguAggregation<T> implements Parallelable {
     public BuguAggregation match(String jsonString){
         DBObject dbo = (DBObject)JSON.parse(jsonString);
         return match(dbo);
+    }
+    
+    public BuguAggregation lookup(DBObject dbo){
+        pipeline.add(new BasicDBObject(Operator.LOOKUP, dbo));
+        return this;
+    }
+    
+    public BuguAggregation lookup(String jsonString){
+        DBObject dbo = (DBObject)JSON.parse(jsonString);
+        return lookup(dbo);
+    }
+    
+    public BuguAggregation lookup(Lookup lookup){
+        DBObject dbo = new BasicDBObject();
+        dbo.put(Lookup.FROM, lookup.from);
+        dbo.put(Lookup.LOCAL_FIELD, lookup.localField);
+        dbo.put(Lookup.FOREIGN_FIELD, lookup.foreignField);
+        dbo.put(Lookup.AS, lookup.as);
+        return lookup(dbo);
     }
     
     public BuguAggregation limit(int n){
@@ -169,6 +197,29 @@ public class BuguAggregation<T> implements Parallelable {
     
     public BuguAggregation out(String target){
         pipeline.add(new BasicDBObject(Operator.OUT, target));
+        return this;
+    }
+    
+    /**
+     * Since MongoDB 3.4
+     * @param resultName
+     * @return 
+     */
+    public BuguAggregation count(String resultName){
+        pipeline.add(new BasicDBObject(Operator.COUNT, resultName));
+        return this;
+    }
+    
+    /**
+     * Since MongoDB 3.4
+     * @param field
+     * @return 
+     */
+    public BuguAggregation sortByCount(String field){
+        if(! field.startsWith("$")){
+            field = "$" + field;
+        }
+        pipeline.add(new BasicDBObject(Operator.SORT_BY_COUNT, field));
         return this;
     }
     

@@ -21,6 +21,7 @@ import com.bugull.mongo.BuguQuery;
 import com.bugull.mongo.agg.ExpressionBuilder;
 import com.bugull.mongo.agg.Lookup;
 import com.bugull.mongo.base.ReplicaSetBaseTest;
+import com.bugull.mongo.dao.ProductDao;
 import com.mongodb.AggregationOptions;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
@@ -328,7 +329,7 @@ public class AggregationTest extends ReplicaSetBaseTest {
     /**
      * Do aggregation with options.
      */
-    @Test
+    //@Test
     public void testWithOptions(){
         connectDB();
         
@@ -340,6 +341,71 @@ public class AggregationTest extends ReplicaSetBaseTest {
                 
         for(DBObject dbo : it){
             System.out.println(dbo.get("price"));
+        }
+        
+        disconnectDB();
+    }
+    
+    //@Test
+    public void testManyMatch(){
+        connectDB();
+        
+        ProductDao dao = new ProductDao();
+        BuguAggregation agg = dao.aggregate();
+        agg.match(dao.query().notEquals("name", "MI 3"));
+        agg.projectInclude("name", "price");
+        agg.match(dao.query().lessThan("price", 3000));
+        agg.out("temp_coll_9");
+        
+        agg.results();
+        
+        disconnectDB();
+    }
+    
+    //@Test
+    public void testAddFields(){
+        connectDB();
+        
+        ProductDao dao = new ProductDao();
+        BuguAggregation agg = dao.aggregate();
+        agg.addFields("{cargo : 'on road...'}");
+        
+        Iterable<DBObject> it = agg.results();
+        for(DBObject dbo : it){
+            System.out.println(dbo.toString());
+        }
+        
+        disconnectDB();
+    }
+    
+    //@Test
+    public void testCount(){
+        connectDB();
+        
+        ProductDao dao = new ProductDao();
+        BuguAggregation agg = dao.aggregate();
+        agg.match("name", "MI 3");
+        agg.count("count_of_mi3");
+        
+        Iterable<DBObject> it = agg.results();
+        for(DBObject dbo : it){
+            System.out.println(dbo.get("count_of_mi3"));
+        }
+        
+        disconnectDB();
+    }
+    
+    @Test
+    public void testProjectExclude(){
+        connectDB();
+        
+        ProductDao dao = new ProductDao();
+        BuguAggregation agg = dao.aggregate();
+        agg.projectExclude("_id", "description");
+        
+        Iterable<DBObject> it = agg.results();
+        for(DBObject dbo : it){
+            System.out.println(dbo.toString());
         }
         
         disconnectDB();
