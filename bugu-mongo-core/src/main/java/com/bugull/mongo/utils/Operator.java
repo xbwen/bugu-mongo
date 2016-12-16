@@ -88,5 +88,6 @@ public final class Operator {
     public static final String ADD_FIELDS = "$addFields";
     public static final String COUNT = "$count";
     public static final String SORT_BY_COUNT = "$sortByCount";
+    public static final String REPLACE_ROOT = "$replaceRoot";
     
 }

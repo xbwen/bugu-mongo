@@ -21,6 +21,7 @@ import com.bugull.mongo.agg.Lookup;
 import com.bugull.mongo.parallel.Parallelable;
 import com.bugull.mongo.utils.Operator;
 import com.bugull.mongo.utils.SortUtil;
+import com.bugull.mongo.utils.StringUtil;
 import com.mongodb.AggregationOptions;
 import com.mongodb.AggregationOutput;
 import com.mongodb.BasicDBObject;
@@ -30,6 +31,8 @@ import com.mongodb.util.JSON;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Convenient class for creating aggregating operation.
@@ -37,6 +40,8 @@ import java.util.List;
  * @author Frank Wen(xbwen@hotmail.com)
  */
 public class BuguAggregation<T> implements Parallelable {
+    
+    private final static Logger logger = LogManager.getLogger(BuguAggregation.class.getName());
     
     private final DBCollection coll;
     private final List<DBObject> pipeline = new ArrayList<DBObject>();
@@ -182,6 +187,23 @@ public class BuguAggregation<T> implements Parallelable {
     public BuguAggregation group(String jsonString){
         DBObject dbo = (DBObject)JSON.parse(jsonString);
         return group(dbo);
+    }
+    
+    public BuguAggregation replaceRoot(DBObject dbo){
+        pipeline.add(new BasicDBObject(Operator.REPLACE_ROOT, dbo));
+        return this;
+    }
+    
+    public BuguAggregation replaceRoot(String jsonString){
+        DBObject dbo = (DBObject)JSON.parse(jsonString);
+        return replaceRoot(dbo);
+    }
+    
+    public BuguAggregation replaceRoot(String key, Object value){
+        if(StringUtil.isEmpty(key) || !key.equals("newRoot")){
+            logger.error("the key must be newRoot when use $replaceRoot!");
+        }
+        return replaceRoot(new BasicDBObject(key, value));
     }
     
     public BuguAggregation sort(String jsonString){
