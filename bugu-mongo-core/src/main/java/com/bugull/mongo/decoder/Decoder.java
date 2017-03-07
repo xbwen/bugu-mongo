@@ -27,4 +27,6 @@ public interface Decoder {
     
     public boolean isNullField();
     
+    public void setWithoutCascade(boolean withoutCascade);
+    
 }

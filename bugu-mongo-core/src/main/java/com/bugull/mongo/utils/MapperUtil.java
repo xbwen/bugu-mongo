@@ -46,6 +46,10 @@ public final class MapperUtil {
      * @return 
      */
     public static <T> T fromDBObject(Class<T> clazz, DBObject dbo){
+        return fromDBObject(clazz, dbo, false);
+    }
+    
+    public static <T> T fromDBObject(Class<T> clazz, DBObject dbo, boolean withoutCascade){
         if(dbo == null){
             return null;
         }
@@ -54,11 +58,13 @@ public final class MapperUtil {
         for(Field field : fields){
             Decoder decoder = DecoderFactory.create(field, dbo);
             if(decoder!=null && !decoder.isNullField()){
+                decoder.setWithoutCascade(withoutCascade);
                 decoder.decode(obj);
             }
         }
         return obj;
     }
+    
     
     /**
      * Convert an entity object to DBObject
@@ -66,6 +72,10 @@ public final class MapperUtil {
      * @return 
      */
     public static DBObject toDBObject(Object obj){
+        return toDBObject(obj, false);
+    }
+    
+    public static DBObject toDBObject(Object obj, boolean withoutCascade){
         if(obj == null){
             return null;
         }
@@ -75,6 +85,7 @@ public final class MapperUtil {
         for(Field field : fields){
             Encoder encoder = EncoderFactory.create(obj, field);
             if(encoder!=null && !encoder.isNullField()){
+                encoder.setWithoutCascade(withoutCascade);
                 dbo.put(encoder.getFieldName(), encoder.encode());
             }
         }
@@ -82,12 +93,24 @@ public final class MapperUtil {
     }
     
     public static <T> List<T> toList(Class<T> clazz, DBCursor cursor){
+        return toList(clazz, cursor, false);
+    }
+    
+    public static <T> List<T> toList(Class<T> clazz, DBCursor cursor, boolean withoutCascade){
         List<T> list = new ArrayList<T>();
         while(cursor.hasNext()){
             DBObject dbo = cursor.next();
-            list.add(fromDBObject(clazz, dbo));
+            list.add(fromDBObject(clazz, dbo, withoutCascade));
         }
         cursor.close();
+        return list;
+    }
+    
+    public static <T> List<T> toList(Class<T> clazz, Iterable<DBObject> it){
+        List<T> list = new ArrayList<T>();
+        for(DBObject dbo : it){
+            list.add(fromDBObject(clazz, dbo));
+        }
         return list;
     }
     

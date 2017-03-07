@@ -890,7 +890,8 @@ public class BuguDao<T> {
         Iterator it = agg.results().iterator();
         if(it.hasNext()){
             DBObject dbo = (DBObject)it.next();
-            result = (Double)dbo.get("maxValue");
+            String s = dbo.get("maxValue").toString();
+            result = Double.parseDouble(s);
         }
         return result;
     }
@@ -923,7 +924,8 @@ public class BuguDao<T> {
         Iterator it = agg.results().iterator();
         if(it.hasNext()){
             DBObject dbo = (DBObject)it.next();
-            result = (Double)dbo.get("minValue");
+            String s = dbo.get("minValue").toString();
+            result = Double.parseDouble(s);
         }
         return result;
     }
@@ -956,7 +958,8 @@ public class BuguDao<T> {
         Iterator it = agg.results().iterator();
         if(it.hasNext()){
             DBObject dbo = (DBObject)it.next();
-            result = (Double)dbo.get("sumValue");
+            String s = dbo.get("sumValue").toString();
+            result = Double.parseDouble(s);
         }
         return result;
     }
@@ -1091,6 +1094,10 @@ public class BuguDao<T> {
     public GeoQuery<T> geoQuery(){
         return new GeoQuery<T>(this);
     }
+    
+//    public JoinQuery<T> joinQuery(Class<?> rightTable){
+//        return new JoinQuery<T>(this, rightTable);
+//    }
     
     /**
      * Create a bitwise query.

@@ -87,8 +87,8 @@ public class RefListEncoder extends AbstractEncoder{
         for(int i=0; i<len; i++){
             BuguEntity entity = (BuguEntity)Array.get(val, i);
             if(entity != null){
-                if(cascadeCU){
-                    dao.save(entity);
+                if(!withoutCascade && cascadeCU){
+                    dao.saveWithoutCascade(entity, true);
                 }
                 result.add(ReferenceUtil.toDbReference(refList, entity.getClass(), entity.getId()));
             }
@@ -103,8 +103,8 @@ public class RefListEncoder extends AbstractEncoder{
         InternalDao dao = DaoCache.getInstance().get(cls);
         for(BuguEntity entity : collection){
             if(entity != null){
-                if(cascadeCU){
-                    dao.save(entity);
+                if(!withoutCascade && cascadeCU){
+                    dao.saveWithoutCascade(entity, true);
                 }
                 result.add(ReferenceUtil.toDbReference(refList, entity.getClass(), entity.getId()));
             }
@@ -151,8 +151,8 @@ public class RefListEncoder extends AbstractEncoder{
             if(isSingle){
                 BuguEntity entity = (BuguEntity)entryValue;
                 if(entity != null){
-                    if(cascadeCU){
-                        dao.save(entity);
+                    if(!withoutCascade && cascadeCU){
+                        dao.saveWithoutCascade(entity, true);
                     }
                     result.put(key, ReferenceUtil.toDbReference(refList, entity.getClass(), entity.getId()));
                 }else{

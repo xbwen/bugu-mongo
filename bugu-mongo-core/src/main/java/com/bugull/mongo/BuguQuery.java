@@ -60,6 +60,8 @@ public class BuguQuery<T> implements Parallelable {
     protected int pageNumber;  //default value is zero
     protected int pageSize;  //default value is zero
     
+    protected boolean withoutCascade;
+    
     public BuguQuery(BuguDao<T> dao){
         this.dao = dao;
     }
@@ -425,7 +427,7 @@ public class BuguQuery<T> implements Parallelable {
         }else{
             dbo = coll.findOne(condition);
         }
-        return MapperUtil.fromDBObject(dao.getEntityClass(), dbo);
+        return MapperUtil.fromDBObject(dao.getEntityClass(), dbo, withoutCascade);
     }
     
     @Override
@@ -443,7 +445,7 @@ public class BuguQuery<T> implements Parallelable {
         if(pageNumber>0 && pageSize>0){
             cursor.skip((pageNumber-1)*pageSize).limit(pageSize);
         }
-        return MapperUtil.toList(dao.getEntityClass(), cursor);
+        return MapperUtil.toList(dao.getEntityClass(), cursor, withoutCascade);
     }
     
     public long count(){
@@ -472,6 +474,10 @@ public class BuguQuery<T> implements Parallelable {
             return null;
         }
         return SortUtil.getSort(orderBy);
+    }
+
+    public void setWithoutCascade(boolean withoutCascade) {
+        this.withoutCascade = withoutCascade;
     }
     
 }

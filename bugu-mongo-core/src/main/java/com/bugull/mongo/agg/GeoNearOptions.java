@@ -66,7 +66,7 @@ public final class GeoNearOptions {
             dbo.put(QUERY, (DBObject) JSON.parse(query));
         }
         if (near != null) {
-            dbo.put(NEAR, MapperUtil.toDBObject(near));
+            dbo.put(NEAR, MapperUtil.toDBObject(near, true));
         }
         if (distanceField != null) {
             dbo.put(DISTANCE_FIELD, distanceField);

@@ -98,7 +98,7 @@ public class RefListDecoder extends AbstractDecoder{
         }
         Object arr = Array.newInstance(elementClass, size);
         //not cascade read
-        if(refList.cascade().toUpperCase().indexOf(Default.CASCADE_READ)==-1){
+        if(refList.cascade().toUpperCase().indexOf(Default.CASCADE_READ)==-1 || withoutCascade){
             for(int i=0; i<size; i++){
                 Object item = list.get(i);
                 if(item != null){
@@ -112,7 +112,7 @@ public class RefListDecoder extends AbstractDecoder{
             }
         }
         //cascade read
-        else{
+        else {
             List<String> idList = new ArrayList<String>();
             for(int i=0; i<size; i++){
                 Object item = list.get(i);
@@ -123,6 +123,7 @@ public class RefListDecoder extends AbstractDecoder{
             }
             InternalDao dao = DaoCache.getInstance().get(elementClass);
             BuguQuery query = dao.query().in(Operator.ID, idList);
+            query.setWithoutCascade(true);
             String sort = refList.sort();
             if(!sort.equals(Default.SORT)){
                 query.sort(sort);
@@ -145,7 +146,7 @@ public class RefListDecoder extends AbstractDecoder{
         Collection collection = (Collection)val;
         List<BuguEntity> result = new ArrayList<BuguEntity>();
         //not cascade read
-        if(refList.cascade().toUpperCase().indexOf(Default.CASCADE_READ)==-1){
+        if(refList.cascade().toUpperCase().indexOf(Default.CASCADE_READ)==-1 || withoutCascade){
             for(Object item : collection){
                 if(item != null){
                     String refId = ReferenceUtil.fromDbReference(refList, item);
@@ -156,7 +157,7 @@ public class RefListDecoder extends AbstractDecoder{
             }
         }
         //cascade read
-        else{
+        else {
             List<String> idList = new ArrayList<String>();
             for(Object item : collection){
                 if(item != null){
@@ -166,6 +167,7 @@ public class RefListDecoder extends AbstractDecoder{
             }
             InternalDao dao = DaoCache.getInstance().get(elementClass);
             BuguQuery query = dao.query().in(Operator.ID, idList);
+            query.setWithoutCascade(true);
             String sort = refList.sort();
             if(!sort.equals(Default.SORT)){
                 query.sort(sort);
@@ -214,7 +216,7 @@ public class RefListDecoder extends AbstractDecoder{
         if(isSingle){
             cls  = FieldUtil.getRealType((Class)types[1], field);
             cascadeRead = (refList.cascade().toUpperCase().indexOf(Default.CASCADE_READ) != -1);
-            if(cascadeRead){
+            if(!withoutCascade && cascadeRead){
                 dao = DaoCache.getInstance().get(cls);
             }
         }
@@ -227,8 +229,8 @@ public class RefListDecoder extends AbstractDecoder{
             if(isSingle){
                 String refId = ReferenceUtil.fromDbReference(refList, entryValue);
                 BuguEntity refObj = null;
-                if(cascadeRead){
-                    refObj = (BuguEntity)dao.findOneLazily(refId);
+                if(!withoutCascade && cascadeRead){
+                    refObj = (BuguEntity)dao.findOneLazily(refId, true);
                 }else{
                     refObj = (BuguEntity)ConstructorCache.getInstance().create(cls);
                     refObj.setId(refId);

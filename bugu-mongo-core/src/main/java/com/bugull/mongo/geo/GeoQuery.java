@@ -35,7 +35,7 @@ public class GeoQuery<T> extends BuguQuery<T> {
     
     public GeoQuery<T> nearSphere(String key, Point point){
         DBObject geometry = new BasicDBObject();
-        geometry.put(Operator.GEOMETRY, MapperUtil.toDBObject(point));
+        geometry.put(Operator.GEOMETRY, MapperUtil.toDBObject(point, true));
         append(key, Operator.NEAR_SPHERE, geometry);
         return this;
     }
@@ -49,7 +49,7 @@ public class GeoQuery<T> extends BuguQuery<T> {
      */
     public GeoQuery<T> nearSphere(String key, Point point, double maxDistance){
         DBObject geometry = new BasicDBObject();
-        geometry.put(Operator.GEOMETRY, MapperUtil.toDBObject(point));
+        geometry.put(Operator.GEOMETRY, MapperUtil.toDBObject(point, true));
         geometry.put(Operator.MAX_DISTANCE, maxDistance);
         append(key, Operator.NEAR_SPHERE, geometry);
         return this;
@@ -65,7 +65,7 @@ public class GeoQuery<T> extends BuguQuery<T> {
      */
     public GeoQuery<T> nearSphere(String key, Point point, double maxDistance, double minDistance){
         DBObject geometry = new BasicDBObject();
-        geometry.put(Operator.GEOMETRY, MapperUtil.toDBObject(point));
+        geometry.put(Operator.GEOMETRY, MapperUtil.toDBObject(point, true));
         geometry.put(Operator.MAX_DISTANCE, maxDistance);
         geometry.put(Operator.MIN_DISTANCE, minDistance);
         append(key, Operator.NEAR_SPHERE, geometry);
@@ -74,7 +74,7 @@ public class GeoQuery<T> extends BuguQuery<T> {
     
     public GeoQuery<T> geoWithin(String key, Polygon polygon){
         DBObject geometry = new BasicDBObject();
-        geometry.put(Operator.GEOMETRY, MapperUtil.toDBObject(polygon));
+        geometry.put(Operator.GEOMETRY, MapperUtil.toDBObject(polygon, true));
         append(key, Operator.GEO_WITHIN, geometry);
         return this;
     }

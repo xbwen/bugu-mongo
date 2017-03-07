@@ -169,7 +169,7 @@ public class BuguSearcher<T> {
             }
             if(doc != null){
                 String id = doc.get(FieldsCache.getInstance().getIdFieldName(clazz));
-                T t = lazy ? dao.findOneLazily(id) : dao.findOne(id);
+                T t = lazy ? dao.findOneLazily(id, false) : dao.findOne(id);
                 if(t != null){
                     list.add(t);
                 }

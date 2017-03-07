@@ -20,9 +20,17 @@ import com.bugull.mongo.utils.Operator;
 import com.bugull.mongo.utils.MapperUtil;
 import com.bugull.mongo.utils.IdUtil;
 import com.bugull.mongo.BuguDao;
+import com.bugull.mongo.BuguEntity;
+import com.bugull.mongo.annotations.Id;
+import com.bugull.mongo.annotations.IdType;
+import com.bugull.mongo.cache.FieldsCache;
+import com.bugull.mongo.exception.IdException;
+import com.bugull.mongo.utils.StringUtil;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
+import com.mongodb.WriteResult;
+import java.lang.reflect.Field;
 import java.util.List;
 
 /**
@@ -47,13 +55,14 @@ public final class InternalDao<T> extends BuguDao<T> {
     /**
      * Get one entity without the lazy fields.
      * @param id
+     * @param withoutCascade
      * @return 
      */
-    public T findOneLazily(String id){
+    public T findOneLazily(String id, boolean withoutCascade){
         DBObject dbo = new BasicDBObject();
         dbo.put(Operator.ID, IdUtil.toDbId(clazz, id));
         DBObject result = coll.findOne(dbo, keys);
-        return MapperUtil.fromDBObject(clazz, result);
+        return MapperUtil.fromDBObject(clazz, result, withoutCascade);
     }
     
     public List<T> findNotLazily(DBObject query){
@@ -64,6 +73,53 @@ public final class InternalDao<T> extends BuguDao<T> {
     public List<T> findNotLazily(int pageNum, int pageSize){
         DBCursor cursor = coll.find().skip((pageNum-1)*pageSize).limit(pageSize);
         return MapperUtil.toList(clazz, cursor);
+    }
+    
+    public WriteResult saveWithoutCascade(T t, boolean withoutCascade){
+        WriteResult wr;
+        BuguEntity ent = (BuguEntity)t;
+        if(StringUtil.isEmpty(ent.getId())){
+            wr = doInsertWithoutCascade(t, withoutCascade);
+        }
+        else{
+            Field idField = null;
+            try{
+                idField = FieldsCache.getInstance().getIdField(clazz);
+            }catch(IdException ex){
+                logger.error(ex.getMessage(), ex);
+            }
+            Id idAnnotation = idField.getAnnotation(Id.class);
+            if(idAnnotation.type()==IdType.USER_DEFINE){
+                if(this.exists(Operator.ID, ent.getId())){
+                    wr = doSaveWithoutCascade(ent, withoutCascade);
+                }else{
+                    wr = doInsertWithoutCascade(t, withoutCascade);
+                }
+            }
+            else{
+                wr = doSaveWithoutCascade(ent, withoutCascade);
+            }
+        }
+        return wr;
+    }
+    
+    private WriteResult doSaveWithoutCascade(BuguEntity ent, boolean withoutCascade){
+        if(hasCustomListener){
+            notifyUpdated(ent);
+        }
+        return coll.save(MapperUtil.toDBObject(ent, withoutCascade));
+    }
+    
+    private WriteResult doInsertWithoutCascade(T t, boolean withoutCascade){
+        DBObject dbo = MapperUtil.toDBObject(t, withoutCascade);
+        WriteResult wr = coll.insert(dbo);
+        String id = dbo.get(Operator.ID).toString();
+        BuguEntity ent = (BuguEntity)t;
+        ent.setId(id);
+        if(hasCustomListener){
+            notifyInserted(ent);
+        }
+        return wr;
     }
     
     /**

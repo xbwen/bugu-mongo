@@ -29,4 +29,6 @@ public interface Encoder {
     
     public Object encode();
     
+    public void setWithoutCascade(boolean withoutCascade);
+    
 }

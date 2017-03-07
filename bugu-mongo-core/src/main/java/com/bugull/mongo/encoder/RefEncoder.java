@@ -52,11 +52,14 @@ public class RefEncoder extends AbstractEncoder{
     @Override
     public Object encode(){
         BuguEntity entity = (BuguEntity)value;
-        if(ref.cascade().toUpperCase().indexOf(Default.CASCADE_CREATE)!=-1 || ref.cascade().toUpperCase().indexOf(Default.CASCADE_UPDATE)!=-1){
-            Class<?> cls = FieldUtil.getRealType(field);
-            InternalDao dao = DaoCache.getInstance().get(cls);
-            dao.save(entity);
+        if(!withoutCascade){
+            if(ref.cascade().toUpperCase().indexOf(Default.CASCADE_CREATE)!=-1 || ref.cascade().toUpperCase().indexOf(Default.CASCADE_UPDATE)!=-1){
+                Class<?> cls = FieldUtil.getRealType(field);
+                InternalDao dao = DaoCache.getInstance().get(cls);
+                dao.saveWithoutCascade(entity, true);
+            }
         }
+        
         return ReferenceUtil.toDbReference(ref, entity.getClass(), entity.getId());
     }
     

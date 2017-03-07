@@ -29,6 +29,8 @@ public abstract class AbstractEncoder implements Encoder{
     protected Object value;
     protected Class<?> clazz;
     
+    protected boolean withoutCascade;
+    
     protected AbstractEncoder(Object obj, Field field){
         this.field = field;
         value = FieldUtil.get(obj, field);
@@ -38,6 +40,11 @@ public abstract class AbstractEncoder implements Encoder{
     @Override
     public boolean isNullField(){
         return value == null;
+    }
+
+    @Override
+    public void setWithoutCascade(boolean withoutCascade) {
+        this.withoutCascade = withoutCascade;
     }
     
 }

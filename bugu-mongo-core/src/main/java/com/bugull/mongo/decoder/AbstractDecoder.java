@@ -27,6 +27,8 @@ public abstract class AbstractDecoder implements Decoder{
     protected Field field;
     protected Object value;
     
+    protected boolean withoutCascade;
+    
     protected AbstractDecoder(Field field){
         this.field = field;
     }
@@ -34,6 +36,11 @@ public abstract class AbstractDecoder implements Decoder{
     @Override
     public boolean isNullField(){
         return value == null;
+    }
+
+    @Override
+    public void setWithoutCascade(boolean withoutCascade) {
+        this.withoutCascade = withoutCascade;
     }
     
 }

@@ -50,16 +50,16 @@ public class RefDecoder extends AbstractDecoder{
     public void decode(Object obj){
         String refId = ReferenceUtil.fromDbReference(ref, value);
         Class<?> clazz = FieldUtil.getRealType(field);
-        BuguEntity refObj;
+        BuguEntity refObj = null;
         //not cascade read
-        if(ref.cascade().toUpperCase().indexOf(Default.CASCADE_READ)==-1){
+        if(ref.cascade().toUpperCase().indexOf(Default.CASCADE_READ)==-1 || withoutCascade){
             refObj = (BuguEntity)ConstructorCache.getInstance().create(clazz);
             refObj.setId(refId);
         }
         //cascade read
-        else{
+        else {
             InternalDao dao = DaoCache.getInstance().get(clazz);
-            refObj = (BuguEntity)dao.findOneLazily(refId);
+            refObj = (BuguEntity)dao.findOneLazily(refId, true);
         }
         FieldUtil.set(obj, field, refObj);
     }

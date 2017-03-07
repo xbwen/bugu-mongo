@@ -13,8 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package com.bugull.mongo.entity;
+package com.bugull.mongo.cascade;
 
 import com.bugull.mongo.SimpleEntity;
 import com.bugull.mongo.annotations.Entity;
@@ -23,49 +22,40 @@ import com.bugull.mongo.annotations.RefList;
 import java.util.List;
 
 /**
- * 
+ *
  * @author Frank Wen(xbwen@hotmail.com)
  */
 @Entity
-public class Order extends SimpleEntity {
+public class Node extends SimpleEntity {
     
-    private double money;
-    @Ref(cascade="R", reduced=true)
-    private User user;
-    @RefList
-    private List<Product> productList;
-    private String note;
+    private String name;
+    @Ref(cascade="CR")
+    private Node father;
+    @RefList(cascade="CR")
+    private List<Node> children;
 
-    public double getMoney() {
-        return money;
+    public String getName() {
+        return name;
     }
 
-    public void setMoney(double money) {
-        this.money = money;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public User getUser() {
-        return user;
+    public Node getFather() {
+        return father;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setFather(Node father) {
+        this.father = father;
     }
 
-    public List<Product> getProductList() {
-        return productList;
+    public List<Node> getChildren() {
+        return children;
     }
 
-    public void setProductList(List<Product> productList) {
-        this.productList = productList;
+    public void setChildren(List<Node> children) {
+        this.children = children;
     }
-
-    public String getNote() {
-        return note;
-    }
-
-    public void setNote(String note) {
-        this.note = note;
-    }
-
+    
 }

@@ -68,7 +68,7 @@ public final class BuguMapper {
         if(obj instanceof DBObject){
             bdbo = (BasicDBObject)obj;
         }else{
-            DBObject dbo = MapperUtil.toDBObject(obj);
+            DBObject dbo = MapperUtil.toDBObject(obj, true);
             bdbo = (BasicDBObject)dbo;
         }
         return bdbo.toString();

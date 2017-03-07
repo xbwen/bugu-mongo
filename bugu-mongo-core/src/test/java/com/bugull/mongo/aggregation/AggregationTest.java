@@ -176,6 +176,23 @@ public class AggregationTest extends ReplicaSetBaseTest {
         disconnectDB();
     }
     
+    @Test
+    public void testInteger(){
+        connectDB();
+        
+        CommentDao dao = new CommentDao();
+        double max = dao.max("star");
+        System.out.println("max:" + max);
+        double min = dao.min("star");
+        System.out.println("min:" + min);
+        double sum = dao.sum("star");
+        System.out.println("sum:" + sum);
+        double avg = dao.average("star");
+        System.out.println("avg:" + avg);
+        
+        disconnectDB();
+    }
+    
     /**
      * group by author, order by books count
      */
@@ -395,7 +412,7 @@ public class AggregationTest extends ReplicaSetBaseTest {
         disconnectDB();
     }
     
-    @Test
+    //@Test
     public void testProjectExclude(){
         connectDB();
         
