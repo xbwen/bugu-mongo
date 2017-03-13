@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
  *
  * @author Frank Wen(xbwen@hotmail.com)
  */
-public class ThreadUtil {
+public final class ThreadUtil {
     
     /**
      * close the thread pool safely.

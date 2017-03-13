@@ -16,6 +16,7 @@
 
 package com.bugull.mongo;
 
+import com.bugull.mongo.join.JoinQuery;
 import com.bugull.mongo.annotations.Default;
 import com.bugull.mongo.annotations.Embed;
 import com.bugull.mongo.annotations.EmbedList;
@@ -1095,7 +1096,7 @@ public class BuguDao<T> {
         return new GeoQuery<T>(this);
     }
     
-//    public JoinQuery<T> joinQuery(Class<?> rightTable){
+//    public JoinQuery<T> join(Class<?> rightTable){
 //        return new JoinQuery<T>(this, rightTable);
 //    }
     

@@ -75,7 +75,11 @@ public class CascadeTest extends ReplicaSetBaseTest {
         BuguMapper.fetchCascade(father, "father");
         System.out.println("father name:" + father.getName());
         Node grand = father.getFather();
-        System.out.println("grand name:" + grand.getName());
+        if(grand != null){
+            System.out.println("grand name:" + grand.getName());
+        }else{
+            System.out.println("grand is null");
+        }
         
         disconnectDB();
     }
