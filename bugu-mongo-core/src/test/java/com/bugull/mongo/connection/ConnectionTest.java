@@ -17,6 +17,7 @@
 package com.bugull.mongo.connection;
 
 import com.bugull.mongo.base.ReplicaSetBaseTest;
+import com.mongodb.MongoClientOptions;
 import org.junit.Test;
 
 /**
@@ -25,9 +26,23 @@ import org.junit.Test;
  */
 public class ConnectionTest extends ReplicaSetBaseTest {
     
-    @Test
+    //@Test
     public void test(){
         connectDB();
+        
+        //do query here
+        
+        disconnectDB();
+    }
+    
+    @Test
+    public void testWithOptions(){
+        //set connection pool size to 20. the default is 10.
+        MongoClientOptions options = MongoClientOptions.builder().connectionsPerHost(20).build();
+        
+        connectDBWithOptions(options);
+        
+        //do query here
         
         disconnectDB();
     }

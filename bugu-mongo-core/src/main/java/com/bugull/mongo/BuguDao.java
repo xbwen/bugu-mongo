@@ -1096,9 +1096,9 @@ public class BuguDao<T> {
         return new GeoQuery<T>(this);
     }
     
-//    public JoinQuery<T> join(Class<?> rightTable){
-//        return new JoinQuery<T>(this, rightTable);
-//    }
+    public JoinQuery<T> join(Class<?> rightTable){
+        return new JoinQuery<T>(this, rightTable);
+    }
     
     /**
      * Create a bitwise query.
@@ -1130,15 +1130,20 @@ public class BuguDao<T> {
      * @return
      */
     public List<Iterable> parallelQuery(Parallelable... querys) {
-        if(querys.length <= 1){
-            logger.warn("You should NOT use parallelQuery() when only one query");
-        }
         List<ParallelTask> taskList = new ArrayList<ParallelTask>();
         for(Parallelable query : querys){
             taskList.add(new ParallelTask(query));
         }
+        int len = querys.length;
+        if(len <= 1){
+            logger.warn("You should NOT use parallelQuery() when only one query!!!");
+        }
+        int max = Runtime.getRuntime().availableProcessors() * 2 + 1;
+        if(len > max){
+            len = max;
+        }
+        ExecutorService es = Executors.newFixedThreadPool(len);
         List<Iterable> result = new ArrayList<Iterable>();
-        ExecutorService es = Executors.newFixedThreadPool(querys.length);
         try{
             List<Future<Iterable>> futureList = es.invokeAll(taskList);
             for(Future<Iterable> future : futureList){
