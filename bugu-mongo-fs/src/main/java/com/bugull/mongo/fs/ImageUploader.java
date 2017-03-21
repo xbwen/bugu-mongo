@@ -106,11 +106,14 @@ public class ImageUploader extends Uploader{
         int len = text.length();
         int fontSize = watermark.getFontSize();
         switch(watermark.getAlign()){
+            case Watermark.CENTER:
+                g.drawString(text, (originalWidth - (len * fontSize)) / 2, (originalHeight - fontSize) / 2);
+                break;
             case Watermark.BOTTOM_RIGHT:
                 g.drawString(text, originalWidth - (len * fontSize) - watermark.getRight(), originalHeight - fontSize - watermark.getBottom());
                 break;
-            case Watermark.CENTER:
-                g.drawString(text, (originalWidth - (len * fontSize)) / 2, (originalHeight - fontSize) / 2);
+            case Watermark.BOTTOM_LEFT:
+                g.drawString(text, watermark.getLeft(), originalHeight - fontSize - watermark.getBottom());
                 break;
             default:
                 break;
@@ -135,11 +138,14 @@ public class ImageUploader extends Uploader{
         g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, watermark.getAlpha())); 
         //position of the watermark
         switch(watermark.getAlign()){
+            case Watermark.CENTER:
+                g.drawImage(watermarkImage, (originalWidth - watermarkWidth) / 2, (originalHeight - watermarkHeight) / 2, watermarkWidth, watermarkHeight, null);
+                break;
             case Watermark.BOTTOM_RIGHT:
                 g.drawImage(watermarkImage, originalWidth - watermarkWidth - watermark.getRight(), originalHeight - watermarkHeight - watermark.getBottom(), watermarkWidth, watermarkHeight, null);
                 break;
-            case Watermark.CENTER:
-                g.drawImage(watermarkImage, (originalWidth - watermarkWidth) / 2, (originalHeight - watermarkHeight) / 2, watermarkWidth, watermarkHeight, null);
+            case Watermark.BOTTOM_LEFT:
+                g.drawImage(watermarkImage, watermark.getLeft(), originalHeight - watermarkHeight - watermark.getBottom(), watermarkWidth, watermarkHeight, null);
                 break;
             default:
                 break;
