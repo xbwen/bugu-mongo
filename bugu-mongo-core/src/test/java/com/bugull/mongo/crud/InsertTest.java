@@ -17,6 +17,7 @@
 package com.bugull.mongo.crud;
 
 import com.bugull.mongo.base.ReplicaSetBaseTest;
+import com.bugull.mongo.dao.CustomerDao;
 import com.bugull.mongo.dao.GroupContactDao;
 import com.bugull.mongo.dao.GroupProductDao;
 import com.bugull.mongo.dao.OrderDao;
@@ -24,6 +25,7 @@ import com.bugull.mongo.dao.ProductDao;
 import com.bugull.mongo.dao.UserDao;
 import com.bugull.mongo.entity.Address;
 import com.bugull.mongo.entity.Contact;
+import com.bugull.mongo.entity.Customer;
 import com.bugull.mongo.entity.GroupContact;
 import com.bugull.mongo.entity.GroupProduct;
 import com.bugull.mongo.entity.Order;
@@ -48,21 +50,21 @@ public class InsertTest extends ReplicaSetBaseTest {
         
         ProductDao productDao = new ProductDao();
         Product p1 = new Product();
-        p1.setName("iPhone 6");
-        p1.setDescription("iPhone 6 is the first choice for your mobile phone, and bala bala bala...");
-        p1.setPrice(5321.5F);
+        p1.setName("iPhone 5");
+        p1.setDescription("iPhone 5 is the first choice for your mobile phone, and bala bala bala...");
+        p1.setPrice(3000F);
         productDao.save(p1);
         
         Product p2 = new Product();
-        p2.setName("iPhone 6 Plus");
-        p2.setDescription("iPhone 6 Plus is the second choice for your mobile phone, and bala bala bala...");
-        p2.setPrice(6321.5F);
+        p2.setName("iPhone 5S");
+        p2.setDescription("iPhone 8 Plus is the second choice for your mobile phone, and bala bala bala...");
+        p2.setPrice(4000F);
         productDao.save(p2);
         
         UserDao userDao = new UserDao();
         User user = new User();
-        user.setUsername("frank");
-        user.setAge(30);
+        user.setUsername("tom");
+        user.setAge(40);
         user.setValid(true);
         user.setRegisterTime(new Date());
         Contact contact = new Contact();
@@ -92,7 +94,7 @@ public class InsertTest extends ReplicaSetBaseTest {
         list2.add(3);
         permissions.put("order", list2);
         user.setPermissions(permissions);
-        float[] scores = new float[]{80F, 95.5F, 100F};
+        float[] scores = new float[]{66F, 77.7F, 88F};
         user.setScores(scores);
         userDao.save(user);        
         
@@ -103,14 +105,14 @@ public class InsertTest extends ReplicaSetBaseTest {
         productList.add(p2);
         order.setProductList(productList);
         order.setUser(user);
-        order.setMoney(9999.9);
-        order.setNote("AA");
+        order.setMoney(7000);
+        order.setNote("DD");
         orderDao.save(order);
         
         disconnectDB();
     }
     
-    @Test
+    //@Test
     public void testComplexEmbedList(){
         connectDB();
         

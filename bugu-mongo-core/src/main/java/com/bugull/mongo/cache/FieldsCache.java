@@ -16,14 +16,17 @@
 
 package com.bugull.mongo.cache;
 
+import com.bugull.mongo.annotations.Default;
 import com.bugull.mongo.annotations.Embed;
 import com.bugull.mongo.annotations.EmbedList;
 import com.bugull.mongo.annotations.Id;
+import com.bugull.mongo.annotations.Ignore;
 import com.bugull.mongo.annotations.Property;
 import com.bugull.mongo.annotations.Ref;
 import com.bugull.mongo.annotations.RefList;
 import com.bugull.mongo.exception.FieldException;
 import com.bugull.mongo.exception.IdException;
+import com.bugull.mongo.utils.Operator;
 import java.lang.ref.SoftReference;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -262,6 +265,78 @@ public class FieldsCache {
             }
         }
         return result;
+    }
+    
+    /**
+     * get all the columns' name
+     * @param clazz
+     * @return 
+     */
+    public List<String> getAllColumnsName(Class<?> clazz){
+        List<String> list = new ArrayList<String>();
+        Field[] fields = get(clazz);
+        for(Field f : fields){
+            String columnName = f.getName();
+            Id id = f.getAnnotation(Id.class);
+            if(id != null){
+                columnName = Operator.ID;
+                list.add(columnName);
+                continue;
+            }
+            Property property = f.getAnnotation(Property.class);
+            if(property != null){
+                String name = property.name();
+                if(!name.equals(Default.NAME)){
+                    columnName = name;
+                }
+                list.add(columnName);
+                continue;
+            }
+            Embed embed = f.getAnnotation(Embed.class);
+            if(embed != null){
+                String name = embed.name();
+                if(!name.equals(Default.NAME)){
+                    columnName = name;
+                }
+                list.add(columnName);
+                continue;
+            }
+            EmbedList embedList = f.getAnnotation(EmbedList.class);
+            if(embedList != null){
+                String name = embedList.name();
+                if(!name.equals(Default.NAME)){
+                    columnName = name;
+                }
+                list.add(columnName);
+                continue;
+            }
+            Ref ref = f.getAnnotation(Ref.class);
+            if(ref != null){
+                String name = ref.name();
+                if(!name.equals(Default.NAME)){
+                    columnName = name;
+                }
+                list.add(columnName);
+                continue;
+            }
+            RefList refList = f.getAnnotation(RefList.class);
+            if(refList != null){
+                String name = refList.name();
+                if(!name.equals(Default.NAME)){
+                    columnName = name;
+                }
+                list.add(columnName);
+                continue;
+            }
+            Ignore ignore = f.getAnnotation(Ignore.class);
+            if(ignore != null){
+                continue;
+            }
+            //if no annotations, run to here
+            //this must put at the end
+            list.add(columnName);
+        }
+        return list; 
     }
     
 }

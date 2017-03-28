@@ -20,16 +20,17 @@ import com.bugull.mongo.BuguDao;
 import com.bugull.mongo.BuguQuery;
 import com.bugull.mongo.agg.Lookup;
 import com.bugull.mongo.annotations.Id;
-import com.bugull.mongo.annotations.Ref;
-import com.bugull.mongo.annotations.RefList;
 import com.bugull.mongo.cache.FieldsCache;
 import com.bugull.mongo.exception.FieldException;
 import com.bugull.mongo.parallel.Parallelable;
 import com.bugull.mongo.utils.MapperUtil;
 import com.bugull.mongo.utils.Operator;
+import com.bugull.mongo.utils.SortUtil;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -38,156 +39,272 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * 
+ * Join query on two collection. It's based on aggregation, but easy to use.
  * 
  * @author Frank Wen(xbwen@hotmail.com)
  */
-public class JoinQuery<T> implements Parallelable {
+public class JoinQuery<L, R> implements Parallelable {
     
     private final static Logger logger = LogManager.getLogger(JoinQuery.class.getName());
     
-    protected final BuguDao<T> dao;
+    protected final BuguDao<L> dao;
     
     protected DBObject fields;
     protected boolean fieldsSpecified;  //default value is false
     
-    protected String[] returnFields;
-    protected String[] notReturnFields;
+    protected String[] leftReturnFields;
+    protected String[] rightReturnFields;
+    protected String[] leftNotReturnFields;
+    protected String[] rightNotReturnFields;
     
-    protected String orderBy;
+    protected String leftOrderBy;
+    protected String rightOrderBy;
     protected int pageNumber;  //default value is zero
     protected int pageSize;  //default value is zero
     
-    protected Class<?> rightTable;  //the right table to join
+    protected Class<R> rightColl;  //the right collection to join
     
     protected String leftKey;
     protected String rightKey;
     
-    protected BuguQuery leftCondition;
-    protected BuguQuery rightCondition;
+    protected BuguQuery leftMatch;
+    protected BuguQuery rightMatch;
     
-    public JoinQuery(BuguDao<T> dao, Class<?> rightTable){
+    public JoinQuery(BuguDao<L> dao, Class<R> rightColl){
         this.dao = dao;
-        this.rightTable = rightTable;
+        this.rightColl = rightColl;
     }
     
-    public JoinQuery<T> keys(String leftKey, String rightKey){
+    public JoinQuery<L, R> keys(String leftKey, String rightKey){
         this.leftKey = leftKey;
         this.rightKey = rightKey;
         return this;
     }
     
-    public JoinQuery<T> leftCondition(BuguQuery leftCondition){
-        this.leftCondition = leftCondition;
+    public JoinQuery<L, R> leftMatch(BuguQuery leftMatch){
+        this.leftMatch = leftMatch;
         return this;
     }
     
-    public JoinQuery<T> rightCondition(BuguQuery rightCondition){
-        this.rightCondition = rightCondition;
+    public JoinQuery<L, R> rightMatch(BuguQuery rightMatch){
+        this.rightMatch = rightMatch;
         return this;
     }
     
-    public JoinQuery<T> returnFields(String... returnFields){
-        this.returnFields = returnFields;
+//    public JoinQuery<L, R> crossEquals(String leftField, String rightField){
+//        
+//    }
+//    
+//    public JoinQuery<L, R> crossNotEquals(String leftField, String rightField){
+//        
+//    }
+    
+    public JoinQuery<L, R> returnFields(String[] leftReturnFields, String[] rightReturnFields){
+        this.leftReturnFields = leftReturnFields;
+        this.rightReturnFields = rightReturnFields;
         return this;
     }
     
-    public JoinQuery<T> notReturnFields(String... notReturnFields){
-        this.notReturnFields = notReturnFields;
+    public JoinQuery<L, R> notReturnFields(String[] leftNotReturnFields, String[] rightNotReturnFields){
+        this.leftNotReturnFields = leftNotReturnFields;
+        this.rightNotReturnFields = rightNotReturnFields;
         return this;
     }
     
-    public JoinQuery<T> sort(String orderBy){
-        this.orderBy = orderBy;
+    public JoinQuery<L, R> sort(String leftOrderBy, String rightOrderBy){
+        this.leftOrderBy = leftOrderBy;
+        this.rightOrderBy = rightOrderBy;
         return this;
     }
     
-    public JoinQuery<T> pageNumber(int pageNumber){
+    public JoinQuery<L, R> pageNumber(int pageNumber){
         this.pageNumber = pageNumber;
         return this;
     }
     
-    public JoinQuery<T> pageSize(int pageSize){
+    public JoinQuery<L, R> pageSize(int pageSize){
         this.pageSize = pageSize;
         return this;
     }
     
     @Override
-    public List<T> results(){
-        BuguAggregation<T> agg = dao.aggregate();
+    public List<JoinResult<L, R>> results(){
+        BuguAggregation<L> agg = dao.aggregate();
         
-        //step 1:
-        if(leftCondition != null){
-            agg.match(leftCondition);
+        //match the left
+        if(leftMatch != null){
+            agg.match(leftMatch);
         }
         
-        //To do:
-        //before lookup, have to check: 
-        //if rightKey is _id, and the leftKey is DBRef, need to project DBRef to ObjectId
-        //use ref.$id to get ObjectId value
+        //check left key
         Field leftField = null;
         try{
-            leftField = FieldsCache.getInstance().getField(dao.getClass(), leftKey);
+            leftField = FieldsCache.getInstance().getField(dao.getEntityClass(), leftKey);
         }catch(FieldException ex){
             logger.error(ex.getMessage(), ex);
         }
-        
-        Ref ref = leftField.getAnnotation(Ref.class);
-        if(ref != null){
-            
-        }else{
-            RefList refList = leftField.getAnnotation(RefList.class);
-            if(refList != null){
-                
+        if(leftField != null){
+            Id leftId = leftField.getAnnotation(Id.class);
+            if(leftId != null){
+                leftKey = Operator.ID;
             }
         }
         
+        //check right key
         Field rightField = null;
         try{
-            rightField = FieldsCache.getInstance().getField(rightTable, rightKey);
+            rightField = FieldsCache.getInstance().getField(rightColl, rightKey);
         }catch(FieldException ex){
             logger.error(ex.getMessage(), ex);
         }
-        if(rightField!=null && rightField.getAnnotation(Id.class)!=null){
-            rightKey = Operator.ID;
+        if(rightField != null){
+            Id rightId = rightField.getAnnotation(Id.class);
+            if(rightId != null){
+                rightKey = Operator.ID;
+            }
         }
         
         //the as field
-        Class<T> leftTable = dao.getEntityClass();
-        String leftTableName = MapperUtil.getEntityName(leftTable);
-        String rightTableName = MapperUtil.getEntityName(rightTable);
-        String as = leftTableName + "_" + rightTableName + "_" + leftTableName.length() + "_" + rightTableName.length();  //make sure the as field does not exists
+        Class<L> leftColl = dao.getEntityClass();
+        String leftCollName = MapperUtil.getEntityName(leftColl);
+        String rightCollName = MapperUtil.getEntityName(rightColl);
+        String as = leftCollName + "_" + leftCollName.length() + "_" + rightCollName + "_" + rightCollName.length();  //make sure the as field does not exists
 
-        agg.lookup(new Lookup(rightTableName, leftKey, rightKey, as));
+        //lookup
+        agg.lookup(new Lookup(rightCollName, leftKey, rightKey, as));
         
+        //unwind
+        agg.unwind(as);
+
         //match the real right condition after lookup
-        if(rightCondition != null){
-            DBObject cond = rightCondition.getCondition();
-            DBObject realCondition = new BasicDBObject();
+        if(rightMatch != null){
+            DBObject cond = rightMatch.getCondition();
+            DBObject realRightMatch = new BasicDBObject();
             Map map = cond.toMap();
             Set<Entry> set = map.entrySet();
             for(Entry entry : set){
-                String key = (String)entry.getKey();
-                realCondition.put(as + "." + key, entry.getValue());
+                String key = entry.getKey().toString();
+                realRightMatch.put(as + "." + key, entry.getValue());
             }
-            agg.match(realCondition);
+            agg.match(realRightMatch);
         }
         
-        if(returnFields != null){
-            agg.projectInclude(returnFields);
+        //sort
+        if(rightOrderBy == null){
+            if(leftOrderBy != null){
+                agg.sort(leftOrderBy);
+            }
         }
-        if(notReturnFields != null){
-            agg.projectExclude(notReturnFields);
+        else{
+            DBObject realSort = new BasicDBObject();
+            if(leftOrderBy != null){
+                DBObject leftSort = SortUtil.getSort(leftOrderBy);
+                Map map = leftSort.toMap();
+                Set<Entry> set = map.entrySet();
+                for(Entry entry : set){
+                    realSort.put(entry.getKey().toString(), entry.getValue());
+                }
+            }
+            DBObject rightSort = SortUtil.getSort(rightOrderBy);
+            Map map = rightSort.toMap();
+            Set<Entry> set = map.entrySet();
+            for(Entry entry : set){
+                String key = entry.getKey().toString();
+                realSort.put(as + "." + key, entry.getValue());
+            }
+            agg.sort(realSort);
         }
-        if(orderBy != null){
-            agg.sort(orderBy);
+        
+        //project retrun fields
+        if(rightReturnFields == null){
+            if(leftReturnFields != null){
+                agg.projectInclude(leftReturnFields);
+            }
         }
+        else{
+            int len = rightReturnFields.length;
+            for(int i=0; i<len; i++){
+                rightReturnFields[i] = as + "." + rightReturnFields[i];
+            }
+            if(leftReturnFields == null){
+                agg.projectInclude(rightReturnFields);
+            }else{
+                String[] returnFields = new String[leftReturnFields.length + rightReturnFields.length];
+                System.arraycopy(leftReturnFields, 0, returnFields, 0, leftReturnFields.length);
+                System.arraycopy(rightReturnFields, 0, returnFields, leftReturnFields.length, rightReturnFields.length);
+                agg.projectInclude(returnFields);
+            }
+        }
+        
+        //project not return fields
+        if(leftNotReturnFields != null){
+            agg.projectExclude(leftNotReturnFields);
+        }
+        if(rightNotReturnFields != null){
+            int len = rightNotReturnFields.length;
+            for(int i=0; i<len; i++){
+                rightNotReturnFields[i] = as + "." + rightNotReturnFields[i];
+            }
+            agg.projectExclude(rightNotReturnFields);
+        }
+        
+        //group it
+        //do group and push here
+        List<String> columns = FieldsCache.getInstance().getAllColumnsName(leftColl);
+        StringBuilder sb = new StringBuilder();
+        sb.append("{");
+        sb.append("_id:");
+        sb.append("{"); //start of _id
+        for(String col : columns){
+            sb.append(col).append(":").append("'$").append(col).append("',");
+        }
+        sb.deleteCharAt(sb.length()-1); //delete the last comma(,)
+        sb.append("}");  //end of _id
+        sb.append(",");
+        sb.append(as).append(":").append("{$push:'$").append(as).append("'}");
+        sb.append("}");
+        
+        agg.group(sb.toString());
+        
+        //skip and limit
         if(pageNumber>0 && pageSize>0){
             agg.skip((pageNumber-1)*pageSize).limit(pageSize);
         }
         
-        Iterable<DBObject> results = agg.results();
-        return MapperUtil.toList(leftTable, results);
+        //return JoinResult
+        List<JoinResult<L, R>> list = new ArrayList<JoinResult<L, R>>();
+        Iterable<DBObject> it = agg.results();
+        for(DBObject dbo : it){
+            System.out.println(dbo.toString());
+            JoinResult<L, R> result = new JoinResult<L, R>();
+            DBObject _id = (DBObject)dbo.get("_id");
+            L leftEntity = MapperUtil.fromDBObject(leftColl, _id);
+            result.setLeftEntity(leftEntity);
+            Object asArr = dbo.get(as);
+            if(asArr != null){
+                Object arr = decodeArray(asArr);
+                result.setRightEntity((R[])arr);
+            }
+            list.add(result);
+        }
+        return list;
+
+    }
+    
+    private Object decodeArray(Object val){
+        List list = (ArrayList)val;
+        int size = list.size();
+        Object arr = Array.newInstance(rightColl, size);
+        for(int i=0; i<size; i++){
+            Object item = list.get(i);
+            if(item != null){
+                DBObject o = (DBObject)item;
+                Array.set(arr, i, MapperUtil.fromDBObject(rightColl, o));
+            }else{
+                Array.set(arr, i, null);
+            }
+        }
+        return arr;
     }
     
 }

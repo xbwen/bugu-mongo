@@ -13,14 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.bugull.mongo.crud;
+package com.bugull.mongo.join;
 
-import com.bugull.mongo.BuguQuery;
-import com.bugull.mongo.join.JoinQuery;
 import com.bugull.mongo.base.ReplicaSetBaseTest;
-import com.bugull.mongo.dao.OrderDao;
 import com.bugull.mongo.dao.UserDao;
-import com.bugull.mongo.entity.Order;
+import com.bugull.mongo.entity.Customer;
 import com.bugull.mongo.entity.User;
 import java.util.List;
 import org.junit.Test;
@@ -32,22 +29,23 @@ import org.junit.Test;
 public class JoinQueryTest extends ReplicaSetBaseTest {
     
     @Test
-    public void test(){
+    public void testBasicJoin(){
         connectDB();
         
-//        OrderDao orderDao = new OrderDao();
-//        UserDao userDao = new UserDao();
-//        BuguQuery<Order> leftQuery = orderDao.query().lessThan("money", 10000);
-//        BuguQuery<User> rightQuery = userDao.query().lessThan("age", 40);
-//        JoinQuery<Order> jq = orderDao.joinQuery(User.class)
-//                                    .leftField("user").rightField("_id")
-//                                    .leftCondition(leftQuery).rightCondition(rightQuery);
-//        List<Order> list = jq.results();
-//        
-//        for(Order order : list){
-//            System.out.println("order id: " + order.getId());
-//            System.out.println("order money: " + order.getMoney());
-//        }
+        UserDao dao = new UserDao();
+        
+        List<JoinResult<User, Customer>> list = dao.joinQuery(Customer.class).keys("username", "username").results();
+        for(JoinResult<User, Customer> result : list){
+            User user = result.getLeftEntity();
+            System.out.println("user name: " + user.getUsername());
+            System.out.println("user age: " + user.getAge());
+            Customer[] customers = result.getRightEntity();
+            System.out.println("customer len: " + customers.length);
+            for(Customer c : customers){
+                System.out.println("customer name: " + c.getUsername());
+                System.out.println("customer age: " + c.getAge());
+            }
+        }
         
         disconnectDB();
     }

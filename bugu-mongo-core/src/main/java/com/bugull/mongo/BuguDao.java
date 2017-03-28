@@ -1096,8 +1096,14 @@ public class BuguDao<T> {
         return new GeoQuery<T>(this);
     }
     
-    public JoinQuery<T> join(Class<?> rightTable){
-        return new JoinQuery<T>(this, rightTable);
+    /**
+     * Create a join query.
+     * @param <R> the java type of right collection.
+     * @param rightColl the right collection to join.
+     * @return 
+     */
+    public <R extends BuguEntity> JoinQuery<T, R> joinQuery(Class<R> rightColl){
+        return new JoinQuery<T, R>(this, rightColl);
     }
     
     /**

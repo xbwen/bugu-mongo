@@ -30,7 +30,7 @@ import java.util.List;
 public class Order extends SimpleEntity {
     
     private double money;
-    @Ref
+    @Ref(reduced = true)
     private User user;
     @RefList(cascade="R")
     private List<Product> productList;

@@ -21,6 +21,7 @@ import com.bugull.mongo.BuguQuery;
 import com.bugull.mongo.agg.ExpressionBuilder;
 import com.bugull.mongo.agg.Lookup;
 import com.bugull.mongo.base.ReplicaSetBaseTest;
+import com.bugull.mongo.dao.OrderDao;
 import com.bugull.mongo.dao.ProductDao;
 import com.mongodb.AggregationOptions;
 import com.mongodb.BasicDBObject;
@@ -176,7 +177,7 @@ public class AggregationTest extends ReplicaSetBaseTest {
         disconnectDB();
     }
     
-    @Test
+    //@Test
     public void testInteger(){
         connectDB();
         
@@ -383,9 +384,9 @@ public class AggregationTest extends ReplicaSetBaseTest {
     public void testAddFields(){
         connectDB();
         
-        ProductDao dao = new ProductDao();
+        OrderDao dao = new OrderDao();
         BuguAggregation agg = dao.aggregate();
-        agg.addFields("{cargo : 'on road...'}");
+        agg.addFields(new BasicDBObject("user1", "xxx"));
         
         Iterable<DBObject> it = agg.results();
         for(DBObject dbo : it){
