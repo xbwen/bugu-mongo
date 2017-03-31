@@ -26,6 +26,7 @@ import com.bugull.mongo.parallel.Parallelable;
 import com.bugull.mongo.utils.MapperUtil;
 import com.bugull.mongo.utils.Operator;
 import com.bugull.mongo.utils.SortUtil;
+import com.bugull.mongo.utils.StringUtil;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import java.lang.reflect.Array;
@@ -48,9 +49,6 @@ public class JoinQuery<L, R> implements Parallelable {
     private final static Logger logger = LogManager.getLogger(JoinQuery.class.getName());
     
     protected final BuguDao<L> dao;
-    
-    protected DBObject fields;
-    protected boolean fieldsSpecified;  //default value is false
     
     protected String[] leftReturnFields;
     protected String[] rightReturnFields;
@@ -76,28 +74,19 @@ public class JoinQuery<L, R> implements Parallelable {
     }
     
     public JoinQuery<L, R> keys(String leftKey, String rightKey){
+        if(StringUtil.isEmpty(leftKey) || StringUtil.isEmpty(rightKey)){
+            logger.error("Both leftKey and rightKey can NOT be null!!!");
+        }
         this.leftKey = leftKey;
         this.rightKey = rightKey;
         return this;
     }
     
-    public JoinQuery<L, R> leftMatch(BuguQuery leftMatch){
+    public JoinQuery<L, R> match(BuguQuery<L> leftMatch, BuguQuery<R> rightMatch){
         this.leftMatch = leftMatch;
-        return this;
-    }
-    
-    public JoinQuery<L, R> rightMatch(BuguQuery rightMatch){
         this.rightMatch = rightMatch;
         return this;
     }
-    
-//    public JoinQuery<L, R> crossEquals(String leftField, String rightField){
-//        
-//    }
-//    
-//    public JoinQuery<L, R> crossNotEquals(String leftField, String rightField){
-//        
-//    }
     
     public JoinQuery<L, R> returnFields(String[] leftReturnFields, String[] rightReturnFields){
         this.leftReturnFields = leftReturnFields;
@@ -108,6 +97,13 @@ public class JoinQuery<L, R> implements Parallelable {
     public JoinQuery<L, R> notReturnFields(String[] leftNotReturnFields, String[] rightNotReturnFields){
         this.leftNotReturnFields = leftNotReturnFields;
         this.rightNotReturnFields = rightNotReturnFields;
+        return this;
+    }
+    
+    public JoinQuery<L, R> returnLeftFieldsOnly(){
+        List<String> columns = FieldsCache.getInstance().getAllColumnsName(dao.getEntityClass());
+        this.leftReturnFields = columns.toArray(new String[0]);
+        this.rightReturnFields = null;
         return this;
     }
     
@@ -189,32 +185,6 @@ public class JoinQuery<L, R> implements Parallelable {
             agg.match(realRightMatch);
         }
         
-        //sort
-        if(rightOrderBy == null){
-            if(leftOrderBy != null){
-                agg.sort(leftOrderBy);
-            }
-        }
-        else{
-            DBObject realSort = new BasicDBObject();
-            if(leftOrderBy != null){
-                DBObject leftSort = SortUtil.getSort(leftOrderBy);
-                Map map = leftSort.toMap();
-                Set<Entry> set = map.entrySet();
-                for(Entry entry : set){
-                    realSort.put(entry.getKey().toString(), entry.getValue());
-                }
-            }
-            DBObject rightSort = SortUtil.getSort(rightOrderBy);
-            Map map = rightSort.toMap();
-            Set<Entry> set = map.entrySet();
-            for(Entry entry : set){
-                String key = entry.getKey().toString();
-                realSort.put(as + "." + key, entry.getValue());
-            }
-            agg.sort(realSort);
-        }
-        
         //project retrun fields
         if(rightReturnFields == null){
             if(leftReturnFields != null){
@@ -248,8 +218,20 @@ public class JoinQuery<L, R> implements Parallelable {
             agg.projectExclude(rightNotReturnFields);
         }
         
-        //group it
-        //do group and push here
+        //sort the right
+        if(rightOrderBy != null){
+            DBObject rightSort = SortUtil.getSort(rightOrderBy);
+            DBObject realRightSort = new BasicDBObject();
+            Map map = rightSort.toMap();
+            Set<Entry> set = map.entrySet();
+            for(Entry entry : set){
+                String key = entry.getKey().toString();
+                realRightSort.put(as + "." + key, entry.getValue());
+            }
+            agg.sort(realRightSort);
+        }
+        
+        //group and push
         List<String> columns = FieldsCache.getInstance().getAllColumnsName(leftColl);
         StringBuilder sb = new StringBuilder();
         sb.append("{");
@@ -266,6 +248,19 @@ public class JoinQuery<L, R> implements Parallelable {
         
         agg.group(sb.toString());
         
+        //sort the left
+        if(leftOrderBy != null){
+            DBObject leftSort = SortUtil.getSort(leftOrderBy);
+            DBObject realLeftSort = new BasicDBObject();
+            Map map = leftSort.toMap();
+            Set<Entry> set = map.entrySet();
+            for(Entry entry : set){
+                String key = entry.getKey().toString();
+                realLeftSort.put("_id." + key, entry.getValue());
+            }
+            agg.sort(realLeftSort);
+        }
+        
         //skip and limit
         if(pageNumber>0 && pageSize>0){
             agg.skip((pageNumber-1)*pageSize).limit(pageSize);
@@ -275,7 +270,6 @@ public class JoinQuery<L, R> implements Parallelable {
         List<JoinResult<L, R>> list = new ArrayList<JoinResult<L, R>>();
         Iterable<DBObject> it = agg.results();
         for(DBObject dbo : it){
-            System.out.println(dbo.toString());
             JoinResult<L, R> result = new JoinResult<L, R>();
             DBObject _id = (DBObject)dbo.get("_id");
             L leftEntity = MapperUtil.fromDBObject(leftColl, _id);

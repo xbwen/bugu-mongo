@@ -27,6 +27,7 @@ public class Customer extends SimpleEntity {
     
     private String username;
     private int age;
+    private int star;
 
     public String getUsername() {
         return username;
@@ -42,6 +43,14 @@ public class Customer extends SimpleEntity {
 
     public void setAge(int age) {
         this.age = age;
+    }
+
+    public int getStar() {
+        return star;
+    }
+
+    public void setStar(int star) {
+        this.star = star;
     }
     
 }
