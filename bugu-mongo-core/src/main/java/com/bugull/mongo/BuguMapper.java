@@ -24,7 +24,7 @@ import com.bugull.mongo.cache.FieldsCache;
 import com.bugull.mongo.exception.FieldException;
 import com.bugull.mongo.utils.DataType;
 import com.bugull.mongo.utils.FieldUtil;
-import com.bugull.mongo.misc.InternalDao;
+import com.bugull.mongo.access.InternalDao;
 import com.bugull.mongo.utils.MapperUtil;
 import com.bugull.mongo.utils.Operator;
 import com.mongodb.BasicDBObject;

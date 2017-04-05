@@ -22,7 +22,7 @@ import com.bugull.mongo.annotations.Ref;
 import com.bugull.mongo.cache.ConstructorCache;
 import com.bugull.mongo.cache.DaoCache;
 import com.bugull.mongo.utils.FieldUtil;
-import com.bugull.mongo.misc.InternalDao;
+import com.bugull.mongo.access.InternalDao;
 import com.bugull.mongo.utils.ReferenceUtil;
 import com.mongodb.DBObject;
 import java.lang.reflect.Field;

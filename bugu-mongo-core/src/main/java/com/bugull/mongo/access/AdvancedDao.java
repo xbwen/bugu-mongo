@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
-package com.bugull.mongo;
+package com.bugull.mongo.access;
 
+import com.bugull.mongo.BuguDao;
+import com.bugull.mongo.BuguQuery;
 import com.bugull.mongo.utils.SortUtil;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
@@ -39,12 +41,12 @@ public class AdvancedDao<T> extends BuguDao<T> {
     }
     
     public Iterable<DBObject> mapReduce(MapReduceCommand cmd) {
-        MapReduceOutput output = coll.mapReduce(cmd);
+        MapReduceOutput output = getCollection().mapReduce(cmd);
         return output.results();
     }
     
     public Iterable<DBObject> mapReduce(String map, String reduce) {
-        MapReduceOutput output = coll.mapReduce(map, reduce, null, MapReduceCommand.OutputType.INLINE, null);
+        MapReduceOutput output = getCollection().mapReduce(map, reduce, null, MapReduceCommand.OutputType.INLINE, null);
         return output.results();
     }
     
@@ -53,7 +55,7 @@ public class AdvancedDao<T> extends BuguDao<T> {
     }
     
     private Iterable<DBObject> mapReduce(String map, String reduce, DBObject query) {
-        MapReduceOutput output = coll.mapReduce(map, reduce, null, MapReduceCommand.OutputType.INLINE, query);
+        MapReduceOutput output = getCollection().mapReduce(map, reduce, null, MapReduceCommand.OutputType.INLINE, query);
         return output.results();
     }
     
@@ -62,7 +64,7 @@ public class AdvancedDao<T> extends BuguDao<T> {
     }
     
     private synchronized Iterable<DBObject> mapReduce(String map, String reduce, String outputTarget, MapReduceCommand.OutputType outputType, String orderBy, DBObject query) {
-        MapReduceOutput output = coll.mapReduce(map, reduce, outputTarget, outputType, query);
+        MapReduceOutput output = getCollection().mapReduce(map, reduce, outputTarget, outputType, query);
         DBCollection c = output.getOutputCollection();
         DBCursor cursor;
         if(orderBy != null){
@@ -82,7 +84,7 @@ public class AdvancedDao<T> extends BuguDao<T> {
     }
     
     private synchronized Iterable<DBObject> mapReduce(String map, String reduce, String outputTarget, MapReduceCommand.OutputType outputType, String orderBy, int pageNum, int pageSize, DBObject query) {
-        MapReduceOutput output = coll.mapReduce(map, reduce, outputTarget, outputType, query);
+        MapReduceOutput output = getCollection().mapReduce(map, reduce, outputTarget, outputType, query);
         DBCollection c = output.getOutputCollection();
         DBCursor cursor;
         if(orderBy != null){

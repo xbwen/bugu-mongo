@@ -16,6 +16,7 @@
 
 package com.bugull.mongo;
 
+import com.bugull.mongo.access.AbstractDao;
 import com.bugull.mongo.join.JoinQuery;
 import com.bugull.mongo.annotations.Default;
 import com.bugull.mongo.annotations.Embed;
@@ -70,11 +71,10 @@ import org.apache.logging.log4j.Logger;
  * @author Frank Wen(xbwen@hotmail.com)
  */
 @SuppressWarnings("unchecked")
-public class BuguDao<T> {
+public class BuguDao<T> extends AbstractDao {
     
     protected final static Logger logger = LogManager.getLogger(BuguDao.class.getName());
     
-    protected DBCollection coll;
     protected Class<T> clazz;
     protected DBObject keys;  //non-lazy fields
     
@@ -84,15 +84,22 @@ public class BuguDao<T> {
     
     public BuguDao(Class<T> clazz){
         this.clazz = clazz;
-        //init none-split collection
+        
+        //init none-split-collection
         Entity entity = clazz.getAnnotation(Entity.class);
-        SplitType split = entity.split();
-        if(split == SplitType.NONE){
+        SplitType st = entity.split();
+        if(st == SplitType.NONE){
+            split = false;
             String name = MapperUtil.getEntityName(clazz);
             initCollection(name);
+        }else{
+            split = true;
         }
+        //as for split-collection, call setSplitSuffix() to initialize it.
+        
         //for keys
         keys = getLazyFields();
+        
         //for cascade delete
         if(hasCascadeDelete()){
             listenerList.add(new CascadeDeleteListener(clazz));
@@ -172,6 +179,7 @@ public class BuguDao<T> {
     private void initCollection(String name){
         DB db = BuguFramework.getInstance().getConnection().getDB();
         Entity entity = clazz.getAnnotation(Entity.class);
+        DBCollection dbColl;
         //if capped
         if(entity.capped() && !db.collectionExists(name)){
             DBObject options = new BasicDBObject("capped", true);
@@ -183,16 +191,18 @@ public class BuguDao<T> {
             if(capMax != Default.CAP_MAX){
                 options.put("max", capMax);
             }
-            coll = db.createCollection(name, options);
+            dbColl = db.createCollection(name, options);
         }else{
-            coll = db.getCollection(name);
+            dbColl = db.getCollection(name);
         }
+        setCollection(dbColl);
+        
         //for @EnsureIndex
         EnsureIndex ei = clazz.getAnnotation(EnsureIndex.class);
         if(ei != null){
             List<DBIndex> list = getDBIndex(ei.value());
             for(DBIndex dbi : list){
-                coll.createIndex(dbi.indexKeys, dbi.indexOptions);
+                getCollection().createIndex(dbi.indexKeys, dbi.indexOptions);
             }
         }
     }
@@ -241,14 +251,14 @@ public class BuguDao<T> {
     }
     
     /**
-     * If collection is splitted by date, you have to set the date to check which collection is in use.
+     * If collection is split by date, you have to set the date to check which collection is in use.
      * @param date 
      */
     public void setSplitSuffix(Date date){
         Entity entity = clazz.getAnnotation(Entity.class);
-        SplitType split = entity.split();
+        SplitType st = entity.split();
         SimpleDateFormat sdf = null;
-        switch(split){
+        switch(st){
             case DAILY:
                 sdf = new SimpleDateFormat("yyyy-MM-dd");
                 break;
@@ -269,13 +279,13 @@ public class BuguDao<T> {
     }
     
     /**
-     * If collection is splitted by string, you have to set the string value to check which collection is in use.
+     * If collection is split by string, you have to set the string value to check which collection is in use.
      * @param s 
      */
     public void setSplitSuffix(String s){
         Entity entity = clazz.getAnnotation(Entity.class);
-        SplitType split = entity.split();
-        if(split == SplitType.STRING){
+        SplitType st = entity.split();
+        if(st == SplitType.STRING){
             String name = MapperUtil.getEntityName(clazz);
             initCollection(name + "-" + s);
         }
@@ -286,7 +296,7 @@ public class BuguDao<T> {
      * @param writeConcern 
      */
     public void setWriteConcern(WriteConcern writeConcern){
-        coll.setWriteConcern(writeConcern);
+        getCollection().setWriteConcern(writeConcern);
     }
     
     /**
@@ -294,7 +304,7 @@ public class BuguDao<T> {
      * @param readPreference 
      */
     public void setReadPreference(ReadPreference readPreference) {
-        coll.setReadPreference(readPreference);
+        getCollection().setReadPreference(readPreference);
     }
     
     public void addEntityListener(EntityListener listener){
@@ -357,7 +367,7 @@ public class BuguDao<T> {
      */
     public WriteResult insert(T t){
         DBObject dbo = MapperUtil.toDBObject(t);
-        WriteResult wr = coll.insert(dbo);
+        WriteResult wr = getCollection().insert(dbo);
         String id = dbo.get(Operator.ID).toString();
         BuguEntity ent = (BuguEntity)t;
         ent.setId(id);
@@ -380,7 +390,7 @@ public class BuguDao<T> {
         for(T t : list){
             dboList.add(MapperUtil.toDBObject(t));
         }
-        WriteResult wr = coll.insert(dboList);
+        WriteResult wr = getCollection().insert(dboList);
         int len = dboList.size();
         for(int i=0; i<len; i++){
             String id = dboList.get(i).get(Operator.ID).toString();
@@ -434,7 +444,7 @@ public class BuguDao<T> {
         if(hasCustomListener){
             notifyUpdated(ent);
         }
-        return coll.save(MapperUtil.toDBObject(ent));
+        return getCollection().save(MapperUtil.toDBObject(ent));
     }
     
     /**
@@ -449,8 +459,8 @@ public class BuguDao<T> {
             }
         }
         else{
-            coll.drop();
-            coll.dropIndexes();
+            getCollection().drop();
+            getCollection().dropIndexes();
         }
     }
     
@@ -475,7 +485,7 @@ public class BuguDao<T> {
             notifyDeleted(entity);
         }
         DBObject query = new BasicDBObject(Operator.ID, IdUtil.toDbId(clazz, id));
-        return coll.remove(query);
+        return getCollection().remove(query);
     }
     
     /**
@@ -515,13 +525,13 @@ public class BuguDao<T> {
     
     private WriteResult removeMulti(DBObject condition){
         if(!listenerList.isEmpty()){
-            DBCursor cursor = coll.find(condition);
+            DBCursor cursor = getCollection().find(condition);
             List<T> list = MapperUtil.toList(clazz, cursor);
             for(T t : list){
                 notifyDeleted((BuguEntity)t);
             }
         }
-        return coll.remove(condition);
+        return getCollection().remove(condition);
     }
     
     private Object checkSpecialValue(String key, Object value){
@@ -544,7 +554,7 @@ public class BuguDao<T> {
     public boolean exists(String id){
         DBObject query = new BasicDBObject();
         query.put(Operator.ID, IdUtil.toDbId(clazz, id));
-        return coll.findOne(query) != null;
+        return getCollection().findOne(query) != null;
     }
     
     /**
@@ -556,7 +566,7 @@ public class BuguDao<T> {
     public boolean exists(String key, Object value){
         value = checkSpecialValue(key, value);
         DBObject query = new BasicDBObject(key, value);
-        return coll.findOne(query) != null;
+        return getCollection().findOne(query) != null;
     }
     
     /**
@@ -564,7 +574,7 @@ public class BuguDao<T> {
      * @return 
      */
     public T findOne(){
-        DBObject result = coll.findOne();
+        DBObject result = getCollection().findOne();
         return MapperUtil.fromDBObject(clazz, result);
     }
     
@@ -576,7 +586,7 @@ public class BuguDao<T> {
     public T findOne(String id){
         DBObject query = new BasicDBObject();
         query.put(Operator.ID, IdUtil.toDbId(clazz, id));
-        DBObject result = coll.findOne(query);
+        DBObject result = getCollection().findOne(query);
         return MapperUtil.fromDBObject(clazz, result);
     }
     
@@ -589,7 +599,7 @@ public class BuguDao<T> {
     public T findOne(String key, Object value){
         value = checkSpecialValue(key, value);
         DBObject query = new BasicDBObject(key, value);
-        DBObject dbo = coll.findOne(query);
+        DBObject dbo = getCollection().findOne(query);
         return MapperUtil.fromDBObject(clazz, dbo);
     }
     
@@ -603,7 +613,7 @@ public class BuguDao<T> {
         DBObject returnFields = getReturnFields(keys);
         DBObject query = new BasicDBObject();
         query.put(Operator.ID, IdUtil.toDbId(clazz, id));
-        DBObject result = coll.findOne(query, returnFields);
+        DBObject result = getCollection().findOne(query, returnFields);
         return MapperUtil.fromDBObject(clazz, result);
     }
     
@@ -618,7 +628,7 @@ public class BuguDao<T> {
         DBObject returnFields = getReturnFields(keys);
         value = checkSpecialValue(key, value);
         DBObject query = new BasicDBObject(key, value);
-        DBObject dbo = coll.findOne(query, returnFields);
+        DBObject dbo = getCollection().findOne(query, returnFields);
         return MapperUtil.fromDBObject(clazz, dbo);
     }
     
@@ -632,7 +642,7 @@ public class BuguDao<T> {
         DBObject notReturnFields = getNotReturnFields(keys);
         DBObject query = new BasicDBObject();
         query.put(Operator.ID, IdUtil.toDbId(clazz, id));
-        DBObject result = coll.findOne(query, notReturnFields);
+        DBObject result = getCollection().findOne(query, notReturnFields);
         return MapperUtil.fromDBObject(clazz, result);
     }
     
@@ -647,7 +657,7 @@ public class BuguDao<T> {
         DBObject notReturnFields = getNotReturnFields(keys);
         value = checkSpecialValue(key, value);
         DBObject query = new BasicDBObject(key, value);
-        DBObject dbo = coll.findOne(query, notReturnFields);
+        DBObject dbo = getCollection().findOne(query, notReturnFields);
         return MapperUtil.fromDBObject(clazz, dbo);
     }
 
@@ -656,7 +666,7 @@ public class BuguDao<T> {
      * @return 
      */
     public List<T> findAll(){
-        DBCursor cursor = coll.find(new BasicDBObject(), keys);
+        DBCursor cursor = getCollection().find(new BasicDBObject(), keys);
         return MapperUtil.toList(clazz, cursor);
     }
     
@@ -667,7 +677,7 @@ public class BuguDao<T> {
      */
     public List<T> findAll(String orderBy){
         DBObject dbo = SortUtil.getSort(orderBy);
-        DBCursor cursor = coll.find(new BasicDBObject(), keys).sort(dbo);
+        DBCursor cursor = getCollection().find(new BasicDBObject(), keys).sort(dbo);
         return MapperUtil.toList(clazz, cursor);
     }
 
@@ -678,7 +688,7 @@ public class BuguDao<T> {
      * @return 
      */
     public List<T> findAll(int pageNum, int pageSize){
-        DBCursor cursor = coll.find(new BasicDBObject(), keys).skip((pageNum-1)*pageSize).limit(pageSize);
+        DBCursor cursor = getCollection().find(new BasicDBObject(), keys).skip((pageNum-1)*pageSize).limit(pageSize);
         return MapperUtil.toList(clazz, cursor);
     }
     
@@ -691,7 +701,7 @@ public class BuguDao<T> {
      */
     public List<T> findAll(String orderBy, int pageNum, int pageSize){
         DBObject dbo = SortUtil.getSort(orderBy);
-        DBCursor cursor = coll.find(new BasicDBObject(), keys).sort(dbo).skip((pageNum-1)*pageSize).limit(pageSize);
+        DBCursor cursor = getCollection().find(new BasicDBObject(), keys).sort(dbo).skip((pageNum-1)*pageSize).limit(pageSize);
         return MapperUtil.toList(clazz, cursor);
     }
     
@@ -715,7 +725,7 @@ public class BuguDao<T> {
     public T findAndModify(String id, BuguUpdater updater, boolean returnNew){
         DBObject query = new BasicDBObject();
         query.put(Operator.ID, IdUtil.toDbId(clazz, id));
-        DBObject result = coll.findAndModify(query, null, null, false, updater.getModifier(), returnNew, false);
+        DBObject result = getCollection().findAndModify(query, null, null, false, updater.getModifier(), returnNew, false);
         T t = MapperUtil.fromDBObject(clazz, result);
         if(hasCustomListener){
             if(returnNew){
@@ -750,7 +760,7 @@ public class BuguDao<T> {
     public T findAndModify(String key, Object value, BuguUpdater updater, boolean returnNew){
         value = checkSpecialValue(key, value);
         DBObject query = new BasicDBObject(key, value);
-        DBObject result = coll.findAndModify(query, null, null, false, updater.getModifier(), returnNew, false);
+        DBObject result = getCollection().findAndModify(query, null, null, false, updater.getModifier(), returnNew, false);
         T t = MapperUtil.fromDBObject(clazz, result);
         if(hasCustomListener){
             if(returnNew){
@@ -781,7 +791,7 @@ public class BuguDao<T> {
      * @return 
      */
     public T findAndModify(BuguQuery query, BuguUpdater updater, boolean returnNew){
-        DBObject result = coll.findAndModify(query.getCondition(), null, query.getSort(), false, updater.getModifier(), returnNew, false);
+        DBObject result = getCollection().findAndModify(query.getCondition(), null, query.getSort(), false, updater.getModifier(), returnNew, false);
         T t = MapperUtil.fromDBObject(clazz, result);
         if(hasCustomListener){
             if(returnNew){
@@ -827,7 +837,7 @@ public class BuguDao<T> {
     }
     
     private T findAndRemove(DBObject dbo){
-        DBObject result = coll.findAndModify(dbo, null, null, true, null, false, false);
+        DBObject result = getCollection().findAndModify(dbo, null, null, true, null, false, false);
         T t = MapperUtil.fromDBObject(clazz, result);
         if(!listenerList.isEmpty()){
             notifyDeleted((BuguEntity)t);
@@ -841,7 +851,7 @@ public class BuguDao<T> {
      * @return 
      */
     public List distinct(String key){
-        return coll.distinct(key);
+        return getCollection().distinct(key);
     }
 
     /**
@@ -849,7 +859,7 @@ public class BuguDao<T> {
      * @return 
      */
     public long count(){
-        return coll.count();
+        return getCollection().count();
     }
     
     /**
@@ -860,7 +870,7 @@ public class BuguDao<T> {
      */
     public long count(String key, Object value){
         value = checkSpecialValue(key, value);
-        return coll.count(new BasicDBObject(key, value));
+        return getCollection().count(new BasicDBObject(key, value));
     }
     
     /**
@@ -1063,14 +1073,6 @@ public class BuguDao<T> {
         }
         return result;
     }
-    
-    /**
-     * Get the DBCollection object, supplied by the mongodb java driver.
-     * @return 
-     */
-    public DBCollection getCollection(){
-        return coll;
-    }
 
     public Class<T> getEntityClass() {
         return clazz;
@@ -1127,7 +1129,7 @@ public class BuguDao<T> {
      * @return a new BuguQuery object
      */
     public BuguAggregation<T> aggregate(){
-        return new BuguAggregation<T>(coll);
+        return new BuguAggregation<T>(getCollection());
     }
     
     /**

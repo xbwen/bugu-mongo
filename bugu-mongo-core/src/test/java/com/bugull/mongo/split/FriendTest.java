@@ -17,6 +17,7 @@
 package com.bugull.mongo.split;
 
 import com.bugull.mongo.base.BaseTest;
+import com.bugull.mongo.base.ReplicaSetBaseTest;
 import java.util.List;
 import org.junit.Test;
 
@@ -24,7 +25,7 @@ import org.junit.Test;
  *
  * @author Frank Wen(xbwen@hotmail.com)
  */
-public class FriendTest extends BaseTest {
+public class FriendTest extends ReplicaSetBaseTest {
     
     //@Test
     public void testInsert(){

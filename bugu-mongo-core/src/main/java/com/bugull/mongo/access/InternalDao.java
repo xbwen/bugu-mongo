@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.bugull.mongo.misc;
+package com.bugull.mongo.access;
 
 import com.bugull.mongo.utils.Operator;
 import com.bugull.mongo.utils.MapperUtil;
@@ -61,17 +61,17 @@ public final class InternalDao<T> extends BuguDao<T> {
     public T findOneLazily(String id, boolean withoutCascade){
         DBObject dbo = new BasicDBObject();
         dbo.put(Operator.ID, IdUtil.toDbId(clazz, id));
-        DBObject result = coll.findOne(dbo, keys);
+        DBObject result = getCollection().findOne(dbo, keys);
         return MapperUtil.fromDBObject(clazz, result, withoutCascade);
     }
     
     public List<T> findNotLazily(DBObject query){
-        DBCursor cursor = coll.find(query);
+        DBCursor cursor = getCollection().find(query);
         return MapperUtil.toList(clazz, cursor);
     }
     
     public List<T> findNotLazily(int pageNum, int pageSize){
-        DBCursor cursor = coll.find().skip((pageNum-1)*pageSize).limit(pageSize);
+        DBCursor cursor = getCollection().find().skip((pageNum-1)*pageSize).limit(pageSize);
         return MapperUtil.toList(clazz, cursor);
     }
     
@@ -107,12 +107,12 @@ public final class InternalDao<T> extends BuguDao<T> {
         if(hasCustomListener){
             notifyUpdated(ent);
         }
-        return coll.save(MapperUtil.toDBObject(ent, withoutCascade));
+        return getCollection().save(MapperUtil.toDBObject(ent, withoutCascade));
     }
     
     private WriteResult doInsertWithoutCascade(T t, boolean withoutCascade){
         DBObject dbo = MapperUtil.toDBObject(t, withoutCascade);
-        WriteResult wr = coll.insert(dbo);
+        WriteResult wr = getCollection().insert(dbo);
         String id = dbo.get(Operator.ID).toString();
         BuguEntity ent = (BuguEntity)t;
         ent.setId(id);

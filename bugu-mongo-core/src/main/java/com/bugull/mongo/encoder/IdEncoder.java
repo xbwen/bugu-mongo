@@ -19,7 +19,7 @@ package com.bugull.mongo.encoder;
 import com.bugull.mongo.annotations.Id;
 import com.bugull.mongo.cache.DaoCache;
 import com.bugull.mongo.exception.IdException;
-import com.bugull.mongo.misc.InternalDao;
+import com.bugull.mongo.access.InternalDao;
 import com.bugull.mongo.utils.Operator;
 import java.lang.reflect.Field;
 import org.apache.logging.log4j.LogManager;

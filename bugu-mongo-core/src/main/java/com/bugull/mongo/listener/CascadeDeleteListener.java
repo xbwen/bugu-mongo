@@ -24,7 +24,7 @@ import com.bugull.mongo.annotations.Ref;
 import com.bugull.mongo.annotations.RefList;
 import com.bugull.mongo.cache.DaoCache;
 import com.bugull.mongo.cache.FieldsCache;
-import com.bugull.mongo.misc.InternalDao;
+import com.bugull.mongo.access.InternalDao;
 import com.bugull.mongo.utils.FieldUtil;
 import com.bugull.mongo.utils.Operator;
 import java.lang.reflect.Array;

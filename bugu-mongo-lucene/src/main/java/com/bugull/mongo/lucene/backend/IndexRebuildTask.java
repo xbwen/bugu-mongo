@@ -21,7 +21,7 @@ import com.bugull.mongo.BuguEntity;
 import com.bugull.mongo.cache.DaoCache;
 import com.bugull.mongo.lucene.holder.IndexWriterHolder;
 import com.bugull.mongo.lucene.BuguIndex;
-import com.bugull.mongo.misc.InternalDao;
+import com.bugull.mongo.access.InternalDao;
 import com.bugull.mongo.utils.MapperUtil;
 import java.io.IOException;
 import java.util.List;

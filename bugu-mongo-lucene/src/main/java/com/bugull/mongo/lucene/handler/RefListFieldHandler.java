@@ -22,7 +22,7 @@ import com.bugull.mongo.cache.FieldsCache;
 import com.bugull.mongo.lucene.annotations.IndexRefBy;
 import com.bugull.mongo.utils.FieldUtil;
 import com.bugull.mongo.utils.IdUtil;
-import com.bugull.mongo.misc.InternalDao;
+import com.bugull.mongo.access.InternalDao;
 import com.bugull.mongo.utils.Operator;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;

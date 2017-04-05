@@ -43,7 +43,7 @@ import org.junit.Test;
  */
 public class QueryTest extends ReplicaSetBaseTest {
     
-    //@Test
+    @Test
     public void testQuery(){
         connectDB();
         
@@ -147,7 +147,7 @@ public class QueryTest extends ReplicaSetBaseTest {
         disconnectDB();
     }
     
-    @Test
+    //@Test
     public void queryWithInvalidID() throws Exception {
         connectDB();
         
@@ -156,6 +156,17 @@ public class QueryTest extends ReplicaSetBaseTest {
         Product p = productDao.findOne("abc");
         
         System.out.println("p==null: " + (p==null));
+        
+        disconnectDB();
+    }
+    
+    //@Test
+    public void testCount(){
+        connectDB();
+
+        ProductDao productDao = new ProductDao();
+        
+        System.out.println("count: " + productDao.count());
         
         disconnectDB();
     }
