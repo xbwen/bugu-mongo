@@ -164,6 +164,17 @@ public class BuguAggregation<T> implements Parallelable {
         return this;
     }
     
+    public BuguAggregation unwindPreserveEmpty(String field){
+        if(! field.startsWith("$")){
+            field = "$" + field;
+        }
+        DBObject dbo = new BasicDBObject();
+        dbo.put("path", field);
+        dbo.put("preserveNullAndEmptyArrays", true);
+        pipeline.add(new BasicDBObject(Operator.UNWIND, dbo));
+        return this;
+    }
+    
     public BuguAggregation geoNear(DBObject dbo){
         pipeline.add(new BasicDBObject(Operator.GEO_NEAR, dbo));
         return this;

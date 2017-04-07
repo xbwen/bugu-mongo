@@ -32,7 +32,7 @@ import org.junit.Test;
  */
 public class JoinQueryTest extends ReplicaSetBaseTest {
     
-    //@Test
+    @Test
     public void testBasicJoin(){
         connectDB();
         
@@ -49,6 +49,7 @@ public class JoinQueryTest extends ReplicaSetBaseTest {
                 System.out.println("  customer name: " + c.getUsername());
                 System.out.println("  customer age: " + c.getAge());
             }
+            System.out.println("");
         }
         
         disconnectDB();
@@ -153,7 +154,7 @@ public class JoinQueryTest extends ReplicaSetBaseTest {
         disconnectDB();
     }
     
-    @Test
+    //@Test
     public void testReturnLeftFieldsOnly(){
         connectDB();
         

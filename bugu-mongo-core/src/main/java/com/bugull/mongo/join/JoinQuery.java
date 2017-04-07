@@ -170,7 +170,7 @@ public class JoinQuery<L, R> implements Parallelable {
         agg.lookup(new Lookup(rightCollName, leftKey, rightKey, as));
         
         //unwind
-        agg.unwind(as);
+        agg.unwindPreserveEmpty(as);
 
         //match the real right condition after lookup
         if(rightMatch != null){
