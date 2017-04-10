@@ -17,7 +17,7 @@ bugu-mongo-core:
 * [对象－文档映射](https://github.com/xbwen/bugu-mongo/wiki/%E5%AF%B9%E8%B1%A1-%E6%96%87%E6%A1%A3%E6%98%A0%E5%B0%84)
 * [DAO操作](https://github.com/xbwen/bugu-mongo/wiki/DAO%E6%93%8D%E4%BD%9C)
 * [统计与聚合](https://github.com/xbwen/bugu-mongo/wiki/%E7%BB%9F%E8%AE%A1%E4%B8%8E%E8%81%9A%E5%90%88)
-* [关联查询](https://github.com/xbwen/bugu-mongo/wiki/%E5%85%B3%E8%81%94%E6%9F%A5%E8%AF%A2)
+* [连接查询](https://github.com/xbwen/bugu-mongo/wiki/%E8%BF%9E%E6%8E%A5%E6%9F%A5%E8%AF%A2)
 * [并行查询](https://github.com/xbwen/bugu-mongo/wiki/%E5%B9%B6%E8%A1%8C%E6%9F%A5%E8%AF%A2)
 * [lazy和cascade](https://github.com/xbwen/bugu-mongo/wiki/lazy%E5%92%8Ccascade)
 * [Collection拆分](https://github.com/xbwen/bugu-mongo/wiki/Collection%E6%8B%86%E5%88%86)
