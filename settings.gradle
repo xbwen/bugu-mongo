@@ -1,1 +1,1 @@
-include 'bugu-mongo-core', 'bugu-mongo-fs', 'bugu-mongo-lucene'
+include 'bugu-mongo-core', 'bugu-mongo-fs', 'bugu-mongo-cache', 'bugu-mongo-lucene'
