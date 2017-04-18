@@ -1,6 +1,6 @@
 简介
 ----------
-bugu-mongo是一个MongoDB Java开发框架。它在MongoDB Java Driver的基础上，对常用功能进行了封装，简单易用。
+bugu-mongo是一个MongoDB Java开发框架。它在MongoDB Java Driver的基础上进行了封装，使用简单。同时又集成了一些常用的特性，功能强大。
 
 bugu-mongo由1个核心模块，外加2个扩展模块组成：
 
