@@ -15,6 +15,8 @@
  */
 package com.bugull.mongo.cache;
 
+import com.bugull.mongo.utils.SortUtil;
+
 /**
  *
  * @author Frank Wen(xbwen@hotmail.com)
@@ -24,7 +26,7 @@ public class CategoryDao extends CacheableDao<Category> {
     public CategoryDao() {
         super(Category.class);
         //comment the next line, will cache all data
-        //this.setCacheQuery(this.query().greaterThan("order", 10));
+        this.setCacheQuery(this.query().is("valid", Boolean.TRUE).sort(SortUtil.aesc("order")));
     }
     
 }

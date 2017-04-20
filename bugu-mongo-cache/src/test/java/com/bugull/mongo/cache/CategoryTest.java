@@ -33,27 +33,37 @@ public class CategoryTest extends ReplicaSetBaseTest {
         Category c1 = new Category();
         c1.setName("Books");
         c1.setOrder(1);
+        c1.setValid(true);
         dao.save(c1);
         
         Category c2 = new Category();
         c2.setName("Food");
         c2.setOrder(2);
+        c2.setValid(true);
         dao.save(c2);
         
         Category c3 = new Category();
-        c3.setName("Computers");
-        c3.setOrder(11);
+        c3.setName("Food");
+        c3.setOrder(3);
+        c3.setValid(true);
         dao.save(c3);
         
         Category c4 = new Category();
-        c4.setName("Phones");
-        c4.setOrder(22);
+        c4.setName("Computers");
+        c4.setOrder(4);
+        c4.setValid(true);
         dao.save(c4);
+        
+        Category c5 = new Category();
+        c5.setName("Phones");
+        c5.setOrder(5);
+        c1.setValid(false);
+        dao.save(c5);
         
         disconnectDB();
     }
     
-    //@Test
+    @Test
     public void testQuery(){
         connectDB();
         
@@ -62,16 +72,20 @@ public class CategoryTest extends ReplicaSetBaseTest {
         CategoryDao dao = new CategoryDao();
         
         long begin_1 = System.currentTimeMillis();
-        List list1 = dao.getCacheData();
+        List<Category> list1 = dao.getCacheData();
         long end_1 = System.currentTimeMillis();
         System.out.println("use time: " + (end_1 - begin_1));
         System.out.println("list size: " + list1.size());
         
         long begin_2 = System.currentTimeMillis();
-        List list2 = dao.getCacheData();
+        List<Category> list2 = dao.getCacheData();
         long end_2 = System.currentTimeMillis();
         System.out.println("use time: " + (end_2 - begin_2));
         System.out.println("list size: " + list2.size());
+        for(Category c : list2){
+            System.out.println("  name:" + c.getName());
+            System.out.println("  order:" + c.getOrder());
+        }
         
         BuguCache.getInstance().destroy();
         
@@ -112,7 +126,7 @@ public class CategoryTest extends ReplicaSetBaseTest {
         disconnectDB();
     }
     
-    @Test
+    //@Test
     public void testClusterChanged() throws Exception {
         connectDB();
         

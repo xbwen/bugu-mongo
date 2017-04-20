@@ -32,6 +32,8 @@ public class Category implements BuguEntity {
     private String name;
     
     private int order;
+    
+    private boolean valid;
 
     @Override
     public String getId() {
@@ -57,6 +59,14 @@ public class Category implements BuguEntity {
 
     public void setOrder(int order) {
         this.order = order;
+    }
+
+    public boolean isValid() {
+        return valid;
+    }
+
+    public void setValid(boolean valid) {
+        this.valid = valid;
     }
     
 }
