@@ -48,7 +48,7 @@ public class BuguFramework {
     public BuguConnection createConnection(){
         synchronized(this){
             if(connection == null){
-                connection = new BuguConnection();
+                connection = new DefaultConnection();
             }
         }
         if(threadPoolSize == 0){
