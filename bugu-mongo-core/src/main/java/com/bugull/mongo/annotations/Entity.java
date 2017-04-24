@@ -29,6 +29,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Entity {
     public String name() default Default.NAME;
+    public String connection() default Default.NAME;
     public SplitType split() default SplitType.NONE;
     public boolean capped() default false;
     public long capSize() default Default.CAP_SIZE;

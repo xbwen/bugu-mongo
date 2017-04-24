@@ -15,6 +15,7 @@
  */
 package com.bugull.mongo.fs;
 
+import com.bugull.mongo.annotations.Default;
 import com.mongodb.gridfs.GridFS;
 import java.lang.ref.SoftReference;
 import java.util.concurrent.ConcurrentHashMap;
@@ -56,9 +57,14 @@ public class BuguFSFactory {
     }
     
     public BuguFS create(String bucket, int chunkSize){
+        return create(Default.NAME, bucket, chunkSize);
+    }
+    
+    public BuguFS create(String connectionName, String bucket, int chunkSize){
         BuguFS fs;
         boolean recycled = false;
-        SoftReference<BuguFS> sr = cache.get(bucket);
+        String key = connectionName + ":" + bucket;
+        SoftReference<BuguFS> sr = cache.get(key);
         if(sr != null){
             fs = sr.get();
             if(fs == null){
@@ -68,13 +74,13 @@ public class BuguFSFactory {
             }
         }
         //if not exists
-        fs = new BuguFS(bucket, chunkSize);
+        fs = new BuguFS(connectionName, bucket, chunkSize);
         sr = new SoftReference<BuguFS>(fs);
         if(recycled){
-            cache.putIfAbsent(bucket, sr);
+            cache.putIfAbsent(key, sr);
             return fs;
         }else{
-            SoftReference<BuguFS> temp = cache.putIfAbsent(bucket, sr);
+            SoftReference<BuguFS> temp = cache.putIfAbsent(key, sr);
             if(temp != null){
                 return temp.get();
             }else{

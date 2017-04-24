@@ -17,6 +17,7 @@
 package com.bugull.mongo.fs;
 
 import com.bugull.mongo.BuguFramework;
+import com.bugull.mongo.annotations.Default;
 import com.bugull.mongo.utils.Operator;
 import com.bugull.mongo.utils.SortUtil;
 import com.mongodb.BasicDBObject;
@@ -58,9 +59,13 @@ public class BuguFS {
     public final static String FILENAME = "filename";
     
     public BuguFS(String bucket, int chunkSize){
+        this(Default.NAME, bucket, chunkSize);
+    }
+    
+    public BuguFS(String connectionName, String bucket, int chunkSize){
         this.bucket = bucket;
         this.chunkSize = chunkSize;
-        DB db = BuguFramework.getInstance().getConnection().getDB();
+        DB db = BuguFramework.getInstance().getConnection(connectionName).getDB();
         fs = new GridFS(db, bucket);
         files = db.getCollection(bucket + ".files");
         //ensure the DBCursor can be cast to GridFSDBFile

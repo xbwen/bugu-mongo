@@ -176,12 +176,13 @@ public class BuguDao<T> extends AbstractDao {
         return result;
     }
     
-    private void initCollection(String name){
-        DB db = BuguFramework.getInstance().getConnection().getDB();
+    private void initCollection(String collectionName){
         Entity entity = clazz.getAnnotation(Entity.class);
+        String connectionName = entity.connection();
+        DB db = BuguFramework.getInstance().getConnection(connectionName).getDB();
         DBCollection dbColl;
         //if capped
-        if(entity.capped() && !db.collectionExists(name)){
+        if(entity.capped() && !db.collectionExists(collectionName)){
             DBObject options = new BasicDBObject("capped", true);
             long capSize = entity.capSize();
             if(capSize != Default.CAP_SIZE){
@@ -191,9 +192,9 @@ public class BuguDao<T> extends AbstractDao {
             if(capMax != Default.CAP_MAX){
                 options.put("max", capMax);
             }
-            dbColl = db.createCollection(name, options);
+            dbColl = db.createCollection(collectionName, options);
         }else{
-            dbColl = db.getCollection(name);
+            dbColl = db.getCollection(collectionName);
         }
         setCollection(dbColl);
         

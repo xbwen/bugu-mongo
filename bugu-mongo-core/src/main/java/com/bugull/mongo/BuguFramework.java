@@ -16,7 +16,12 @@
 
 package com.bugull.mongo;
 
+import com.bugull.mongo.annotations.Default;
 import com.bugull.mongo.utils.ThreadUtil;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -27,14 +32,18 @@ import java.util.concurrent.Executors;
  */
 public class BuguFramework {
     
-    private BuguConnection connection;
+    private final Map<String, BuguConnection> map = new ConcurrentHashMap<String, BuguConnection>();
     
     private ExecutorService executor;
     
     private int threadPoolSize;
     
     private BuguFramework(){
-        
+        if(threadPoolSize == 0){
+            //default thread pool size: 2 * cpu + 1
+            threadPoolSize = Runtime.getRuntime().availableProcessors() * 2 + 1;
+        }
+        executor = Executors.newFixedThreadPool(threadPoolSize);
     }
     
     private static class Holder {
@@ -46,21 +55,24 @@ public class BuguFramework {
     }
     
     public BuguConnection createConnection(){
-        synchronized(this){
-            if(connection == null){
-                connection = new DefaultConnection();
-            }
+        return createConnection(Default.NAME);
+    }
+    
+    public synchronized BuguConnection createConnection(String name){
+        BuguConnection connection = map.get(name);
+        if(connection == null){
+            connection = new DefaultConnection();
+            map.put(name, connection);
         }
-        if(threadPoolSize == 0){
-            //default thread pool size: 2 * cpu + 1
-            threadPoolSize = Runtime.getRuntime().availableProcessors() * 2 + 1;
-        }
-        executor = Executors.newFixedThreadPool(threadPoolSize);
         return connection;
     }
 
     public BuguConnection getConnection() {
-        return connection;
+        return map.get(Default.NAME);
+    }
+    
+    public BuguConnection getConnection(String name) {
+        return map.get(name);
     }
 
     public ExecutorService getExecutor() {
@@ -71,10 +83,18 @@ public class BuguFramework {
         this.threadPoolSize = threadPoolSize;
     }
     
+    /**
+     * destroy the framework, release all resource.
+     */
     public void destroy(){
+        //close the thread pool
         ThreadUtil.safeClose(executor);
-        if(connection != null){
-            connection.close();
+        
+        //close all the mongoDB connection
+        Set<Entry<String, BuguConnection>> set = map.entrySet();
+        for(Entry<String, BuguConnection> entry : set){
+            BuguConnection conn = entry.getValue();
+            conn.close();
         }
     }
 
