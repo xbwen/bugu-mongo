@@ -15,6 +15,7 @@
  */
 package com.bugull.mongo.cache;
 
+import com.bugull.mongo.BuguQuery;
 import com.bugull.mongo.utils.SortUtil;
 
 /**
@@ -26,7 +27,8 @@ public class CategoryDao extends CacheableDao<Category> {
     public CategoryDao() {
         super(Category.class);
         //comment the next line, will cache all data
-        this.setCacheQuery(this.query().is("valid", Boolean.TRUE).sort(SortUtil.aesc("order")));
+        BuguQuery q = this.query().is("valid", Boolean.TRUE).sort(SortUtil.aesc("order")).pageNumber(1).pageSize(50);
+        this.setCacheQuery(q);
     }
     
 }
