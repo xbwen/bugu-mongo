@@ -27,13 +27,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * Default implement of BuguConnection, create by BuguFramework.
+ * Basic implement of BuguConnection, create by BuguFramework.
  * 
  * @author Frank Wen(xbwen@hotmail.com)
  */
-class DefaultConnection implements BuguConnection {
+class BasicConnection implements BuguConnection {
     
-    private final static Logger logger = LogManager.getLogger(DefaultConnection.class.getName());
+    private final static Logger logger = LogManager.getLogger(BasicConnection.class.getName());
     
     private String host;
     private int port = 27017;

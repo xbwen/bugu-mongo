@@ -61,7 +61,7 @@ public class BuguFramework {
     public synchronized BuguConnection createConnection(String name){
         BuguConnection connection = map.get(name);
         if(connection == null){
-            connection = new DefaultConnection();
+            connection = new BasicConnection();
             map.put(name, connection);
         }
         return connection;
