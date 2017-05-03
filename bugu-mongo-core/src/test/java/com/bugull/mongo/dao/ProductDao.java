@@ -18,6 +18,7 @@ package com.bugull.mongo.dao;
 
 import com.bugull.mongo.BuguDao;
 import com.bugull.mongo.entity.Product;
+import com.mongodb.ReadPreference;
 
 /**
  *
@@ -27,6 +28,8 @@ public class ProductDao extends BuguDao<Product> {
     
     public ProductDao(){
         super(Product.class);
+        //uncomment the next statement to set read preference to SECONDARY
+        //this.setReadPreference(ReadPreference.secondaryPreferred());
     }
 
 }

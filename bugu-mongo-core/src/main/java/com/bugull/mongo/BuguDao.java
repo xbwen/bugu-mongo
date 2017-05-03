@@ -296,7 +296,7 @@ public class BuguDao<T> extends AbstractDao {
      * The default write concern is ACKNOWLEDGED, you can change it.
      * @param writeConcern 
      */
-    public void setWriteConcern(WriteConcern writeConcern){
+    protected void setWriteConcern(WriteConcern writeConcern){
         getCollection().setWriteConcern(writeConcern);
     }
     
@@ -304,11 +304,11 @@ public class BuguDao<T> extends AbstractDao {
      * The default read preference is PRIMARY, you can change it.
      * @param readPreference 
      */
-    public void setReadPreference(ReadPreference readPreference) {
+    protected void setReadPreference(ReadPreference readPreference) {
         getCollection().setReadPreference(readPreference);
     }
     
-    public void addEntityListener(EntityListener listener){
+    protected void addEntityListener(EntityListener listener){
         hasCustomListener = true;
         listenerList.add(listener);
     }

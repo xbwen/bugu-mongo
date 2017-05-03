@@ -34,8 +34,6 @@ public class SecondaryTest extends ReplicaSetBaseTest {
         
         ProductDao productDao = new ProductDao();
         
-        productDao.setReadPreference(ReadPreference.secondaryPreferred());
-        
         productDao.remove("name", "LG");
         
         Product p = new Product();
