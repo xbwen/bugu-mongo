@@ -47,7 +47,7 @@ public class Uploader {
     
     protected String bucket = GridFS.DEFAULT_BUCKET;
     protected int chunkSize = GridFS.DEFAULT_CHUNKSIZE;
-    protected String connectionName = Default.NAME;
+    protected String connection = Default.NAME;
     
     protected Map<String, Object> attributes;
     
@@ -93,8 +93,8 @@ public class Uploader {
         this.chunkSize = chunkSize;
     }
     
-    public void setConnectionName(String connectionName){
-        this.connectionName = connectionName;
+    public void setConnection(String connection){
+        this.connection = connection;
     }
     
     public void setAttribute(String key, Object value){
@@ -132,7 +132,7 @@ public class Uploader {
     }
     
     protected String saveInputStream(){
-        BuguFS fs = BuguFSFactory.getInstance().create(connectionName, bucket, chunkSize);
+        BuguFS fs = BuguFSFactory.getInstance().create(connection, bucket, chunkSize);
         String fid = fs.save(input, filename, attributes);
         StreamUtil.safeClose(input);
         return fid;
