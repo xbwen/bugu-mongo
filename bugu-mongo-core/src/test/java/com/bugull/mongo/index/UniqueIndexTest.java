@@ -39,17 +39,18 @@ public class UniqueIndexTest extends ReplicaSetBaseTest {
         WifiDevice device1 = new WifiDevice();
         device1.setMacAddress("AABBCCDDEEFF");
         device1.setLastLogin(new Date());
-        WriteResult result1 = dao.save(device1);
-        System.out.println("N:" + result1.getN());
-        System.out.println("Error:" + result1.getError());
+        dao.save(device1);
+        System.out.println("save 1 OK");
         
         //insert another document, with the same mac address, to check the behavior of unique index
         WifiDevice device2 = new WifiDevice();
         device2.setMacAddress("AABBCCDDEEFF");
         device2.setLastLogin(new Date());
-        WriteResult result2 = dao.save(device2);
-        System.out.println("N:" + result2.getN());
-        System.out.println("Error:" + result2.getError());
+        try{
+            dao.save(device2);
+        }catch(Exception ex){
+            System.out.println("save 2 NOT ok");
+        }
         
         disconnectDB();
     }

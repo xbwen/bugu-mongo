@@ -58,11 +58,11 @@ public class BuguFramework {
         return createConnection(Default.NAME);
     }
     
-    public synchronized BuguConnection createConnection(String name){
-        BuguConnection connection = map.get(name);
+    public synchronized BuguConnection createConnection(String connectionName){
+        BuguConnection connection = map.get(connectionName);
         if(connection == null){
             connection = new BasicConnection();
-            map.put(name, connection);
+            map.put(connectionName, connection);
         }
         return connection;
     }
@@ -71,8 +71,8 @@ public class BuguFramework {
         return map.get(Default.NAME);
     }
     
-    public BuguConnection getConnection(String name) {
-        return map.get(name);
+    public BuguConnection getConnection(String connectionName) {
+        return map.get(connectionName);
     }
 
     public ExecutorService getExecutor() {

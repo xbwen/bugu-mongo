@@ -183,7 +183,7 @@ public class ImageUploader extends Uploader{
     private InputStream getOriginalInputStream(){
         DBObject query = new BasicDBObject(BuguFS.FILENAME, filename);
         query.put(DIMENSION, null);
-        BuguFS fs = BuguFSFactory.getInstance().create(bucket, chunkSize);
+        BuguFS fs = BuguFSFactory.getInstance().create(connectionName, bucket, chunkSize);
         GridFSDBFile f = fs.findOne(query);
         return f.getInputStream();
     }
@@ -220,7 +220,7 @@ public class ImageUploader extends Uploader{
         String fid = null;
         try{
             ImageIO.write(bi, ext, baos);
-            BuguFS fs = BuguFSFactory.getInstance().create(bucket, chunkSize);
+            BuguFS fs = BuguFSFactory.getInstance().create(connectionName, bucket, chunkSize);
             fid = fs.save(baos.toByteArray(), filename, attributes);
         }catch(IOException ex){
             logger.error("Can not save the buffered image", ex);

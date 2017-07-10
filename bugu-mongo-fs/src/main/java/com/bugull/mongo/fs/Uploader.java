@@ -16,6 +16,7 @@
 
 package com.bugull.mongo.fs;
 
+import com.bugull.mongo.annotations.Default;
 import com.bugull.mongo.utils.StreamUtil;
 import com.bugull.mongo.utils.StringUtil;
 import com.mongodb.gridfs.GridFS;
@@ -42,10 +43,12 @@ public class Uploader {
     protected InputStream input;
     protected String originalName;
     protected boolean rename;
+    protected String filename;
     
     protected String bucket = GridFS.DEFAULT_BUCKET;
     protected int chunkSize = GridFS.DEFAULT_CHUNKSIZE;
-    protected String filename;
+    protected String connectionName = Default.NAME;
+    
     protected Map<String, Object> attributes;
     
     public Uploader(File file, String originalName){
@@ -90,6 +93,10 @@ public class Uploader {
         this.chunkSize = chunkSize;
     }
     
+    public void setConnectionName(String connectionName){
+        this.connectionName = connectionName;
+    }
+    
     public void setAttribute(String key, Object value){
         if(attributes == null){
             attributes = new HashMap<String, Object>();
@@ -125,7 +132,7 @@ public class Uploader {
     }
     
     protected String saveInputStream(){
-        BuguFS fs = BuguFSFactory.getInstance().create(bucket, chunkSize);
+        BuguFS fs = BuguFSFactory.getInstance().create(connectionName, bucket, chunkSize);
         String fid = fs.save(input, filename, attributes);
         StreamUtil.safeClose(input);
         return fid;

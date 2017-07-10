@@ -16,6 +16,7 @@
 
 package com.bugull.mongo.fs;
 
+import com.bugull.mongo.annotations.Default;
 import com.bugull.mongo.utils.StreamUtil;
 import com.bugull.mongo.utils.StringUtil;
 import com.mongodb.BasicDBObject;
@@ -54,6 +55,7 @@ public class UploadedFileServlet extends HttpServlet {
     
     private final static String SLASH = "/";
     
+    private String connection;
     private String password;
     private String allowBucket;
     private String forbidBucket;
@@ -65,6 +67,11 @@ public class UploadedFileServlet extends HttpServlet {
         
         String p = config.getInitParameter("password");
         password = StringUtil.encodeMD5(p);
+        
+        connection = config.getInitParameter("connection");
+        if(StringUtil.isEmpty(connection)){
+            connection = Default.NAME;
+        }
         
         allowBucket = config.getInitParameter("allowBucket");
         forbidBucket = config.getInitParameter("forbidBucket");
@@ -121,7 +128,7 @@ public class UploadedFileServlet extends HttpServlet {
         if(!StringUtil.isEmpty(forbidBucket) && forbidBucket.equalsIgnoreCase(bucket)){
             return;
         }
-        BuguFS fs = BuguFSFactory.getInstance().create(bucket);
+        BuguFS fs = BuguFSFactory.getInstance().create(connection, bucket, GridFS.DEFAULT_CHUNKSIZE);
         GridFSDBFile f = fs.findOne(query);
         if(f == null){
             return;
