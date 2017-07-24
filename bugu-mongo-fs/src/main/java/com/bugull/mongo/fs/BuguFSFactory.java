@@ -45,7 +45,7 @@ public class BuguFSFactory {
     }
     
     public BuguFS createWithConnection(String connectionName){
-        return create(Default.NAME, GridFS.DEFAULT_BUCKET, GridFS.DEFAULT_CHUNKSIZE);
+        return create(connectionName, GridFS.DEFAULT_BUCKET, GridFS.DEFAULT_CHUNKSIZE);
     }
     
     public BuguFS create(){
