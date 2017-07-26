@@ -17,7 +17,6 @@ package com.bugull.mongo.cache;
 
 import com.bugull.mongo.BuguDao;
 import com.bugull.mongo.BuguQuery;
-import com.bugull.mongo.utils.MapperUtil;
 import java.util.List;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.cache.NodeCache;

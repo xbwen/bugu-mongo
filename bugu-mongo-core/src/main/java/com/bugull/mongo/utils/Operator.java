@@ -73,6 +73,7 @@ public final class Operator {
     public static final String MIN = "$min";
     public static final String MAX = "$max";
     public static final String BIT = "$bit";
+    public static final String ISOLATED = "$isolated";
     
     //aggregation
     public static final String LOOKUP = "$lookup";

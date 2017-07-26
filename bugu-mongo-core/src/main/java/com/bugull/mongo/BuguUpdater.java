@@ -43,6 +43,8 @@ public class BuguUpdater<T> {
     
     private final DBObject modifier = new BasicDBObject();
     
+    private boolean isolated = false;
+    
     public BuguUpdater(BuguDao<T> dao){
         this.dao = dao;
     }
@@ -155,6 +157,9 @@ public class BuguUpdater<T> {
         List ids = null;
         if(dao.hasCustomListener){
             ids = dao.getCollection().distinct(Operator.ID, condition);
+        }
+        if(isolated){
+            condition.put(Operator.ISOLATED, 1);
         }
         WriteResult wr = dao.getCollection().update(condition, modifier, false, true);  //update multi
         if(dao.hasCustomListener && ids != null){
@@ -275,7 +280,7 @@ public class BuguUpdater<T> {
     }
     
     /**
-     * Add each element in a list to the specified field.
+     * Add each element to the specified field.
      * @param key the field's name
      * @param valueList the list contains each element
      * @return 
@@ -292,6 +297,23 @@ public class BuguUpdater<T> {
     }
     
     /**
+     * Add each element to the specified field.
+     * @param key the field's name
+     * @param valueArray the array contains each element
+     * @return 
+     */
+    public BuguUpdater<T> pushEach(String key, Object... valueArray){
+        int len = valueArray.length;
+        Object[] values = new Object[len];
+        for(int i=0; i<len; i++){
+            values[i] = checkArrayValue(key, valueArray[i]);
+        }
+        DBObject each = new BasicDBObject(Operator.EACH, values);
+        append(Operator.PUSH, key, each);
+        return this;
+    }
+    
+    /**
      * Remove an element from entity's array/list/set field.
      * @param key the field's name
      * @param value the element to remove
@@ -300,6 +322,22 @@ public class BuguUpdater<T> {
     public BuguUpdater<T> pull(String key, Object value){
         value = checkArrayValue(key, value);
         append(Operator.PULL, key, value);
+        return this;
+    }
+    
+    /**
+     * Removes all instances of the specified values from an existing list.
+     * @param key
+     * @param valueList
+     * @return 
+     */
+    public BuguUpdater<T> pullAll(String key, List valueList){
+        int len = valueList.size();
+        Object[] values = new Object[len];
+        for(int i=0; i<len; i++){
+            values[i] = checkArrayValue(key, valueList.get(i));
+        }
+        append(Operator.PULL_ALL, key, values);
         return this;
     }
     
@@ -373,6 +411,17 @@ public class BuguUpdater<T> {
     public BuguUpdater<T> bitwise(String key, int value, Bitwise bitwise){
         DBObject logic = new BasicDBObject(bitwise.toString().toLowerCase(), value);
         append(Operator.BIT, key, logic);
+        return this;
+    }
+    
+    /**
+     * set the update operation is isolated or not.
+     * If not set, default value is false.
+     * @param isolated
+     * @return 
+     */
+    public BuguUpdater<T> isolate(boolean isolated){
+        this.isolated = isolated;
         return this;
     }
     
