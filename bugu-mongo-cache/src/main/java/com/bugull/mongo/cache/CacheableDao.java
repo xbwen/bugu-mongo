@@ -39,7 +39,7 @@ public class CacheableDao <T> extends BuguDao<T> {
         BuguCache cache = BuguCache.getInstance();
         CuratorFramework zkClient = cache.getZkClient();
         if(zkClient != null){
-            String path = BuguCache.ZK_PREFIX + MapperUtil.getEntityName(clazz);
+            String path = BuguCache.ZK_PREFIX + clazz.getName();
             //create node if not exists
             try {
                 if(zkClient.checkExists().forPath(path) == null){
@@ -75,7 +75,7 @@ public class CacheableDao <T> extends BuguDao<T> {
      */
     public List<T> getCacheData(){
         BuguCache cache = BuguCache.getInstance();
-        String key = MapperUtil.getEntityName(clazz);
+        String key = clazz.getName();
         List<T> value = (List<T>)cache.getValue(key);
         if(value == null){
             if(cacheQuery == null){
@@ -101,7 +101,7 @@ public class CacheableDao <T> extends BuguDao<T> {
         //process cluster JVM, by ZooKeeper/curator
         else{
             //set new value to ZK node, in order to trigger nodeChanged event
-            String path = BuguCache.ZK_PREFIX + MapperUtil.getEntityName(clazz);
+            String path = BuguCache.ZK_PREFIX + clazz.getName();
             String data = String.valueOf(System.currentTimeMillis());
             try {
                 zkClient.setData().inBackground().forPath(path, data.getBytes());
@@ -113,7 +113,7 @@ public class CacheableDao <T> extends BuguDao<T> {
     
     private void reloadCacheData(){
         BuguCache cache = BuguCache.getInstance();
-        String key = MapperUtil.getEntityName(clazz);
+        String key = clazz.getName();
         List<T> value = null;
         if(cacheQuery == null){
             value = this.findAll();
