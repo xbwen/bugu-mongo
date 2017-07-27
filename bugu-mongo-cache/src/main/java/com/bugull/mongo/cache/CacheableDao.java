@@ -18,6 +18,8 @@ package com.bugull.mongo.cache;
 import com.bugull.mongo.BuguDao;
 import com.bugull.mongo.BuguQuery;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.cache.NodeCache;
 import org.apache.curator.framework.recipes.cache.NodeCacheListener;
@@ -31,6 +33,8 @@ import org.apache.zookeeper.CreateMode;
 public class CacheableDao <T> extends BuguDao<T> {
 
     private BuguQuery<T> cacheQuery;
+    
+    private long reloadDelay;
     
     public CacheableDao(Class<T> clazz){
         super(clazz);
@@ -66,6 +70,10 @@ public class CacheableDao <T> extends BuguDao<T> {
 
     protected void setCacheQuery(BuguQuery<T> cacheQuery) {
         this.cacheQuery = cacheQuery;
+    }
+    
+    protected void setReloadDelay(long reloadDelay) {
+        this.reloadDelay = reloadDelay;
     }
     
     /**
@@ -111,6 +119,22 @@ public class CacheableDao <T> extends BuguDao<T> {
     }
     
     private void reloadCacheData(){
+        if(reloadDelay > 0){
+            final Timer timer = new Timer();
+            TimerTask task = new TimerTask(){
+                @Override
+                public void run(){
+                    doReload();
+                    timer.cancel();
+                }
+            };
+            timer.schedule(task, reloadDelay);
+        }else{
+            doReload();
+        }
+    }
+    
+    private void doReload() {
         BuguCache cache = BuguCache.getInstance();
         String key = clazz.getName();
         List<T> value = null;
