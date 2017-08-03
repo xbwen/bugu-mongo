@@ -129,7 +129,8 @@ public class CacheableDao <T> extends BuguDao<T> {
                 }
             };
             timer.schedule(task, reloadDelay);
-        }else{
+        }
+        else{
             doReload();
         }
     }

@@ -16,7 +16,10 @@
 package com.bugull.mongo.entity;
 
 import com.bugull.mongo.SimpleEntity;
+import com.bugull.mongo.annotations.Embed;
+import com.bugull.mongo.annotations.EmbedList;
 import com.bugull.mongo.annotations.Entity;
+import java.util.List;
 
 /**
  *
@@ -25,9 +28,14 @@ import com.bugull.mongo.annotations.Entity;
 @Entity
 public class EnumMock extends SimpleEntity {
     
+    @Embed
     private AppSize appSize;
     
-    private int size;
+    @EmbedList
+    private AppSize[] arraySize;
+    
+    @EmbedList
+    private List<AppSize> listSize;
 
     public AppSize getAppSize() {
         return appSize;
@@ -37,12 +45,20 @@ public class EnumMock extends SimpleEntity {
         this.appSize = appSize;
     }
 
-    public int getSize() {
-        return size;
+    public AppSize[] getArraySize() {
+        return arraySize;
     }
 
-    public void setSize(int size) {
-        this.size = size;
+    public void setArraySize(AppSize[] arraySize) {
+        this.arraySize = arraySize;
+    }
+
+    public List<AppSize> getListSize() {
+        return listSize;
+    }
+
+    public void setListSize(List<AppSize> listSize) {
+        this.listSize = listSize;
     }
     
     public enum AppSize {

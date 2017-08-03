@@ -42,6 +42,11 @@ public class EmbedDecoder extends AbstractDecoder{
     
     @Override
     public void decode(Object obj){
+        Class<?> type = field.getType();
+        if(type.isEnum()){
+            FieldUtil.set(obj, field, Enum.valueOf((Class<Enum>)type, (String)value));
+            return;
+        }
         Object o = MapperUtil.fromDBObject(field.getType(), (DBObject)value);
         FieldUtil.set(obj, field, o);
     }

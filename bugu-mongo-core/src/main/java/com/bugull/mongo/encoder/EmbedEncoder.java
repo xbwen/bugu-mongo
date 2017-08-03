@@ -44,6 +44,10 @@ public class EmbedEncoder extends AbstractEncoder{
     
     @Override
     public Object encode(){
+        Class<?> type = field.getType();
+        if(type.isEnum()){
+            return value.toString();
+        }
         return MapperUtil.toDBObject(value);
     }
     

@@ -56,14 +56,27 @@ public class EmbedListDecoder extends AbstractDecoder{
     public void decode(Object obj) {
         Class<?> type = field.getType();
         if(type.isArray()){
-            Object arr = decodeArray(value, type.getComponentType());
+            Object arr = null;
+            Class<?> comType = type.getComponentType();
+            if(comType.isEnum()){
+                arr = decodeEnumArray(value, comType);
+            }else{
+                arr = decodeArray(value, comType);
+            }
+            
             FieldUtil.set(obj, field, arr);
         }else{
             ParameterizedType paramType = (ParameterizedType)field.getGenericType();
             Type[] types = paramType.getActualTypeArguments();
             int len = types.length;
             if(len == 1){
-                List list = decodeCollection(value, (Class)types[0]);
+                Class<?> comType = (Class)types[0];
+                List list = null;
+                if(comType.isEnum()){
+                    list = decodeEnumCollection(value, comType);
+                }else{
+                    list = decodeCollection(value, comType);
+                }
                 if(DataType.isListType(type) || DataType.isCollectionType(type)){
                     FieldUtil.set(obj, field, list);
                 }
@@ -78,6 +91,21 @@ public class EmbedListDecoder extends AbstractDecoder{
                 FieldUtil.set(obj, field, map);
             }
         }
+    }
+    
+    private Object decodeEnumArray(Object val, Class elementClass){
+        List list = (ArrayList)val;
+        int size = list.size();
+        Object arr = Array.newInstance(elementClass, size);
+        for(int i=0; i<size; i++){
+            Object item = list.get(i);
+            if(item != null){
+                Array.set(arr, i, Enum.valueOf((Class<Enum>)elementClass, (String)item));
+            }else{
+                Array.set(arr, i, null);
+            }
+        }
+        return arr;
     }
     
     private Object decodeArray(Object val, Class elementClass){
@@ -96,12 +124,23 @@ public class EmbedListDecoder extends AbstractDecoder{
         return arr;
     }
     
+    private List decodeEnumCollection(Object val, Class elementClass){
+        List list = (ArrayList)val;
+        List result = new ArrayList();
+        for(Object item : list){
+            if(item != null){
+                result.add(Enum.valueOf((Class<Enum>)elementClass, (String)item));
+            }
+        }
+        return result;
+    }
+    
     private List decodeCollection(Object val, Class elementClass){
         List list = (ArrayList)val;
         List result = new ArrayList();
-        for(Object o : list){
-            if(o != null){
-                Object embedObj = MapperUtil.fromDBObject(elementClass, (DBObject)o);
+        for(Object item : list){
+            if(item != null){
+                Object embedObj = MapperUtil.fromDBObject(elementClass, (DBObject)item);
                 result.add(embedObj);
             }
         }

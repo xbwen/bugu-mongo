@@ -18,6 +18,9 @@ package com.bugull.mongo.crud;
 import com.bugull.mongo.base.ReplicaSetBaseTest;
 import com.bugull.mongo.dao.EnumMockDao;
 import com.bugull.mongo.entity.EnumMock;
+import com.bugull.mongo.entity.EnumMock.AppSize;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.Test;
 
 /**
@@ -31,8 +34,14 @@ public class EnumMockTest extends ReplicaSetBaseTest {
         connectDB();
         
         EnumMock e = new EnumMock();
-        e.setSize(100);
-        e.setAppSize(EnumMock.AppSize.MEDIUM);
+        e.setAppSize(EnumMock.AppSize.SMALL);
+        AppSize[] arraySize = new AppSize[]{AppSize.SMALL, AppSize.MEDIUM};
+        e.setArraySize(arraySize);
+        List<AppSize> listSize = new ArrayList<AppSize>();
+        listSize.add(AppSize.SMALL);
+        listSize.add(AppSize.MEDIUM);
+        listSize.add(AppSize.LARGE);
+        e.setListSize(listSize);
         new EnumMockDao().save(e);
         
         disconnectDB();
@@ -43,11 +52,16 @@ public class EnumMockTest extends ReplicaSetBaseTest {
         connectDB();
         
         EnumMockDao dao = new EnumMockDao();
-        EnumMock e = dao.query().is("appSize", EnumMock.AppSize.MEDIUM).result();
-        System.out.println("size: " + e.getSize());
-        System.out.println("app size: " + e.getAppSize());
-        System.out.println(e.getAppSize()==EnumMock.AppSize.MEDIUM);
-        
+        EnumMock e = dao.query().is("appSize", EnumMock.AppSize.SMALL).result();
+        System.out.println("appSize: " + e.getAppSize());
+        AppSize[] arraySize = e.getArraySize();
+        for(AppSize size : arraySize){
+            System.out.println("arraySize: " + size);
+        }
+        List<AppSize> listSize = e.getListSize();
+        for(AppSize size : listSize){
+            System.out.println("listSize: " + size);
+        }
         disconnectDB();
     }
     

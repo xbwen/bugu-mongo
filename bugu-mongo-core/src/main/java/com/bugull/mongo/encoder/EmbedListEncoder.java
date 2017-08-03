@@ -59,15 +59,37 @@ public class EmbedListEncoder extends AbstractEncoder{
         Object result = null;
         Class<?> type = field.getType();
         if(type.isArray()){
-            result = encodeArray(value);
+            Class<?> comType = type.getComponentType();
+            if(comType.isEnum()){
+                result = encodeEnumArray(value);
+            }else{
+                result = encodeArray(value);
+            }
         }else{
             ParameterizedType paramType = (ParameterizedType)field.getGenericType();
             Type[] types = paramType.getActualTypeArguments();
             int len = types.length;
             if(len == 1){
-                result = encodeCollection(value);
+                Class<?> realCls = (Class)types[0];
+                if(realCls.isEnum()){
+                    result = encodeEnumCollection(value);
+                }else{
+                    result = encodeCollection(value);
+                }
             }else if(len == 2){
                 result = encodeMap();
+            }
+        }
+        return result;
+    }
+    
+    private Object encodeEnumArray(Object arr){
+        int len = Array.getLength(arr);
+        List<String> result = new ArrayList<String>();
+        for(int i=0; i<len; i++){
+            Object o = Array.get(arr, i);
+            if(o != null){
+                result.add(o.toString());
             }
         }
         return result;
@@ -80,6 +102,17 @@ public class EmbedListEncoder extends AbstractEncoder{
             Object o = Array.get(arr, i);
             if(o != null){
                 result.add(MapperUtil.toDBObject(o));
+            }
+        }
+        return result;
+    }
+    
+    private Object encodeEnumCollection(Object coll){
+        List<String> result = new ArrayList<String>();
+        Collection collection = (Collection)coll;
+        for(Object o : collection){
+            if(o != null){
+                result.add(o.toString());
             }
         }
         return result;
