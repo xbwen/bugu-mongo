@@ -84,7 +84,7 @@ public class ParallelTest extends ReplicaSetBaseTest {
         BuguAggregation<LargeData> agg2 = dao.aggregate().group("{_id:null, minValue:{$min:'$randomValue'}}");
         BuguAggregation<LargeData> agg3 = dao.aggregate().group("{_id:null, avgValue:{$avg:'$randomValue'}}");
         BuguQuery<LargeData> q4 = dao.query().greaterThan("randomValue", 0.8).sort(SortUtil.aesc("randomValue")).pageNumber(1).pageSize(10);
-        List<Iterable> list = dao.parallelQuery(agg1, agg2, agg3, q4);
+        List<Iterable> list = new ParallelQueryExecutor().execute(agg1, agg2, agg3, q4);
         long end = System.currentTimeMillis();
         System.out.println("use time:" + (end - begin));
         

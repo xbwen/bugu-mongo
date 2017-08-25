@@ -1134,10 +1134,13 @@ public class BuguDao<T> extends AbstractDao {
     }
     
     /**
+     * @Deprecated Please use new ParallelQueryExecutor().execute() instead.
+     * 
      * Execute BuguQuery or BuguAggregation in parallel.
      * @param querys
      * @return
      */
+    @Deprecated
     public List<Iterable> parallelQuery(Parallelable... querys) {
         List<ParallelTask> taskList = new ArrayList<ParallelTask>();
         for(Parallelable query : querys){
