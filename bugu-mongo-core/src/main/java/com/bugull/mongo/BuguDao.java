@@ -442,10 +442,11 @@ public class BuguDao<T> extends AbstractDao {
     }
     
     private WriteResult doSave(BuguEntity ent){
+        WriteResult wr = getCollection().save(MapperUtil.toDBObject(ent));
         if(hasCustomListener){
             notifyUpdated(ent);
         }
-        return getCollection().save(MapperUtil.toDBObject(ent));
+        return wr;
     }
     
     /**
@@ -459,10 +460,9 @@ public class BuguDao<T> extends AbstractDao {
                 remove(t);
             }
         }
-        else{
-            getCollection().drop();
-            getCollection().dropIndexes();
-        }
+        //drop the collection and index anyway.
+        getCollection().drop();
+        getCollection().dropIndexes();
     }
     
     /**
@@ -481,12 +481,17 @@ public class BuguDao<T> extends AbstractDao {
      * @return 
      */
     public WriteResult remove(String id){
+        BuguEntity entity = null;
         if(!listenerList.isEmpty()){
-            BuguEntity entity = (BuguEntity)findOne(id);
+            entity = (BuguEntity)findOne(id);
             notifyDeleted(entity);
         }
         DBObject query = new BasicDBObject(Operator.ID, IdUtil.toDbId(clazz, id));
-        return getCollection().remove(query);
+        WriteResult wr = getCollection().remove(query);
+        if(!listenerList.isEmpty() && entity!=null){
+            notifyDeleted(entity);
+        }
+        return wr;
     }
     
     /**
@@ -525,14 +530,18 @@ public class BuguDao<T> extends AbstractDao {
     }
     
     private WriteResult removeMulti(DBObject condition){
+        List<T> list = null;
         if(!listenerList.isEmpty()){
             DBCursor cursor = getCollection().find(condition);
-            List<T> list = MapperUtil.toList(clazz, cursor);
+            list = MapperUtil.toList(clazz, cursor);
+        }
+        WriteResult wr = getCollection().remove(condition);
+        if(!listenerList.isEmpty() && list!=null){
             for(T t : list){
                 notifyDeleted((BuguEntity)t);
             }
         }
-        return getCollection().remove(condition);
+        return wr;
     }
     
     private Object checkSpecialValue(String key, Object value){
