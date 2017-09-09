@@ -13,20 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.bugull.mongo.annotations;
+package com.bugull.mongo.codec;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import com.bugull.mongo.encoder.AbstractEncoder;
+import java.lang.reflect.Field;
 
 /**
  *
  * @author Frank Wen(xbwen@hotmail.com)
  */
-@Target(ElementType.FIELD)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface CustomCodec {
-    public Class<?> encoder();
-    public Class<?> decoder();
+public class MyEncoder extends AbstractEncoder {
+    
+    public MyEncoder(Object obj, Field field){
+        super(obj, field);
+    }
+
+    @Override
+    public String getFieldName() {
+        return "my_obj";
+    }
+
+    @Override
+    public Object encode() {
+        return "my_obj_value";
+    }
+    
 }

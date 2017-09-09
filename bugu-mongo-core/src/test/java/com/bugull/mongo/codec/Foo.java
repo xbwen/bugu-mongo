@@ -13,20 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.bugull.mongo.annotations;
+package com.bugull.mongo.codec;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import com.bugull.mongo.SimpleEntity;
+import com.bugull.mongo.annotations.CustomCodec;
+import com.bugull.mongo.annotations.Entity;
 
 /**
  *
  * @author Frank Wen(xbwen@hotmail.com)
  */
-@Target(ElementType.FIELD)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface CustomCodec {
-    public Class<?> encoder();
-    public Class<?> decoder();
+@Entity
+public class Foo extends SimpleEntity {
+    
+    private String name;
+    
+    @CustomCodec(encoder = MyEncoder.class, decoder = MyDecoder.class)
+    private MyObj myObj;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public MyObj getMyObj() {
+        return myObj;
+    }
+
+    public void setMyObj(MyObj myObj) {
+        this.myObj = myObj;
+    }
+    
+    
 }

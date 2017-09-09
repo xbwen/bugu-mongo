@@ -13,20 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.bugull.mongo.annotations;
-
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package com.bugull.mongo.codec;
 
 /**
- *
+ * Just a mock object, for demo.
+ * 
  * @author Frank Wen(xbwen@hotmail.com)
  */
-@Target(ElementType.FIELD)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface CustomCodec {
-    public Class<?> encoder();
-    public Class<?> decoder();
+public class MyObj {
+    
 }
