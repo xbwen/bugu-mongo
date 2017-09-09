@@ -64,9 +64,7 @@ public class ConstructorCache {
         Class<T>[] types = null;
         try {
             cons = clazz.getConstructor(types);
-        } catch (NoSuchMethodException ex) {
-            logger.error("Something is wrong when get constructor", ex);
-        } catch (SecurityException ex) {
+        } catch (Exception ex) {
             logger.error("Something is wrong when get constructor", ex);
         }
         sr = new SoftReference<Constructor<?>>(cons);

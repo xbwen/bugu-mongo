@@ -16,19 +16,25 @@
 
 package com.bugull.mongo.encoder;
 
+import com.bugull.mongo.annotations.CustomCodec;
 import com.bugull.mongo.annotations.Embed;
 import com.bugull.mongo.annotations.EmbedList;
 import com.bugull.mongo.annotations.Id;
 import com.bugull.mongo.annotations.Ignore;
 import com.bugull.mongo.annotations.Ref;
 import com.bugull.mongo.annotations.RefList;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
  * @author Frank Wen(xbwen@hotmail.com)
  */
 public final class EncoderFactory {
+    
+    private final static Logger logger = LogManager.getLogger(EncoderFactory.class.getName());
     
     public static Encoder create(Object obj, Field field){
         Encoder encoder;
@@ -50,10 +56,39 @@ public final class EncoderFactory {
         else if(field.getAnnotation(Ignore.class) != null){
             encoder = null;
         }
+        else if(field.getAnnotation(CustomCodec.class) != null){
+            encoder = createCustomEncoder(obj, field);
+        }
         else{
             encoder = new PropertyEncoder(obj, field);  //no mapping annotation or @Property
         }
         return encoder;
+    }
+    
+    private static Encoder createCustomEncoder(Object obj, Field field){
+        CustomCodec codec = field.getAnnotation(CustomCodec.class);
+        Class<?> clazz = codec.encoder();
+        Constructor<?> cons = null;
+        try{
+            cons = clazz.getConstructor(Object.class, Field.class);
+        } catch (Exception ex) {
+            logger.error("Something is wrong when get constructor", ex);
+        }
+        if(cons == null){
+            return null;
+        }
+        
+        Object result = null;
+        try{
+            result = cons.newInstance(obj, field);
+        } catch (Exception ex) {
+            logger.error("Something is wrong when create new instance", ex);
+        } 
+        if(result == null){
+            return null;
+        }
+        
+        return (Encoder)result;
     }
     
 }
