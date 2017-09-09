@@ -17,20 +17,26 @@
 package com.bugull.mongo.extention;
 
 import com.bugull.mongo.base.BaseTest;
+import com.bugull.mongo.base.ReplicaSetBaseTest;
 import org.junit.Test;
 
 /**
  *
  * @author Frank Wen(xbwen@hotmail.com)
  */
-public class ListenerTest extends BaseTest {
+public class ListenerTest extends ReplicaSetBaseTest {
     
     @Test
     public void testListener(){
         connectDB();
         
         FooDao dao = new FooDao();
+        
         Foo foo = new Foo();
+        foo.setName("Test_Insert");
+        dao.insert(foo);
+        
+        foo.setName("Test_Save");
         dao.save(foo);
         
         dao.remove(foo);

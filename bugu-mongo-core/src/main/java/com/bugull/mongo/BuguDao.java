@@ -484,7 +484,6 @@ public class BuguDao<T> extends AbstractDao {
         BuguEntity entity = null;
         if(!listenerList.isEmpty()){
             entity = (BuguEntity)findOne(id);
-            notifyDeleted(entity);
         }
         DBObject query = new BasicDBObject(Operator.ID, IdUtil.toDbId(clazz, id));
         WriteResult wr = getCollection().remove(query);

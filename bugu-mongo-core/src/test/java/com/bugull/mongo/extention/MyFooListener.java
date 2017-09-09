@@ -27,12 +27,12 @@ public class MyFooListener implements EntityListener {
 
     @Override
     public void entityInserted(BuguEntity entity) {
-        //do nothing
+        System.out.println("entity has been inserted! id is: " + entity.getId());
     }
 
     @Override
     public void entityUpdated(BuguEntity entity) {
-        //do nothing
+        System.out.println("entity has been updated! id is: " + entity.getId());
     }
 
     @Override
