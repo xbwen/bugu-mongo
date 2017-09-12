@@ -21,10 +21,10 @@ bugu-mongo-core:
 * [连接查询](https://github.com/xbwen/bugu-mongo/wiki/%E8%BF%9E%E6%8E%A5%E6%9F%A5%E8%AF%A2)
 * [并行查询](https://github.com/xbwen/bugu-mongo/wiki/%E5%B9%B6%E8%A1%8C%E6%9F%A5%E8%AF%A2)
 * [lazy和cascade](https://github.com/xbwen/bugu-mongo/wiki/lazy%E5%92%8Ccascade)
+* [地理位置数据](https://github.com/xbwen/bugu-mongo/wiki/%E5%9C%B0%E7%90%86%E4%BD%8D%E7%BD%AE%E6%95%B0%E6%8D%AE)
 * [数据库索引](https://github.com/xbwen/bugu-mongo/wiki/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B4%A2%E5%BC%95)
 * [Collection拆分](https://github.com/xbwen/bugu-mongo/wiki/Collection%E6%8B%86%E5%88%86)
 * [连接多个数据库](https://github.com/xbwen/bugu-mongo/wiki/%E8%BF%9E%E6%8E%A5%E5%A4%9A%E4%B8%AA%E6%95%B0%E6%8D%AE%E5%BA%93)
-* [地理位置数据](https://github.com/xbwen/bugu-mongo/wiki/%E5%9C%B0%E7%90%86%E4%BD%8D%E7%BD%AE%E6%95%B0%E6%8D%AE)
 * [扩展bugu-mongo](https://github.com/xbwen/bugu-mongo/wiki/%E6%89%A9%E5%B1%95bugu-mongo)
 * [其它......](https://github.com/xbwen/bugu-mongo/wiki/%E5%85%B6%E5%AE%83......)
 
