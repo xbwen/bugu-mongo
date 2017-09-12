@@ -89,11 +89,8 @@ public class BuguDao<T> extends AbstractDao {
         Entity entity = clazz.getAnnotation(Entity.class);
         SplitType st = entity.split();
         if(st == SplitType.NONE){
-            split = false;
             String name = MapperUtil.getEntityName(clazz);
             initCollection(name);
-        }else{
-            split = true;
         }
         //as for split-collection, call setSplitSuffix() to initialize it.
         

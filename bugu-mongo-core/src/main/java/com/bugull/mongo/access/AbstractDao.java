@@ -24,26 +24,14 @@ import com.mongodb.DBCollection;
  */
 public abstract class AbstractDao {
     
-    protected boolean split;
-    
-    private DBCollection coll;
-    
     private static final ThreadLocal<DBCollection> local = new ThreadLocal<DBCollection>();
     
     protected void setCollection(DBCollection coll) {
-        if(split){
-            local.set(coll);
-        }else{
-            this.coll = coll;
-        }
+        local.set(coll);
     }
 
     public DBCollection getCollection() {
-        if(split){
-            return local.get();
-        }else{
-            return coll;
-        }
+        return local.get();
     }
     
 }
