@@ -1,3 +1,92 @@
+
+2.14.0
+
+* 新增：支持自定义的Encoder、Decoder。
+* 改进：用ParallelQueryExecutor来执行并行查询。
+* 解决bug：分布式环境中，cache数据有可能不一致。
+
+
+
+2.13.0
+
+* 新增：支持枚举类型的数组、集合。
+* 新增：bugu-cache支持读写分离的ReplicaSet。
+* 新增：BuguUpdater支持隔离更新。
+* 改进：Cache数据，选择更合理的key。
+* 解决bug：BuguFSFactory.createWithConnection(name)不起作用。
+
+
+
+2.12.0
+
+* 改进：为防止被错误地使用，BuguDao中的几个方法声明为protected。
+* 新增：GridFS文件操作支持连接到多个数据库。
+
+
+
+2.11.0
+
+* 新增：新增扩展模块bugu-mongo-cache，用于缓存常用数据。
+* 新增：支持连接到多个数据库。
+* 改进：为防止BuguConnection被创建，将其声明为接口。
+
+
+
+2.10.0
+
+* 新增：新增JoinQuery，用于简化两个表的连接查询。
+* 新增：图片水印，可以加在左下方。
+* 改进：限制并发查询时的线程池大小。
+* 解决bug：高并发环境下，分表操作，可能导致数据错乱。
+
+
+2.9.0
+
+* 新增：支持mongodb3.4新增的addFields、projectExclude、count、sortByCount等各种新的聚合操作。
+* 改进：lazy属性在Ref关联读取的时候也起作用。
+* 解决bug：@Ref和@RefList设置关联读取时，可能会导致无限级联的情况。
+* 解决bug：max、min等方法，针对整数类型出错。
+
+
+2.8.0
+
+* 新增：BuguAggregation增加setOptions()方法。
+* 新增：BuguQuery新增setCondition()方法。
+* 新增：BuguUpdater中的set()方法支持@RefList和@EmbedList。
+* 改进：IdUtil中的toDbId()方法，增加异常捕获。
+* 改进：BuguDao中的insert()方法增加isEmpty检查。
+
+
+
+2.7.0
+
+* 变更：MongoDB Java Driver切换成2.14.3（因为3.x版本的驱动，操作ReplicaSet的时候存在严重的bug）。
+* 新增：UploadedFileServlet支持Content-MD5。
+
+
+
+2.6.0
+
+* 变更：MongoDB Java Driver升级到3.3.0版本。
+* 新增：BuguDao新增findOneReturnFields()和findOneNotReturnFields()两个方法。
+* 改进：UploadedFileServlet增加对异常URL的兼容性。
+* 改进：Point和Polygon类实现Serializable接口。
+* 改进：优化BuguDao和BuguUpdater在某些情况下的性能。
+* 解决bug：BuguUpdater的addToSet()方法，不支持POJO。
+
+
+
+2.5.0
+
+* 新增：@Property支持Collection类型的数据。
+* 改进：移除对com.sun.image.codec.jpeg的依赖，以便兼容不同的JDK版本。
+* 改进：Uploader上传文件后，能返回文件的唯一ID。
+* 改进：UploadedFileServlet允许URL路径中有重复的斜杠。
+* 解决bug：如果项目的context path不是"/"，UploadedFileServlet会出错。
+* 解决bug：List<T[]>类型的数据在JDK6无法解析。
+
+
+
 2.4.0:
 
 * 新增：BuguDao新增parallelQuery()方法，用于并行执行多个查询，以便加快查询速度。
@@ -32,6 +121,7 @@
 * 改进：优化排序字符串的解析。
 * 解决bug：移除BuguUpdater中min，max，pop等方法中不必要的id值。 
 * 解决bug：对Map<K,V[]>数据类型的映射在JDK8中不兼容。
+
 
 
 2.1.0:
