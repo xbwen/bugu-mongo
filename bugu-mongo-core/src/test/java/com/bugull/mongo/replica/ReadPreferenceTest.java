@@ -16,6 +16,7 @@
 package com.bugull.mongo.replica;
 
 import com.bugull.mongo.base.BaseTest;
+import com.bugull.mongo.base.ReplicaSetBaseTest;
 import com.mongodb.ReadPreference;
 import org.junit.Test;
 
@@ -23,19 +24,41 @@ import org.junit.Test;
  *
  * @author Frank Wen(xbwen@hotmail.com)
  */
-public class StandaloneTest extends BaseTest{
+public class ReadPreferenceTest extends ReplicaSetBaseTest{
     
-    @Test
-    public void testReadPreference(){
+    //@Test
+    public void testSave(){
         connectDB();
         
-        UserDao dao = new UserDao();
+        BlogDao dao = new BlogDao();
         
+        Blog blog = new Blog();
+        blog.setTitle("About iPhone");
+        blog.setContent("Bla Bla Bla");
+        
+        dao.save(blog);
+        
+        //after save, if need immediately read, must read from primary
+        dao.setReadPreference(ReadPreference.primary());
+        Blog x = dao.findOne("title", "About iPhone");
+        
+        System.out.println("blog content: " + x.getContent());
+        
+        disconnectDB();
+    }
+    
+    @Test
+    public void testRead(){
+        connectDB();
+        
+        BlogDao dao = new BlogDao();
+        
+        //read from secondary
         dao.setReadPreference(ReadPreference.secondaryPreferred());
         
-        User user = dao.findOne("username", "xbwen");
+        Blog y = dao.findOne("title", "About iPhone");
         
-        System.out.println("user id: " + user.getId());
+        System.out.println("blog content: " + y.getContent());
         
         disconnectDB();
     }

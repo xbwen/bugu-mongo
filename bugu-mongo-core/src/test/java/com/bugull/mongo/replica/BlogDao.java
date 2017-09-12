@@ -1,6 +1,6 @@
 /*
- * Copyright (c) www.bugull.com
- * 
+ * Copyright 2017 .
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -21,10 +21,10 @@ import com.bugull.mongo.BuguDao;
  *
  * @author Frank Wen(xbwen@hotmail.com)
  */
-public class UserDao extends BuguDao<User> {
+public class BlogDao extends BuguDao<Blog> {
     
-    public UserDao() {
-        super(User.class);
+    public BlogDao() {
+        super(Blog.class);
     }
     
 }

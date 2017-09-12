@@ -1,6 +1,6 @@
 /*
- * Copyright (c) www.bugull.com
- * 
+ * Copyright 2017 .
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -23,16 +23,25 @@ import com.bugull.mongo.annotations.Entity;
  * @author Frank Wen(xbwen@hotmail.com)
  */
 @Entity
-public class User extends SimpleEntity {
+public class Blog extends SimpleEntity {
     
-    private String name;
+    private String title;
+    private String content;
 
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
     
 }
