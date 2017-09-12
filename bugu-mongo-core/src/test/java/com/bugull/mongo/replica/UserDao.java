@@ -13,31 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.bugull.mongo.replica;
 
-package com.bugull.mongo.base;
-
-import com.bugull.mongo.BuguConnection;
-import com.bugull.mongo.BuguFramework;
-import java.net.UnknownHostException;
+import com.bugull.mongo.BuguDao;
 
 /**
  *
  * @author Frank Wen(xbwen@hotmail.com)
  */
-public abstract class BaseTest {
+public class UserDao extends BuguDao<User> {
     
-    protected void connectDB(){
-        BuguConnection conn = BuguFramework.getInstance().createConnection();
-        conn.setHost("192.168.0.200");
-        conn.setPort(27017);
-        conn.setUsername("test");
-        conn.setPassword("test");
-        conn.setDatabase("test");
-        conn.connect();
+    public UserDao() {
+        super(User.class);
     }
     
-    protected void disconnectDB(){
-        BuguFramework.getInstance().destroy();
-    }
-
 }
