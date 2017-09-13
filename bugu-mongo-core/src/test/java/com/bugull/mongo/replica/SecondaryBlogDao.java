@@ -1,6 +1,6 @@
 /*
  * Copyright (c) www.bugull.com
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,37 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.bugull.mongo.replica;
 
-package com.bugull.mongo.access;
-
-import com.mongodb.DBCollection;
+import com.bugull.mongo.BuguDao;
+import com.bugull.mongo.base.ReplicaSetBaseTest;
+import com.mongodb.ReadPreference;
 
 /**
  *
  * @author Frank Wen(xbwen@hotmail.com)
  */
-public abstract class AbstractDao {
+public class SecondaryBlogDao extends BuguDao<Blog> {
     
-    protected boolean split;
-    
-    private DBCollection coll;
-    
-    private static final ThreadLocal<DBCollection> local = new ThreadLocal<DBCollection>();
-    
-    protected void setCollection(DBCollection coll) {
-        if(split){
-            local.set(coll);
-        }else{
-            this.coll = coll;
-        }
+    public SecondaryBlogDao() {
+        super(Blog.class);
+        //set ReadPreference to secondaryPreferred
+        super.setReadPreference(ReadPreference.secondaryPreferred());
     }
 
-    public DBCollection getCollection() {
-        if(split){
-            return local.get();
-        }else{
-            return coll;
-        }
-    }
-    
 }

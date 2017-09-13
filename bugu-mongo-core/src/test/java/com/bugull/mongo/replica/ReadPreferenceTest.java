@@ -15,9 +15,7 @@
  */
 package com.bugull.mongo.replica;
 
-import com.bugull.mongo.base.BaseTest;
 import com.bugull.mongo.base.ReplicaSetBaseTest;
-import com.mongodb.ReadPreference;
 import org.junit.Test;
 
 /**
@@ -38,8 +36,7 @@ public class ReadPreferenceTest extends ReplicaSetBaseTest{
         
         dao.save(blog);
         
-        //after save, if need immediately read, must read from primary
-        dao.setReadPreference(ReadPreference.primary());
+        //after save, it's ok to immediately read from primary
         Blog x = dao.findOne("title", "About iPhone");
         
         System.out.println("blog content: " + x.getContent());
@@ -51,10 +48,7 @@ public class ReadPreferenceTest extends ReplicaSetBaseTest{
     public void testRead(){
         connectDB();
         
-        BlogDao dao = new BlogDao();
-        
-        //read from secondary
-        dao.setReadPreference(ReadPreference.secondaryPreferred());
+        SecondaryBlogDao dao = new SecondaryBlogDao();
         
         Blog y = dao.findOne("title", "About iPhone");
         
