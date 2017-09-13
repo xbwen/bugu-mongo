@@ -25,6 +25,7 @@ bugu-mongo-core:
 * [数据库索引](https://github.com/xbwen/bugu-mongo/wiki/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B4%A2%E5%BC%95)
 * [Collection拆分](https://github.com/xbwen/bugu-mongo/wiki/Collection%E6%8B%86%E5%88%86)
 * [连接多个数据库](https://github.com/xbwen/bugu-mongo/wiki/%E8%BF%9E%E6%8E%A5%E5%A4%9A%E4%B8%AA%E6%95%B0%E6%8D%AE%E5%BA%93)
+* [读写分离](https://github.com/xbwen/bugu-mongo/wiki/%E8%AF%BB%E5%86%99%E5%88%86%E7%A6%BB)
 * [扩展bugu-mongo](https://github.com/xbwen/bugu-mongo/wiki/%E6%89%A9%E5%B1%95bugu-mongo)
 * [其它......](https://github.com/xbwen/bugu-mongo/wiki/%E5%85%B6%E5%AE%83......)
 
