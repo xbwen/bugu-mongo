@@ -41,12 +41,17 @@ public class AccessCount {
         return Holder.instance;
     }
     
+    public void addSemaphore(String resourceName, int maxAccess){
+        Semaphore semaphore = new Semaphore(maxAccess, true);
+        map.putIfAbsent(resourceName, semaphore);
+    }
+    
     public Semaphore getSemaphore(String resourceName, int maxAccess){
         Semaphore semaphore = map.get(resourceName);
         if(semaphore != null){
             return semaphore;
         }
-        semaphore = new Semaphore(maxAccess);
+        semaphore = new Semaphore(maxAccess, true);
         Semaphore temp = map.putIfAbsent(resourceName, semaphore);
         if(temp != null){
             return temp;

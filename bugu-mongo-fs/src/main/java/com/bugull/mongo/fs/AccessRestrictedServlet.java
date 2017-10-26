@@ -36,7 +36,7 @@ public class AccessRestrictedServlet extends UploadedFileServlet {
     private final static Logger logger = LogManager.getLogger(AccessRestrictedServlet.class.getName());
     
     private static final String DEFAULT_RESOURCE_NAME = "bugu";
-    private static final String DEFAULT_MAX_ACCESS = "20";
+    private static final String DEFAULT_MAX_ACCESS = "1";
     
     private String resourceName;
     private int maxAccess;
@@ -55,6 +55,8 @@ public class AccessRestrictedServlet extends UploadedFileServlet {
         }
         maxAccess = Integer.parseInt(strMaxAccess);
         redirectTo = config.getInitParameter("redirectTo");
+        
+        AccessCount.getInstance().addSemaphore(resourceName, maxAccess);
     }
     
     @Override
