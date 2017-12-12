@@ -89,6 +89,7 @@ public class UploadedFileServlet extends HttpServlet {
         if(!StringUtil.isEmpty(password)){
             String p = request.getParameter("password");
             if(StringUtil.isEmpty(p) || !p.equals(password)){
+                response.setStatus(HttpServletResponse.SC_FORBIDDEN);  //403
                 return;
             }
         }
@@ -101,6 +102,7 @@ public class UploadedFileServlet extends HttpServlet {
         uri = uri.substring(start + servlet.length());
         //check if the url is valid
         if(uri.length() < 2){
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);  //404
             return;
         }
         //get the file name
@@ -123,14 +125,17 @@ public class UploadedFileServlet extends HttpServlet {
         }
         //check if the bucket is allowed to access by this servlet
         if(!StringUtil.isEmpty(allowBucket) && !allowBucket.equalsIgnoreCase(bucket)){
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);  //403
             return;
         }
         if(!StringUtil.isEmpty(forbidBucket) && forbidBucket.equalsIgnoreCase(bucket)){
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);  //403
             return;
         }
         BuguFS fs = BuguFSFactory.getInstance().create(connection, bucket, GridFS.DEFAULT_CHUNKSIZE);
         GridFSDBFile f = fs.findOne(query);
         if(f == null){
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);  //404
             return;
         }
         InputStream is = f.getInputStream();
@@ -163,7 +168,7 @@ public class UploadedFileServlet extends HttpServlet {
                             logger.error("Can not parse the Date", ex);
                         }
                         if(modifiedDate!=null && sinceDate!=null && modifiedDate.compareTo(sinceDate) <= 0){
-                            response.setStatus(304);    //Not Modified
+                            response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);    //Not Modified
                             return;
                         }
                     }
