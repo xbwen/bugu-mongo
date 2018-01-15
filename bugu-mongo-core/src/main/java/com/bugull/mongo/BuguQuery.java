@@ -82,7 +82,7 @@ public class BuguQuery<T> implements Parallelable {
             }catch(FieldException ex){
                 logger.error(ex.getMessage(), ex);
             }
-            if(f.getAnnotation(Id.class)!=null){
+            if(f.getAnnotation(Id.class) != null){
                 Object dbId = IdUtil.toDbId(clazz, (String)value);
                 append(Operator.ID, op, dbId);
             }
@@ -92,7 +92,11 @@ public class BuguQuery<T> implements Parallelable {
                 append(key, op, refObj);
             }
             else if(f.getType().isEnum()){
-                append(key, op, value.toString());
+                if(value != null){
+                    append(key, op, value.toString());
+                }else{
+                    append(key, op, null);
+                }
             }
             else{
                 append(key, op, value);
@@ -106,7 +110,7 @@ public class BuguQuery<T> implements Parallelable {
             Object dbId = IdUtil.toDbId(clazz, (String)value);
             append(Operator.ID, op, dbId);
         }
-        else if(key.indexOf(".")!=-1){
+        else if(key.indexOf(".") != -1){
             append(key, op, value);
         }
         else{
@@ -116,7 +120,7 @@ public class BuguQuery<T> implements Parallelable {
             }catch(FieldException ex){
                 logger.error(ex.getMessage(), ex);
             }
-            if(f.getAnnotation(Id.class)!=null){
+            if(f.getAnnotation(Id.class) != null){
                 Object dbId = IdUtil.toDbId(clazz, (String)value);
                 append(Operator.ID, op, dbId);
             }
@@ -130,7 +134,7 @@ public class BuguQuery<T> implements Parallelable {
         if(key.equals(Operator.ID)){
             append(Operator.ID, op, toIds(values));
         }
-        else if(key.indexOf(".")!=-1){
+        else if(key.indexOf(".") != -1){
             append(key, op, values);
         }
         else{
