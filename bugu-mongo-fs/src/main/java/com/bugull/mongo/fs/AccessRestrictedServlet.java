@@ -36,7 +36,7 @@ public class AccessRestrictedServlet extends UploadedFileServlet {
     private final static Logger logger = LogManager.getLogger(AccessRestrictedServlet.class.getName());
     
     private static final String DEFAULT_RESOURCE_NAME = "bugu";
-    private static final String DEFAULT_MAX_ACCESS = "1";
+    private static final String DEFAULT_MAX_ACCESS = "10";
     
     private String resourceName;
     private int maxAccess;
