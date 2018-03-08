@@ -1,6 +1,6 @@
 
 group = 'com.bugull.mongo'
-version = '2.14.0'
+version = '2.15.0'
 
 subprojects{
     apply plugin: 'java'
@@ -16,7 +16,7 @@ subprojects{
         testCompile group:'junit', name:'junit', version:'4.11'
     }
     
-    tasks.withType(JavaCompile) {  
+    tasks.withType(JavaCompile) {
         options.encoding = "UTF-8"
     }
     
