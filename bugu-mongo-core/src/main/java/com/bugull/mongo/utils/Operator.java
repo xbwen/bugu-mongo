@@ -41,6 +41,11 @@ public final class Operator {
     public static final String EXISTS = "$exists";
     public static final String WHERE = "$where";
     
+    //text search
+    public static final String TEXT = "$text";
+    public static final String SEARCH = "$search";
+    public static final String CASE_SENSITIVE = "$caseSensitive";
+    
     //query logic
     public static final String AND = "$and";
     public static final String OR = "$or";

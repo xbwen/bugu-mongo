@@ -36,7 +36,7 @@ public class AccessRestrictedServlet extends UploadedFileServlet {
     private final static Logger logger = LogManager.getLogger(AccessRestrictedServlet.class.getName());
     
     /*
-     * The Connection pool size in mongodb-java-driver is 10.
+     * The Connection pool size in mongodb-java-driver 2.14 is 10.
      * So use half of it as default value here.
      */
     private static final String DEFAULT_MAX_ACCESS = "5";

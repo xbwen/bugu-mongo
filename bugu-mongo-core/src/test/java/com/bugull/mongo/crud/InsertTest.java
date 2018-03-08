@@ -17,7 +17,6 @@
 package com.bugull.mongo.crud;
 
 import com.bugull.mongo.base.ReplicaSetBaseTest;
-import com.bugull.mongo.dao.CustomerDao;
 import com.bugull.mongo.dao.GroupContactDao;
 import com.bugull.mongo.dao.GroupProductDao;
 import com.bugull.mongo.dao.OrderDao;
@@ -25,7 +24,6 @@ import com.bugull.mongo.dao.ProductDao;
 import com.bugull.mongo.dao.UserDao;
 import com.bugull.mongo.entity.Address;
 import com.bugull.mongo.entity.Contact;
-import com.bugull.mongo.entity.Customer;
 import com.bugull.mongo.entity.GroupContact;
 import com.bugull.mongo.entity.GroupProduct;
 import com.bugull.mongo.entity.Order;
@@ -36,7 +34,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.junit.Test;
 
 /**
  *

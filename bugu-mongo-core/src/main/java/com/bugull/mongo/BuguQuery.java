@@ -222,6 +222,14 @@ public class BuguQuery<T> implements Parallelable {
         return this;
     }
     
+    public BuguQuery<T> text(String value, boolean caseSensitive){
+        DBObject dbo = new BasicDBObject();
+        dbo.put(Operator.SEARCH, value);
+        dbo.put(Operator.CASE_SENSITIVE, caseSensitive);
+        condition.put(Operator.TEXT, dbo);
+        return this;
+    }
+    
     public BuguQuery<T> or(BuguQuery... querys){
         List list = (List)condition.get(Operator.OR);
         if(list == null){
