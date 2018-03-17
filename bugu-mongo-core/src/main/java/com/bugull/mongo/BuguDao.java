@@ -1141,42 +1141,4 @@ public class BuguDao<T> extends AbstractDao {
         return new BuguAggregation<T>(getCollection());
     }
     
-    /**
-     * @Deprecated Please use new ParallelQueryExecutor().execute() instead.
-     * 
-     * Execute BuguQuery or BuguAggregation in parallel.
-     * @param querys
-     * @return
-     */
-    @Deprecated
-    public List<Iterable> parallelQuery(Parallelable... querys) {
-        List<ParallelTask> taskList = new ArrayList<ParallelTask>();
-        for(Parallelable query : querys){
-            taskList.add(new ParallelTask(query));
-        }
-        int len = querys.length;
-        if(len <= 1){
-            logger.warn("You should NOT use parallelQuery() when only one query!!!");
-        }
-        int max = Runtime.getRuntime().availableProcessors() * 2 + 1;
-        if(len > max){
-            len = max;
-        }
-        ExecutorService es = Executors.newFixedThreadPool(len);
-        List<Iterable> result = new ArrayList<Iterable>();
-        try{
-            List<Future<Iterable>> futureList = es.invokeAll(taskList);
-            for(Future<Iterable> future : futureList){
-                result.add(future.get());
-            }
-        }catch(InterruptedException ie){
-            logger.error(ie.getMessage(), ie);
-        }catch(ExecutionException ee){
-            logger.error(ee.getMessage(), ee);
-        }finally{
-            ThreadUtil.safeClose(es);
-        }
-        return result;
-    }
-    
 }
