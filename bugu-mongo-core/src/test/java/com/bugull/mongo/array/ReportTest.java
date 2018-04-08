@@ -13,8 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package com.bugull.mongo.split;
+package com.bugull.mongo.array;
 
 import com.bugull.mongo.base.ReplicaSetBaseTest;
 import java.util.List;
@@ -24,27 +23,28 @@ import org.junit.Test;
  *
  * @author Frank Wen(xbwen@hotmail.com)
  */
-public class FriendTest extends ReplicaSetBaseTest {
+public class ReportTest extends ReplicaSetBaseTest {
     
     //@Test
     public void testInsert(){
         connectDB();
         
-        FriendDao dao = new FriendDao();
+        ReportDao dao = new ReportDao();
         
-        Friend f1 = new Friend();
-        f1.setName("Frank");
-        f1.setProvince("Zhejiang");
+        Report report1 = new Report();
+        report1.setTitle("title 1");
+        report1.setTags(new String[]{"a", "b"});
+        dao.save(report1);
         
-        dao.setSplitSuffix(f1.getProvince());
-        dao.save(f1);
+        Report report2 = new Report();
+        report2.setTitle("title 2");
+        report2.setTags(new String[]{"a", "b", "c"});
+        dao.save(report2);
         
-        Friend f2 = new Friend();
-        f2.setName("Tom");
-        f2.setProvince("Shanghai");
-        
-        dao.setSplitSuffix(f2.getProvince());
-        dao.save(f2);
+        Report report3 = new Report();
+        report3.setTitle("title 3");
+        report3.setTags(new String[]{"a", "b", "c", "d"});
+        dao.save(report3);
         
         disconnectDB();
     }
@@ -53,16 +53,15 @@ public class FriendTest extends ReplicaSetBaseTest {
     public void testQuery(){
         connectDB();
         
-        FriendDao dao = new FriendDao();
-        dao.setSplitSuffix("Zhejiang");
+        ReportDao dao = new ReportDao();
         
-        List<Friend> list = dao.findAll();
-        for(Friend f : list){
-            System.out.println("name: " + f.getName());
-            System.out.println("province: " + f.getProvince());
+        List<Report> list = dao.query().all("tags", new String[]{"c", "b", "a"}).size("tags", 3).results();
+        for(Report report : list){
+            System.out.println(report.getTitle());
         }
+        
         
         disconnectDB();
     }
-
+    
 }
