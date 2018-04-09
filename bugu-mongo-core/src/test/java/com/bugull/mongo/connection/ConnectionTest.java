@@ -37,8 +37,8 @@ public class ConnectionTest extends ReplicaSetBaseTest {
     
     @Test
     public void testWithOptions(){
-        //set connection pool size to 20. the default is 10.
-        MongoClientOptions options = MongoClientOptions.builder().connectionsPerHost(20).build();
+        //set connection pool size to 200. the default is 100.
+        MongoClientOptions options = MongoClientOptions.builder().connectionsPerHost(200).build();
         
         connectDBWithOptions(options);
         
