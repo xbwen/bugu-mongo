@@ -21,7 +21,6 @@ import com.bugull.mongo.BuguFramework;
 import com.mongodb.MongoClientOptions;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,13 +32,9 @@ public class ReplicaSetBaseTest {
     
     protected void connectDB(){
         List<ServerAddress> serverList = new ArrayList<ServerAddress>();
-        try{
-            serverList.add(new ServerAddress("192.168.0.200", 27017));
-            serverList.add(new ServerAddress("192.168.0.200", 27018));
-            serverList.add(new ServerAddress("192.168.0.200", 27019));
-        }catch(UnknownHostException ex){
-            ex.printStackTrace();
-        }
+        serverList.add(new ServerAddress("192.168.0.200", 27017));
+        serverList.add(new ServerAddress("192.168.0.200", 27018));
+        serverList.add(new ServerAddress("192.168.0.200", 27019));
         
         List<MongoCredential> credentialList = new ArrayList<MongoCredential>();
         MongoCredential credentialA = MongoCredential.createCredential("test", "test", "test".toCharArray());
@@ -54,13 +49,9 @@ public class ReplicaSetBaseTest {
     
     protected void connectDBWithOptions(MongoClientOptions options){
         List<ServerAddress> serverList = new ArrayList<ServerAddress>();
-        try {
-            serverList.add(new ServerAddress("192.168.0.200", 27017));
-            serverList.add(new ServerAddress("192.168.0.200", 27018));
-            serverList.add(new ServerAddress("192.168.0.200", 27019));
-        } catch (UnknownHostException ex) {
-            ex.printStackTrace();
-        }
+        serverList.add(new ServerAddress("192.168.0.200", 27017));
+        serverList.add(new ServerAddress("192.168.0.200", 27018));
+        serverList.add(new ServerAddress("192.168.0.200", 27019));
         
         List<MongoCredential> credentialList = new ArrayList<MongoCredential>();
         MongoCredential credentialA = MongoCredential.createCredential("test", "test", "test".toCharArray());
