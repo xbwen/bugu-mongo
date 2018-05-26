@@ -17,9 +17,14 @@
 package com.bugull.mongo.utils;
 
 import com.bugull.mongo.annotations.Default;
+import com.bugull.mongo.annotations.Embed;
+import com.bugull.mongo.annotations.EmbedList;
+import com.bugull.mongo.annotations.Property;
 import com.bugull.mongo.annotations.Ref;
 import com.bugull.mongo.annotations.RefList;
 import com.bugull.mongo.cache.FieldsCache;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBObject;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import org.apache.logging.log4j.LogManager;
@@ -112,6 +117,60 @@ public final class FieldUtil {
             logger.error("Can not get class of type " + type.toString(), ex);
         }
         return cls;
+    }
+    
+    public static DBObject getLazyFields(Class<?> clazz){
+        DBObject lazyKeys = new BasicDBObject();
+        Field[] fields = FieldsCache.getInstance().get(clazz);
+        for(Field field : fields){
+            String fieldName = field.getName();
+            Property property = field.getAnnotation(Property.class);
+            if(property!=null && property.lazy()){
+                String name = property.name();
+                if(!name.equals(Default.NAME)){
+                    fieldName = name;
+                }
+                lazyKeys.put(fieldName, 0);
+                continue;
+            }
+            Embed embed = field.getAnnotation(Embed.class);
+            if(embed!=null && embed.lazy()){
+                String name = embed.name();
+                if(!name.equals(Default.NAME)){
+                    fieldName = name;
+                }
+                lazyKeys.put(fieldName, 0);
+                continue;
+            }
+            EmbedList embedList = field.getAnnotation(EmbedList.class);
+            if(embedList!=null && embedList.lazy()){
+                String name = embedList.name();
+                if(!name.equals(Default.NAME)){
+                    fieldName = name;
+                }
+                lazyKeys.put(fieldName, 0);
+                continue;
+            }
+        }
+        return lazyKeys;
+    }
+    
+    public static boolean hasCascadeDelete(Class<?> clazz){
+        boolean result = false;
+        Field[] fields = FieldsCache.getInstance().get(clazz);
+        for(Field f : fields){
+            Ref ref = f.getAnnotation(Ref.class);
+            if(ref!=null && ref.cascade().toUpperCase().indexOf(Default.CASCADE_DELETE)!=-1){
+                result = true;
+                break;
+            }
+            RefList refList = f.getAnnotation(RefList.class);
+            if(refList!=null && refList.cascade().toUpperCase().indexOf(Default.CASCADE_DELETE)!=-1){
+                result = true;
+                break;
+            }
+        }
+        return result;
     }
     
 }
