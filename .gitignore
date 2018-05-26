@@ -2,6 +2,7 @@
 /.nb-gradle/profiles/private/
 /.nb-gradle-properties
 /.gradle/
-/libs/
 /.nb-gradle/private/
 /.nb-gradle/
+/libs/
+/release-notes/
