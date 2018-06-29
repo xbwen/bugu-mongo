@@ -45,6 +45,10 @@ public class BuguUpdater<T> {
     
     private boolean isolated = false;
     
+    private boolean upsert = false;
+    
+    private boolean multi = true;
+    
     public BuguUpdater(BuguDao<T> dao){
         this.dao = dao;
     }
@@ -128,7 +132,7 @@ public class BuguUpdater<T> {
     public WriteResult execute(String id){
         Class<T> clazz = dao.getEntityClass();
         DBObject condition = new BasicDBObject(Operator.ID, IdUtil.toDbId(clazz, id));
-        WriteResult wr = dao.getCollection().update(condition, modifier, false, false); //update one
+        WriteResult wr = dao.getCollection().update(condition, modifier, upsert, false); //update one
         if(dao.hasCustomListener){
             BuguEntity entity = (BuguEntity)dao.findOne(id);
             dao.notifyUpdated(entity);
@@ -161,7 +165,7 @@ public class BuguUpdater<T> {
         if(isolated){
             condition.put(Operator.ISOLATED, 1);
         }
-        WriteResult wr = dao.getCollection().update(condition, modifier, false, true);  //update multi
+        WriteResult wr = dao.getCollection().update(condition, modifier, upsert, multi);
         if(dao.hasCustomListener && ids != null){
             DBObject in = new BasicDBObject(Operator.IN, ids);
             DBCursor cursor = dao.getCollection().find(new BasicDBObject(Operator.ID, in));
@@ -420,9 +424,32 @@ public class BuguUpdater<T> {
      * @param isolated
      * @return 
      */
-    public BuguUpdater<T> isolate(boolean isolated){
+    public BuguUpdater<T> setIsolated(boolean isolated){
         this.isolated = isolated;
         return this;
     }
+
+    /**
+     * when true, inserts a document if no document matches the update query criteria.
+     * If not set, default value is false.
+     * @param upsert
+     * @return 
+     */
+    public BuguUpdater<T> setUpsert(boolean upsert) {
+        this.upsert = upsert;
+        return this;
+    }
+
+    /**
+     * when true, updates all documents in the collection that match the update query criteria, otherwise only updates one.
+     * If not set, default value is true.
+     * @param multi
+     * @return 
+     */
+    public BuguUpdater<T> setMulti(boolean multi) {
+        this.multi = multi;
+        return this;
+    }
+    
     
 }
