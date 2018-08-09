@@ -420,7 +420,7 @@ public class PropertyDecoder extends AbstractDecoder{
             }
         }
         else if(isCollection){
-            //eache element of collection is still a collection
+            //each element of collection is still a collection
             List temp = new ArrayList();
             if(DataType.isListType(tType) || DataType.isCollectionType(tType)){
                 for(Object o : src){

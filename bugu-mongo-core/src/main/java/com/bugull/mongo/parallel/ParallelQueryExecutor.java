@@ -46,7 +46,7 @@ public class ParallelQueryExecutor {
         }
         int len = querys.length;
         if(len <= 1){
-            logger.warn("You should NOT use parallelQuery() when only one query!!!");
+            logger.warn("You should NOT use parallel query when only one query!");
         }
         int max = Runtime.getRuntime().availableProcessors() * 2 + 1;
         if(len > max){
