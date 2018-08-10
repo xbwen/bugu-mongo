@@ -217,13 +217,27 @@ public class BuguAggregation<T> implements Parallelable {
         return replaceRoot(new BasicDBObject(key, value));
     }
     
+    public BuguAggregation sort(DBObject dbo){
+        pipeline.add(new BasicDBObject(Operator.SORT, dbo));
+        return this;
+    }
+    
     public BuguAggregation sort(String jsonString){
         DBObject dbo = SortUtil.getSort(jsonString);
         pipeline.add(new BasicDBObject(Operator.SORT, dbo));
         return this;
     }
     
-    public BuguAggregation sort(DBObject dbo){
+    public BuguAggregation sortAsc(String key){
+        String ascString = SortUtil.asc(key);
+        DBObject dbo = SortUtil.getSort(ascString);
+        pipeline.add(new BasicDBObject(Operator.SORT, dbo));
+        return this;
+    }
+    
+    public BuguAggregation sortDesc(String key){
+        String descString = SortUtil.desc(key);
+        DBObject dbo = SortUtil.getSort(descString);
         pipeline.add(new BasicDBObject(Operator.SORT, dbo));
         return this;
     }
