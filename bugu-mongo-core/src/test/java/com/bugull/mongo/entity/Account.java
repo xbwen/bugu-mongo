@@ -13,31 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.bugull.mongo.entity;
 
-package com.bugull.mongo.base;
-
-import com.bugull.mongo.BuguConnection;
-import com.bugull.mongo.BuguFramework;
-import java.net.UnknownHostException;
+import com.bugull.mongo.SimpleEntity;
+import com.bugull.mongo.annotations.Entity;
+import java.math.BigDecimal;
 
 /**
  *
  * @author Frank Wen(xbwen@hotmail.com)
  */
-public abstract class BaseTest {
+@Entity
+public class Account extends SimpleEntity {
     
-    protected void connectDB(){
-        BuguConnection conn = BuguFramework.getInstance().createConnection();
-        conn.setHost("192.168.1.248");
-        conn.setPort(27017);
-        conn.setUsername("test");
-        conn.setPassword("test");
-        conn.setDatabase("test");
-        conn.connect();
-    }
+    private String name;
     
-    protected void disconnectDB(){
-        BuguFramework.getInstance().destroy();
+    private BigDecimal money;
+
+    public String getName() {
+        return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public BigDecimal getMoney() {
+        return money;
+    }
+
+    public void setMoney(BigDecimal money) {
+        this.money = money;
+    }
+    
 }

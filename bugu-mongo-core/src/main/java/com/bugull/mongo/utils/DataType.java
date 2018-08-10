@@ -98,6 +98,10 @@ public final class DataType {
         return type.equals(java.sql.Timestamp.class);
     }
     
+    public static boolean isBigDecimal(Class type){
+        return type.equals(java.math.BigDecimal.class);
+    }
+    
     /**
      * Only List and ArrayList are supported now.
      * @param type

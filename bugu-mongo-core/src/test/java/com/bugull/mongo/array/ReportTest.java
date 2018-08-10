@@ -55,7 +55,8 @@ public class ReportTest extends ReplicaSetBaseTest {
         
         ReportDao dao = new ReportDao();
         
-        List<Report> list = dao.query().all("tags", new String[]{"c", "b", "a"}).size("tags", 3).results();
+        Object[] tagsArray = new String[]{"c", "b", "a"};
+        List<Report> list = dao.query().all("tags", tagsArray).size("tags", 3).results();
         for(Report report : list){
             System.out.println(report.getTitle());
         }

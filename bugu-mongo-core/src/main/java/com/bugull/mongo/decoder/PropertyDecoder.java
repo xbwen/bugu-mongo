@@ -40,6 +40,7 @@ import java.util.Queue;
 import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bson.types.Decimal128;
 
 /**
  *
@@ -114,6 +115,10 @@ public class PropertyDecoder extends AbstractDecoder{
         }
         else if(DataType.isByteObject(type)){
             field.setByte(obj, Byte.valueOf(value.toString()));
+        }
+        else if(DataType.isBigDecimal(type)){
+            Decimal128 decimal = (Decimal128)value;
+            field.set(obj, decimal.bigDecimalValue());
         }
         //process List and Collection.
         else if(DataType.isListType(type) || DataType.isCollectionType(type)){
