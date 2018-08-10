@@ -27,7 +27,7 @@ public class CategoryDao extends CacheableDao<Category> {
     public CategoryDao() {
         super(Category.class);
         //comment the next line, will cache all data
-        BuguQuery q = this.query().is("valid", Boolean.TRUE).sort(SortUtil.aesc("order")).pageNumber(1).pageSize(50);
+        BuguQuery q = this.query().is("valid", Boolean.TRUE).sort(SortUtil.asc("order")).pageNumber(1).pageSize(50);
         this.setCacheQuery(q);
     }
     

@@ -25,7 +25,7 @@ import com.mongodb.util.JSON;
  */
 public final class SortUtil {
     
-    public static String aesc(String key){
+    public static String asc(String key){
         return new StringBuilder().append("{").append(key).append(":1").append("}").toString();
     }
     

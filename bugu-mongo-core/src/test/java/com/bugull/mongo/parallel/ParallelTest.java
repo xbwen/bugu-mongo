@@ -66,7 +66,7 @@ public class ParallelTest extends ReplicaSetBaseTest {
         Iterable<DBObject> list3 = dao.aggregate().group("{_id:null, avgValue:{$avg:'$randomValue'}}").results();
         long step3 = System.currentTimeMillis();
         System.out.println("step3: " + (step3 - step2));
-        List<LargeData> list4 = dao.query().greaterThan("randomValue", 0.8).sort(SortUtil.aesc("randomValue")).pageNumber(1).pageSize(10).results();
+        List<LargeData> list4 = dao.query().greaterThan("randomValue", 0.8).sort(SortUtil.asc("randomValue")).pageNumber(1).pageSize(10).results();
         long end = System.currentTimeMillis();
         System.out.println("step4: " + (end - step3));
         System.out.println("total time:" + (end - begin));
@@ -83,7 +83,7 @@ public class ParallelTest extends ReplicaSetBaseTest {
         BuguAggregation<LargeData> agg1 = dao.aggregate().group("{_id:null, maxValue:{$max:'$randomValue'}}");
         BuguAggregation<LargeData> agg2 = dao.aggregate().group("{_id:null, minValue:{$min:'$randomValue'}}");
         BuguAggregation<LargeData> agg3 = dao.aggregate().group("{_id:null, avgValue:{$avg:'$randomValue'}}");
-        BuguQuery<LargeData> q4 = dao.query().greaterThan("randomValue", 0.8).sort(SortUtil.aesc("randomValue")).pageNumber(1).pageSize(10);
+        BuguQuery<LargeData> q4 = dao.query().greaterThan("randomValue", 0.8).sort(SortUtil.asc("randomValue")).pageNumber(1).pageSize(10);
         List<Iterable> list = new ParallelQueryExecutor().execute(agg1, agg2, agg3, q4);
         long end = System.currentTimeMillis();
         System.out.println("use time:" + (end - begin));

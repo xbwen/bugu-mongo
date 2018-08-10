@@ -403,8 +403,33 @@ public class BuguQuery<T> implements Parallelable {
         return this;
     }
     
+    /**
+     * 
+     * @param orderBy JSON string to sort. 
+     * @return 
+     */
     public BuguQuery<T> sort(String orderBy){
         this.orderBy = orderBy;
+        return this;
+    }
+    
+    /**
+     * Order by a single key ascend
+     * @param key
+     * @return 
+     */
+    public BuguQuery<T> sortAsc(String key){
+        this.orderBy = SortUtil.asc(key);
+        return this;
+    }
+    
+    /**
+     * Order by a single key descend
+     * @param key
+     * @return 
+     */
+    public BuguQuery<T> sortDesc(String key){
+        this.orderBy = SortUtil.desc(key);
         return this;
     }
     
