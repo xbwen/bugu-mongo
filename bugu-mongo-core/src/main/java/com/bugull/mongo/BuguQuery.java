@@ -30,10 +30,12 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
+import com.mongodb.client.model.DBCollectionFindOptions;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -59,6 +61,8 @@ public class BuguQuery<T> implements Parallelable {
     protected String orderBy;
     protected int pageNumber;  //default value is zero
     protected int pageSize;  //default value is zero
+    
+    protected long maxTimeMS = -1;
     
     protected boolean withoutCascade;
     
@@ -403,6 +407,11 @@ public class BuguQuery<T> implements Parallelable {
         return this;
     }
     
+    public BuguQuery<T> maxTimeMS(long maxTimeMS){
+        this.maxTimeMS = maxTimeMS;
+        return this;
+    }
+    
     /**
      * 
      * @param orderBy JSON string to sort. 
@@ -469,19 +478,28 @@ public class BuguQuery<T> implements Parallelable {
     
     @Override
     public List<T> results(){
-        DBCollection coll = dao.getCollection();
-        DBCursor cursor;
+        DBObject projection;
         if(fieldsSpecified){
-            cursor = coll.find(condition, fields);
+            projection = fields;
         }else{
-            cursor = coll.find(condition, dao.getKeyFields());
+            projection = dao.getKeyFields();
+        }
+        
+        DBCollectionFindOptions options = new DBCollectionFindOptions();
+        options.projection(projection);
+        if(maxTimeMS != -1){
+            options.maxTime(maxTimeMS, TimeUnit.MILLISECONDS);
         }
         if(orderBy != null){
-            cursor.sort(SortUtil.getSort(orderBy));
+            options.sort(SortUtil.getSort(orderBy));
         }
         if(pageNumber>0 && pageSize>0){
-            cursor.skip((pageNumber-1)*pageSize).limit(pageSize);
+            options.skip((pageNumber-1) * pageSize);
+            options.limit(pageSize);
         }
+        
+        DBCollection coll = dao.getCollection();
+        DBCursor cursor = coll.find(condition, options);
         return MapperUtil.toList(dao.getEntityClass(), cursor, withoutCascade);
     }
     
