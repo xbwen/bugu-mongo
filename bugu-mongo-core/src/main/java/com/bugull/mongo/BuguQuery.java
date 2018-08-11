@@ -62,7 +62,7 @@ public class BuguQuery<T> implements Parallelable {
     protected int pageNumber;  //default value is zero
     protected int pageSize;  //default value is zero
     
-    protected long maxTimeMS = -1;
+    protected long maxTimeMS;
     
     protected boolean withoutCascade;
     
@@ -487,7 +487,7 @@ public class BuguQuery<T> implements Parallelable {
         
         DBCollectionFindOptions options = new DBCollectionFindOptions();
         options.projection(projection);
-        if(maxTimeMS != -1){
+        if(maxTimeMS > 0){
             options.maxTime(maxTimeMS, TimeUnit.MILLISECONDS);
         }
         if(orderBy != null){
