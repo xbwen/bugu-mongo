@@ -32,9 +32,9 @@ public class ReplicaSetBaseTest {
     
     protected void connectDB(){
         List<ServerAddress> serverList = new ArrayList<ServerAddress>();
-        serverList.add(new ServerAddress("192.168.1.240", 27017));
-        serverList.add(new ServerAddress("192.168.1.240", 27018));
-        serverList.add(new ServerAddress("192.168.1.240", 27019));
+        serverList.add(new ServerAddress("192.168.1.248", 27017));
+        serverList.add(new ServerAddress("192.168.1.248", 27018));
+        serverList.add(new ServerAddress("192.168.1.248", 27019));
         
         List<MongoCredential> credentialList = new ArrayList<MongoCredential>();
         MongoCredential credentialA = MongoCredential.createCredential("test", "test", "test".toCharArray());

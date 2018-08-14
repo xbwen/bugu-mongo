@@ -26,6 +26,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -116,10 +117,6 @@ public class PropertyDecoder extends AbstractDecoder{
         else if(DataType.isByteObject(type)){
             field.setByte(obj, Byte.valueOf(value.toString()));
         }
-        else if(DataType.isBigDecimal(type)){
-            Decimal128 decimal = (Decimal128)value;
-            field.set(obj, decimal.bigDecimalValue());
-        }
         //process List and Collection.
         else if(DataType.isListType(type) || DataType.isCollectionType(type)){
             List src = (ArrayList)value;
@@ -155,8 +152,13 @@ public class PropertyDecoder extends AbstractDecoder{
             Timestamp ts = new Timestamp(date.getTime());
             field.set(obj, ts);
         }
+        //convert for BigDecimal. defualt type is Decimal128
+        else if(DataType.isBigDecimal(type)){
+            Decimal128 decimal = (Decimal128)value;
+            field.set(obj, decimal.bigDecimalValue());
+        }
         else{
-            field.set(obj, value);  //for others: String, Integer, Long, Double, Boolean and Date
+            field.set(obj, value);  //for others: String, int/Integer, long/Long, double/Double, boolean/Boolean and Date
         }
     }
     
@@ -235,6 +237,8 @@ public class PropertyDecoder extends AbstractDecoder{
             field.set(obj, map);
         }
         else if(isPrimitive){
+            //if the V is privitive, the map has no need to convert.
+            //whatever the V is Short, Float, BigDecimal or others.
             field.set(obj, value);
         }
     }
@@ -377,7 +381,16 @@ public class PropertyDecoder extends AbstractDecoder{
                 arr[i] = (Timestamp)val.get(i);
             }
             return arr;
-        }else{
+        }
+        else if(DataType.isBigDecimal(comType)){
+            BigDecimal[] arr = new BigDecimal[size];
+            for(int i=0; i<size; i++){
+                Decimal128 decimal = (Decimal128)val.get(i);
+                arr[i] = decimal.bigDecimalValue();
+            }
+            return arr;
+        }
+        else{
             return null;
         }
     }
@@ -386,6 +399,7 @@ public class PropertyDecoder extends AbstractDecoder{
         //for List<T>, first to check the type of T
         ParameterizedType paramType = (ParameterizedType)field.getGenericType();
         Type[] types = paramType.getActualTypeArguments();
+        //3 different types of T
         boolean isArray = false;
         boolean isCollection = false;
         boolean isPrimitive = false;
@@ -451,6 +465,7 @@ public class PropertyDecoder extends AbstractDecoder{
                     temp.add(queue);
                 }
             }
+            //
             for(Object o : temp){
                 target.add(o);
             }
@@ -481,6 +496,12 @@ public class PropertyDecoder extends AbstractDecoder{
         else if(DataType.isCharObject(actualType)){
             for(Object o : src){
                 target.add(o.toString().charAt(0));
+            }
+        }
+        else if(DataType.isBigDecimal(actualType)){
+            for(Object o : src){
+                Decimal128 decimal = (Decimal128)o;
+                target.add(decimal.bigDecimalValue());
             }
         }
         else{

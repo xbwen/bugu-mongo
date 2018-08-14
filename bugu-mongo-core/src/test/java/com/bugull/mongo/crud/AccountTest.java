@@ -15,17 +15,19 @@
  */
 package com.bugull.mongo.crud;
 
-import com.bugull.mongo.base.BaseTest;
+import com.bugull.mongo.base.ReplicaSetBaseTest;
 import com.bugull.mongo.dao.AccountDao;
 import com.bugull.mongo.entity.Account;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.Test;
 
 /**
  *
  * @author Frank Wen(xbwen@hotmail.com)
  */
-public class AccountTest extends BaseTest {
+public class AccountTest extends ReplicaSetBaseTest {
     
     //@Test
     public void testInsert(){
@@ -34,6 +36,10 @@ public class AccountTest extends BaseTest {
         Account account = new Account();
         account.setName("Jessica");
         account.setMoney(BigDecimal.valueOf(9999.99));
+        List<BigDecimal> scores = new ArrayList<BigDecimal>();
+        scores.add(new BigDecimal("99.99"));
+        scores.add(new BigDecimal("88.88"));
+        account.setScores(scores);
         
         new AccountDao().insert(account);
         
@@ -49,6 +55,10 @@ public class AccountTest extends BaseTest {
         System.out.println("name: " + account.getName());
         BigDecimal bd = account.getMoney();
         System.out.println("money: " + bd.toString());
+        List<BigDecimal> scores = account.getScores();
+        for(BigDecimal score: scores){
+            System.out.println(score);
+        }
         
         disconnectDB();
     }
