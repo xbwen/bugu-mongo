@@ -34,6 +34,7 @@ public interface BuguConnection {
     
     public void connect(String host, int port, String database, String username, String password);
     
+    @Deprecated
     public void connect(List<ServerAddress> serverList, List<MongoCredential> credentialList, String database);
     
     public void connect();
@@ -54,6 +55,7 @@ public interface BuguConnection {
     
     public BuguConnection setServerList(List<ServerAddress> serverList);
     
+    @Deprecated
     public BuguConnection setCredentialList(List<MongoCredential> credentialList);
     
     public DB getDB();

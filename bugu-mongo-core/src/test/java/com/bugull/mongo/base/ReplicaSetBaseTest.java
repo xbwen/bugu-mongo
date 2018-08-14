@@ -19,7 +19,6 @@ package com.bugull.mongo.base;
 import com.bugull.mongo.BuguConnection;
 import com.bugull.mongo.BuguFramework;
 import com.mongodb.MongoClientOptions;
-import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,34 +35,26 @@ public class ReplicaSetBaseTest {
         serverList.add(new ServerAddress("192.168.1.248", 27018));
         serverList.add(new ServerAddress("192.168.1.248", 27019));
         
-        List<MongoCredential> credentialList = new ArrayList<MongoCredential>();
-        MongoCredential credentialA = MongoCredential.createCredential("test", "test", "test".toCharArray());
-        MongoCredential credentialB = MongoCredential.createCredential("test", "test", "test".toCharArray());
-        MongoCredential credentialC = MongoCredential.createCredential("test", "test", "test".toCharArray());
-        credentialList.add(credentialA);
-        credentialList.add(credentialB);
-        credentialList.add(credentialC);
+        
         BuguConnection conn = BuguFramework.getInstance().createConnection();
-        conn.setServerList(serverList).setCredentialList(credentialList).setDatabase("test").connect();
+        conn.setServerList(serverList)
+                .setUsername("test")
+                .setPassword("test")
+                .setDatabase("test")
+                .connect();
     }
     
     protected void connectDBWithOptions(MongoClientOptions options){
         List<ServerAddress> serverList = new ArrayList<ServerAddress>();
-        serverList.add(new ServerAddress("192.168.0.200", 27017));
-        serverList.add(new ServerAddress("192.168.0.200", 27018));
-        serverList.add(new ServerAddress("192.168.0.200", 27019));
+        serverList.add(new ServerAddress("192.168.1.248", 27017));
+        serverList.add(new ServerAddress("192.168.1.248", 27018));
+        serverList.add(new ServerAddress("192.168.1.248", 27019));
         
-        List<MongoCredential> credentialList = new ArrayList<MongoCredential>();
-        MongoCredential credentialA = MongoCredential.createCredential("test", "test", "test".toCharArray());
-        MongoCredential credentialB = MongoCredential.createCredential("test", "test", "test".toCharArray());
-        MongoCredential credentialC = MongoCredential.createCredential("test", "test", "test".toCharArray());
-        credentialList.add(credentialA);
-        credentialList.add(credentialB);
-        credentialList.add(credentialC);
         BuguConnection conn = BuguFramework.getInstance().createConnection();
         conn.setOptions(options);
         conn.setServerList(serverList);
-        conn.setCredentialList(credentialList);
+        conn.setUsername("test");
+        conn.setPassword("test");
         conn.setDatabase("test");
         conn.connect();
     }

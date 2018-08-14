@@ -23,7 +23,6 @@ import com.bugull.mongo.utils.Operator;
 import com.bugull.mongo.utils.SortUtil;
 import com.bugull.mongo.utils.StringUtil;
 import com.mongodb.AggregationOptions;
-import com.mongodb.AggregationOutput;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
@@ -272,17 +271,15 @@ public class BuguAggregation<T> implements Parallelable {
     @Override
     public Iterable<DBObject> results(){
         if(options == null){
-            AggregationOutput output = coll.aggregate(pipeline);
-            return output.results();
-        }else{
-            final Iterator<DBObject> it = coll.aggregate(pipeline, options);
-            return new Iterable<DBObject>() {
-                @Override
-                public Iterator<DBObject> iterator() {
-                    return it;
-                }
-            };
+            options = AggregationOptions.builder().build();
         }
+        final Iterator<DBObject> it = coll.aggregate(pipeline, options);
+        return new Iterable<DBObject>() {
+            @Override
+            public Iterator<DBObject> iterator() {
+                return it;
+            }
+        };
     }
 
 }

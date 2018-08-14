@@ -21,7 +21,6 @@ import com.mongodb.MongoClientOptions;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -38,7 +37,9 @@ class BasicConnection implements BuguConnection {
     private String host;
     private int port = 27017;
     private List<ServerAddress> serverList;
+    @Deprecated
     private List<MongoCredential> credentialList;
+    private MongoCredential credential;
     private MongoClientOptions options;
     private String database;
     private String username;
@@ -73,6 +74,7 @@ class BasicConnection implements BuguConnection {
     }
     
     @Override
+    @Deprecated
     public void connect(List<ServerAddress> serverList, List<MongoCredential> credentialList, String database){
         this.serverList = serverList;
         this.credentialList = credentialList;
@@ -99,40 +101,37 @@ class BasicConnection implements BuguConnection {
             return;
         }
         if(username != null && password != null && database != null){
-            credentialList = new ArrayList<MongoCredential>();
-            MongoCredential cred = MongoCredential.createCredential(username, database, password.toCharArray());
-            credentialList.add(cred);
+            this.credential = MongoCredential.createCredential(username, database, password.toCharArray());
+        }
+        if(options == null){
+            options = MongoClientOptions.builder().build();
         }
         if(host != null){
             ServerAddress sa = new ServerAddress(host, port);
             if(credentialList != null){
-                if(options != null){
-                    mongoClient = new MongoClient(sa, credentialList, options);
-                }else{
-                    mongoClient = new MongoClient(sa, credentialList);
-                }
-            }else{
-                if(options != null){
-                    mongoClient = new MongoClient(sa, options);
-                }else{
-                    mongoClient = new MongoClient(sa);
-                }
+                mongoClient = new MongoClient(sa, credentialList, options);
+            }
+            else if(credential != null){
+                mongoClient = new MongoClient(sa, credential, options);
+            }
+            else{
+                mongoClient = new MongoClient(sa, options);
             }
         }
         else if(serverList != null){
             if(credentialList != null){
-                if(options != null){
-                    mongoClient = new MongoClient(serverList, credentialList, options);
-                }else{
-                    mongoClient = new MongoClient(serverList, credentialList);
-                }
-            }else{
-                if(options != null){
-                    mongoClient = new MongoClient(serverList, options);
-                }else{
-                    mongoClient = new MongoClient(serverList);
-                }
+                mongoClient = new MongoClient(serverList, credentialList, options);
             }
+            else if(credential != null){
+                mongoClient = new MongoClient(serverList, credential, options);
+            }
+            else{
+                mongoClient = new MongoClient(serverList, options);
+            }
+        }
+        else{
+            logger.error("Error when connect to database server! You should set database host or server list, at least one!");
+            return;
         }
         //get the database
         db = mongoClient.getDB(database);
@@ -189,6 +188,7 @@ class BasicConnection implements BuguConnection {
     }
 
     @Override
+    @Deprecated
     public BuguConnection setCredentialList(List<MongoCredential> credentialList) {
         this.credentialList = credentialList;
         return this;
