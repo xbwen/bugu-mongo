@@ -16,8 +16,8 @@
 
 package com.bugull.mongo.utils;
 
+import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
-import com.mongodb.util.JSON;
 
 /**
  *
@@ -46,7 +46,7 @@ public final class SortUtil {
         if (!jsonString.endsWith("}")) {
             jsonString = jsonString + "}";
         }
-        return (DBObject) JSON.parse(jsonString);
+        return BasicDBObject.parse(jsonString);
     }
 
 }

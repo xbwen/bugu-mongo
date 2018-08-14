@@ -19,7 +19,6 @@ import com.bugull.mongo.geo.Point;
 import com.bugull.mongo.utils.MapperUtil;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
-import com.mongodb.util.JSON;
 
 /**
  *
@@ -63,7 +62,7 @@ public final class GeoNearOptions {
             dbo.put(MIN_DISTANCE, minDistance);
         }
         if (query != null) {
-            dbo.put(QUERY, (DBObject) JSON.parse(query));
+            dbo.put(QUERY, BasicDBObject.parse(query));
         }
         if (near != null) {
             dbo.put(NEAR, MapperUtil.toDBObject(near, true));

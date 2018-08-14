@@ -27,7 +27,6 @@ import com.mongodb.AggregationOutput;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
-import com.mongodb.util.JSON;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -68,7 +67,7 @@ public class BuguAggregation<T> implements Parallelable {
     }
     
     public BuguAggregation addFields(String jsonString){
-        DBObject dbo = (DBObject)JSON.parse(jsonString);
+        DBObject dbo = BasicDBObject.parse(jsonString);
         return addFields(dbo);
     }
     
@@ -78,7 +77,7 @@ public class BuguAggregation<T> implements Parallelable {
     }
     
     public BuguAggregation project(String jsonString){
-        DBObject dbo = (DBObject)JSON.parse(jsonString);
+        DBObject dbo = BasicDBObject.parse(jsonString);
         return project(dbo);
     }
     
@@ -123,7 +122,7 @@ public class BuguAggregation<T> implements Parallelable {
     }
     
     public BuguAggregation match(String jsonString){
-        DBObject dbo = (DBObject)JSON.parse(jsonString);
+        DBObject dbo = BasicDBObject.parse(jsonString);
         return match(dbo);
     }
     
@@ -133,7 +132,7 @@ public class BuguAggregation<T> implements Parallelable {
     }
     
     public BuguAggregation lookup(String jsonString){
-        DBObject dbo = (DBObject)JSON.parse(jsonString);
+        DBObject dbo = BasicDBObject.parse(jsonString);
         return lookup(dbo);
     }
     
@@ -181,7 +180,7 @@ public class BuguAggregation<T> implements Parallelable {
     }
     
     public BuguAggregation geoNear(String jsonString){
-        DBObject dbo = (DBObject)JSON.parse(jsonString);
+        DBObject dbo = BasicDBObject.parse(jsonString);
         return geoNear(dbo);
     }
     
@@ -196,7 +195,7 @@ public class BuguAggregation<T> implements Parallelable {
     }
     
     public BuguAggregation group(String jsonString){
-        DBObject dbo = (DBObject)JSON.parse(jsonString);
+        DBObject dbo = BasicDBObject.parse(jsonString);
         return group(dbo);
     }
     
@@ -206,7 +205,7 @@ public class BuguAggregation<T> implements Parallelable {
     }
     
     public BuguAggregation replaceRoot(String jsonString){
-        DBObject dbo = (DBObject)JSON.parse(jsonString);
+        DBObject dbo = BasicDBObject.parse(jsonString);
         return replaceRoot(dbo);
     }
     

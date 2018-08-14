@@ -17,7 +17,6 @@ package com.bugull.mongo.agg;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
-import com.mongodb.util.JSON;
 
 /**
  *
@@ -37,7 +36,7 @@ public final class CondBuilder extends AbstractBuilder {
     }
     
     public CondBuilder ifCondition(String json){
-        DBObject ifObj = (DBObject)JSON.parse(json);
+        DBObject ifObj = BasicDBObject.parse(json);
         dbo.put(IF, ifObj);
         return this;
     }

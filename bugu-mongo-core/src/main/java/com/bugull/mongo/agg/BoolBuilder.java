@@ -17,7 +17,6 @@ package com.bugull.mongo.agg;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
-import com.mongodb.util.JSON;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,8 +35,8 @@ public final class BoolBuilder extends AbstractBuilder {
     
     public BoolBuilder and(String json1, String json2){
         this.expression = AND;
-        DBObject dbo1 = (DBObject)JSON.parse(json1);
-        DBObject dbo2 = (DBObject)JSON.parse(json2);
+        DBObject dbo1 = BasicDBObject.parse(json1);
+        DBObject dbo2 = BasicDBObject.parse(json2);
         list.add(dbo1);
         list.add(dbo2);
         return this;
@@ -45,8 +44,8 @@ public final class BoolBuilder extends AbstractBuilder {
     
     public BoolBuilder or(String json1, String json2){
         this.expression = OR;
-        DBObject dbo1 = (DBObject)JSON.parse(json1);
-        DBObject dbo2 = (DBObject)JSON.parse(json2);
+        DBObject dbo1 = BasicDBObject.parse(json1);
+        DBObject dbo2 = BasicDBObject.parse(json2);
         list.add(dbo1);
         list.add(dbo2);
         return this;
@@ -54,7 +53,7 @@ public final class BoolBuilder extends AbstractBuilder {
     
     public BoolBuilder not(String json){
         this.expression = OR;
-        DBObject dbo = (DBObject)JSON.parse(json);
+        DBObject dbo = BasicDBObject.parse(json);
         list.add(dbo);
         return this;
     }
