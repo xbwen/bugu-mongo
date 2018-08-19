@@ -144,7 +144,7 @@ public class Uploader {
     protected void processFilename(){
         if(rename){
             String uuid = UUID.randomUUID().toString();
-            String ext = StringUtil.getExtention(originalName);
+            String ext = FileTypeUtil.getExtention(originalName);
             if(!StringUtil.isEmpty(ext)){
                 filename = uuid + "." + ext;
             }else{

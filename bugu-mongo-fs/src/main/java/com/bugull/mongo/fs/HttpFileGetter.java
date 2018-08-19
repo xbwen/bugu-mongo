@@ -86,7 +86,7 @@ public class HttpFileGetter {
         OutputStream os = response.getOutputStream();
         try{
             int fileLength = (int)f.getLength();
-            String ext = StringUtil.getExtention(filename);
+            String ext = FileTypeUtil.getExtention(filename);
             response.setContentType(FileTypeUtil.getContentType(ext));
             String range = request.getHeader("Range");
             //normal http request, no "range" in header.

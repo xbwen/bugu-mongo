@@ -213,7 +213,7 @@ public class ImageUploader extends Uploader{
     private String saveImage(BufferedImage bi) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         String ext = "jpg";
-        String t = StringUtil.getExtention(filename);
+        String t = FileTypeUtil.getExtention(filename);
         if(!StringUtil.isEmpty(t)){
             ext = t;
         }

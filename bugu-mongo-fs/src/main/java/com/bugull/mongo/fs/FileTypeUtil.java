@@ -24,6 +24,20 @@ import com.bugull.mongo.utils.StringUtil;
 public final class FileTypeUtil {
     
     /**
+     * Get the file's extension name, such as doc, png, jpeg
+     * @param filename
+     * @return 
+     */
+    public static String getExtention(String filename){
+        String ext = null;
+        int index = filename.lastIndexOf(".");
+        if(index > 0){
+            ext = filename.substring(index + 1);
+        }
+        return ext;
+    }
+    
+    /**
      * If it's an image file, cache it in browser
      * @param ext
      * @return 

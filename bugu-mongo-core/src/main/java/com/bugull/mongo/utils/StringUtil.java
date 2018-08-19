@@ -36,20 +36,6 @@ public final class StringUtil {
     }
     
     /**
-     * Get the file's extension name, such as doc, png, jpeg
-     * @param filename
-     * @return 
-     */
-    public static String getExtention(String filename){
-        String ext = null;
-        int index = filename.lastIndexOf(".");
-        if(index > 0){
-            ext = filename.substring(index + 1);
-        }
-        return ext;
-    }
-    
-    /**
      * Encrypt string s with MD5.
      * @param s
      * @return 
