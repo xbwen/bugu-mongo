@@ -226,6 +226,10 @@ public class BuguQuery<T> implements Parallelable {
         return this;
     }
     
+    public BuguQuery<T> text(String value){
+        return text(value, false);
+    }
+    
     public BuguQuery<T> text(String value, boolean caseSensitive){
         DBObject dbo = new BasicDBObject();
         dbo.put(Operator.SEARCH, value);

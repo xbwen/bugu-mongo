@@ -15,7 +15,7 @@
  */
 package com.bugull.mongo.crud;
 
-import com.bugull.mongo.base.BaseTest;
+import com.bugull.mongo.base.ReplicaSetBaseTest;
 import com.bugull.mongo.dao.ProductDao;
 import com.bugull.mongo.entity.Product;
 import java.util.List;
@@ -25,14 +25,14 @@ import org.junit.Test;
  *
  * @author Frank Wen(xbwen@hotmail.com)
  */
-public class ProductTest extends BaseTest {
+public class ProductTest extends ReplicaSetBaseTest {
     
-    //@Test
+    @Test
     public void testInsert(){
         connectDB();
         
         ProductDao dao = new ProductDao();
-        for(int i=1; i<=10000; i++){
+        for(int i=0; i<=10; i++){
             Product product = new Product();
             product.setName("iPhone " + i);
             product.setPrice(i * 1.0F);
@@ -40,10 +40,18 @@ public class ProductTest extends BaseTest {
             dao.save(product);
         }
         
+        for(int i=0; i<=10; i++){
+            Product product = new Product();
+            product.setName("Xiaomi " + i);
+            product.setPrice(i * 1.0F);
+            product.setDescription("小米" + i + "也是不错的手机哦");
+            dao.save(product);
+        }
+        
         disconnectDB();
     }
     
-    @Test
+    //@Test
     public void testFind(){
         connectDB();
         

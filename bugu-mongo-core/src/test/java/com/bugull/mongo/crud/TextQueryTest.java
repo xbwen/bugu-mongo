@@ -34,7 +34,8 @@ public class TextQueryTest extends ReplicaSetBaseTest{
         
         ProductDao dao = new ProductDao();
         
-        List<Product> list = dao.query().text("plus", false).results();
+        List<Product> list = dao.query().text("手机").results();
+        System.out.println("list size: " + list.size());
         for(Product p : list){
             System.out.println("name: " + p.getName());
         }

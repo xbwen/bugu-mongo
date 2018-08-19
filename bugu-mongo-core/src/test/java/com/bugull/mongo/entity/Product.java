@@ -17,6 +17,7 @@
 package com.bugull.mongo.entity;
 
 import com.bugull.mongo.BuguEntity;
+import com.bugull.mongo.annotations.EnsureIndex;
 import com.bugull.mongo.annotations.Entity;
 import com.bugull.mongo.annotations.Id;
 import com.bugull.mongo.annotations.Property;
@@ -26,6 +27,7 @@ import com.bugull.mongo.annotations.Property;
  * @author Frank Wen(xbwen@hotmail.com)
  */
 @Entity
+@EnsureIndex("{description:text}")
 public class Product implements BuguEntity {
     
     @Id

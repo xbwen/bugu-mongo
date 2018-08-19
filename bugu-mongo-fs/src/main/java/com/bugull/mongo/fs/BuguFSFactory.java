@@ -64,6 +64,10 @@ public class BuguFSFactory {
         return create(Default.NAME, bucket, chunkSize);
     }
     
+    public BuguFS create(String connectionName, String bucket){
+        return create(connectionName, bucket, GridFS.DEFAULT_CHUNKSIZE);
+    }
+    
     public BuguFS create(String connectionName, String bucket, int chunkSize){
         BuguFS fs;
         boolean recycled = false;

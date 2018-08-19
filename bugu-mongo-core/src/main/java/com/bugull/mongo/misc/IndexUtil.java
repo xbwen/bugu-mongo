@@ -41,7 +41,10 @@ public final class IndexUtil {
                 String k = kv[0].trim();
                 String v = kv[1].trim();
                 //note: the following check order can't be changed!
-                if(v.equalsIgnoreCase("2dsphere") || v.equalsIgnoreCase("text")){
+                if(v.equalsIgnoreCase("2dsphere")){
+                    indexKeys.put(k, v);
+                }
+                else if(v.equalsIgnoreCase("text")){
                     indexKeys.put(k, v);
                 }
                 else if(k.equalsIgnoreCase("expireAfterSeconds")){
@@ -54,6 +57,9 @@ public final class IndexUtil {
                     indexOptions.put(k, Boolean.parseBoolean(v));
                 }
                 else if(k.equalsIgnoreCase("name")){
+                    indexOptions.put(k, v);
+                }
+                else if(k.equalsIgnoreCase("default_language")){
                     indexOptions.put(k, v);
                 }
             }
