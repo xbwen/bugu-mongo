@@ -43,6 +43,7 @@ bugu-mongo-lucene:
 ----------
 各个版本的变更日志，以及jar包下载，请[查看这里](https://github.com/xbwen/bugu-mongo/releases)。
 
+支持JDK6及以上版本。
 
 交流反馈
 ----------
