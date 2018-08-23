@@ -18,7 +18,6 @@ package com.bugull.mongo.entity;
 import com.bugull.mongo.SimpleEntity;
 import com.bugull.mongo.annotations.Entity;
 import java.math.BigDecimal;
-import java.util.List;
 
 /**
  *
@@ -30,8 +29,6 @@ public class Account extends SimpleEntity {
     private String name;
     
     private BigDecimal money;
-    
-    private List<BigDecimal> scores;
 
     public String getName() {
         return name;
@@ -47,14 +44,6 @@ public class Account extends SimpleEntity {
 
     public void setMoney(BigDecimal money) {
         this.money = money;
-    }
-
-    public List<BigDecimal> getScores() {
-        return scores;
-    }
-
-    public void setScores(List<BigDecimal> scores) {
-        this.scores = scores;
     }
     
 }

@@ -13,46 +13,54 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.bugull.mongo.crud;
+package com.bugull.mongo.transaction;
 
+import com.bugull.mongo.BuguFramework;
 import com.bugull.mongo.base.ReplicaSetBaseTest;
 import com.bugull.mongo.dao.AccountDao;
+import com.bugull.mongo.dao.ProductDao;
 import com.bugull.mongo.entity.Account;
+import com.bugull.mongo.entity.Product;
+import com.bugull.mongo.utils.TransactionUtil;
+import com.mongodb.MongoClient;
+import com.mongodb.client.ClientSession;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 import org.junit.Test;
 
 /**
  *
  * @author Frank Wen(xbwen@hotmail.com)
  */
-public class AccountTest extends ReplicaSetBaseTest {
+public class TransactionTest extends ReplicaSetBaseTest {
     
-    //@Test
-    public void testInsert(){
+    @Test
+    public void test(){
         connectDB();
         
-        Account account = new Account();
-        account.setName("Jessica");
-        account.setMoney(BigDecimal.valueOf(9999.99));
-
-        new AccountDao().insert(account);
+        TransactionUtil.runTransactionWithRetry(this::doTxn);
         
         disconnectDB();
     }
     
-    //@Test
-    public void testQuery(){
-        connectDB();
+    private void doTxn(){
+        MongoClient client = BuguFramework.getInstance().getConnection().getMongoClient();
+        ClientSession session = client.startSession();
+        session.startTransaction();
         
-        AccountDao dao = new AccountDao();
-        Account account = dao.findOne();
-        System.out.println("name: " + account.getName());
-        BigDecimal bd = account.getMoney();
-        System.out.println("money: " + bd.toString());
+        Account account = new Account();
+        account.setName("Jessica");
+        account.setMoney(BigDecimal.valueOf(9999.99));
+        new AccountDao().insert(account);
         
-        disconnectDB();
+        ProductDao dao = new ProductDao();
+        Product product = new Product();
+        product.setName("iPhone");
+        product.setPrice(7777.0F);
+        product.setDescription("iPhone is the best mobile phone!!!");
+        dao.save(product);
+        
+        TransactionUtil.commitWithRetry(session);
+        
     }
     
 }
