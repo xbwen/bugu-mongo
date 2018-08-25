@@ -2,12 +2,11 @@
 ----------
 bugu-mongo是一个MongoDB Java开发框架。它在MongoDB Java Driver的基础上进行了封装，使用简单。同时又集成了一些常用的特性，功能强大。
 
-bugu-mongo由1个核心模块，外加3个扩展模块组成：
+bugu-mongo由1个核心模块，外加若干扩展模块组成：
 
 * bugu-mongo-core：核心模块，**必需**
 * bugu-mongo-cache：扩展模块，缓存常用数据，*任选*
 * bugu-mongo-fs：扩展模块，GridFS相关功能，*任选*
-* bugu-mongo-lucene：扩展模块，Lucene相关功能，*任选*
 
 
 帮助文档
@@ -43,7 +42,9 @@ bugu-mongo-lucene:
 ----------
 各个版本的变更日志，以及jar包下载，请[查看这里](https://github.com/xbwen/bugu-mongo/releases)。
 
-支持JDK6及以上版本。
+3.x版本，支持JDK8及以上版本。
+
+2.x版本，支持JDK6及以上版本。
 
 交流反馈
 ----------
