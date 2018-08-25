@@ -15,12 +15,11 @@
  */
 package com.bugull.mongo.crud;
 
+import com.bugull.mongo.BuguQuery;
 import com.bugull.mongo.base.ReplicaSetBaseTest;
 import com.bugull.mongo.dao.AccountDao;
 import com.bugull.mongo.entity.Account;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 import org.junit.Test;
 
 /**
@@ -51,6 +50,17 @@ public class AccountTest extends ReplicaSetBaseTest {
         System.out.println("name: " + account.getName());
         BigDecimal bd = account.getMoney();
         System.out.println("money: " + bd.toString());
+        
+        disconnectDB();
+    }
+    
+    @Test
+    public void testUpdate(){
+        connectDB();
+        
+        AccountDao dao = new AccountDao();
+        BuguQuery<Account> query = dao.query().is("name", "Frank");
+        dao.update().set("money", new BigDecimal("6666")).setUpsert(true).execute(query);
         
         disconnectDB();
     }
