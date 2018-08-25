@@ -34,9 +34,6 @@ bugu-mongo-cache:
 bugu-mongo-fs:
 * [GridFS文件操作](https://github.com/xbwen/bugu-mongo/wiki/GridFS%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C)
 
-bugu-mongo-lucene:
-* [Lucene索引和搜索](https://github.com/xbwen/bugu-mongo/wiki/Lucene%E7%B4%A2%E5%BC%95%E5%92%8C%E6%90%9C%E7%B4%A2)
-
 
 版本与下载
 ----------
