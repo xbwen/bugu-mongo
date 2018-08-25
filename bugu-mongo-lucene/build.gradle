@@ -1,5 +1,0 @@
-dependencies {
-    compile project(':bugu-mongo-core')
-    compile group:'org.apache.lucene', name:'lucene-core', version:'3.5.0'
-    compile group:'org.apache.lucene', name:'lucene-highlighter', version:'3.5.0'
-}
