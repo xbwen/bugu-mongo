@@ -22,43 +22,42 @@ import com.mongodb.DBObject;
  *
  * @author Frank Wen(xbwen@hotmail.com)
  */
-public final class CondBuilder implements Builder {
+public class CompareBuilder implements Builder {
     
-    private final static String COND = "$cond";
-    private final static String IF = "if";
-    private final static String THEN = "then";
-    private final static String ELSE = "else";
+    public static final String GT = "$gt";
+    public static final String GTE = "$gte";
+    public static final String LT = "$lt";
+    public static final String LTE = "$lte";
     
     private final DBObject dbo;
     
-    public CondBuilder(){
+    public CompareBuilder(){
         dbo = new BasicDBObject();
     }
     
-    public CondBuilder ifCondition(DBObject ifObj){
-        dbo.put(IF, ifObj);
+    public CompareBuilder greaterThan(String attr1, String attr2){
+        dbo.put(GT, new String[]{attr1, attr2});
         return this;
     }
     
-    public CondBuilder ifCondition(String json){
-        DBObject ifObj = BasicDBObject.parse(json);
-        dbo.put(IF, ifObj);
+    public CompareBuilder greaterThanEquals(String attr1, String attr2){
+        dbo.put(GTE, new String[]{attr1, attr2});
         return this;
     }
     
-    public CondBuilder thenValue(Object value){
-        dbo.put(THEN, value);
+    public CompareBuilder lessThan(String attr1, String attr2){
+        dbo.put(LT, new String[]{attr1, attr2});
         return this;
     }
     
-    public CondBuilder elseValue(Object value){
-        dbo.put(ELSE, value);
+    public CompareBuilder lessThanEquals(String attr1, String attr2){
+        dbo.put(LTE, new String[]{attr1, attr2});
         return this;
     }
-    
+
     @Override
-    public DBObject build(){
-        return new BasicDBObject(COND, dbo);
+    public DBObject build() {
+        return dbo;
     }
     
 }

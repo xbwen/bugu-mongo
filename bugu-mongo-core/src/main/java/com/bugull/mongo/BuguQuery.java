@@ -366,6 +366,11 @@ public class BuguQuery<T> implements Parallelable {
         return this;
     }
     
+    public BuguQuery<T> expr(DBObject expression){
+        append(Operator.EXPR, null, expression);
+        return this;
+    }
+    
     public BuguQuery<T> slice(String key, long num){
         DBObject dbo = new BasicDBObject(Operator.SLICE, num);
         return addSlice(key, dbo);

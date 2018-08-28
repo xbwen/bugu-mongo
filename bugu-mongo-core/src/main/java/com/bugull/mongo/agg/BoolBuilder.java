@@ -24,7 +24,11 @@ import java.util.List;
  *
  * @author Frank Wen(xbwen@hotmail.com)
  */
-public final class BoolBuilder extends AbstractBuilder {
+public final class BoolBuilder implements Builder {
+    
+    private final static String AND = "$and";
+    private final static String OR = "$or";
+    private final static String NOT = "$not";
     
     private String expression;
     private final List<DBObject> list;
@@ -52,7 +56,7 @@ public final class BoolBuilder extends AbstractBuilder {
     }
     
     public BoolBuilder not(String json){
-        this.expression = OR;
+        this.expression = NOT;
         DBObject dbo = BasicDBObject.parse(json);
         list.add(dbo);
         return this;

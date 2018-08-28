@@ -28,5 +28,9 @@ public final class ExpressionBuilder {
     public static BoolBuilder bool(){
         return new BoolBuilder();
     }
+    
+    public static CompareBuilder compare(){
+        return new CompareBuilder();
+    }
 
 }
