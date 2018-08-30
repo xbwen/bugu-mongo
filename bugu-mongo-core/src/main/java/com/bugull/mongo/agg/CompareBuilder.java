@@ -24,15 +24,27 @@ import com.mongodb.DBObject;
  */
 public class CompareBuilder implements Builder {
     
-    public static final String GT = "$gt";
-    public static final String GTE = "$gte";
-    public static final String LT = "$lt";
-    public static final String LTE = "$lte";
+    private static final String EQ = "$eq";
+    private static final String NE = "$ne";
+    private static final String GT = "$gt";
+    private static final String GTE = "$gte";
+    private static final String LT = "$lt";
+    private static final String LTE = "$lte";
     
     private final DBObject dbo;
     
     public CompareBuilder(){
         dbo = new BasicDBObject();
+    }
+    
+    public CompareBuilder eq(String attr1, String attr2){
+        dbo.put(EQ, new String[]{attr1, attr2});
+        return this;
+    }
+    
+    public CompareBuilder notEquals(String attr1, String attr2){
+        dbo.put(NE, new String[]{attr1, attr2});
+        return this;
     }
     
     public CompareBuilder greaterThan(String attr1, String attr2){

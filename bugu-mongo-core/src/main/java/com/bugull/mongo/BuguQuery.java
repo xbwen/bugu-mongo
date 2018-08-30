@@ -366,6 +366,11 @@ public class BuguQuery<T> implements Parallelable {
         return this;
     }
     
+    public BuguQuery<T> expr(String jsonStr){
+        DBObject expression = BasicDBObject.parse(jsonStr);
+        return expr(expression);
+    }
+    
     public BuguQuery<T> expr(DBObject expression){
         append(Operator.EXPR, null, expression);
         return this;
