@@ -30,4 +30,7 @@ public abstract class GeoJSON {
         return type;
     }
     
+    @Override
+    public abstract String toString();
+    
 }

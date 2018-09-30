@@ -67,4 +67,30 @@ public class Polygon extends GeoJSON implements Serializable {
         }
     }
     
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Polygon: ");
+        if(coordinates != null){
+            int layerLen = coordinates.length;
+            int pointLen = coordinates[0].length;
+            for(int i=0; i<layerLen; i++){
+                for(int j=0; j<pointLen; j++){
+                    sb.append("[")
+                        .append(coordinates[i][j][0])
+                        .append(", ")
+                        .append(coordinates[i][j][1])
+                        .append("]");
+                    if(j < pointLen - 1){
+                        sb.append(", ");
+                    }
+                }
+                if(i < layerLen -1 ){
+                    sb.append(", ");
+                }
+            }
+        }
+        return sb.toString();
+    }
+    
 }
