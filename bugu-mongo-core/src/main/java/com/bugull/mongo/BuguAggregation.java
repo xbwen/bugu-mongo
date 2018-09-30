@@ -56,7 +56,7 @@ public class BuguAggregation<T> implements Parallelable {
     }
     
     /**
-     * Since MongoDB 3.4
+     * @since mongoDB 3.4
      * @param dbo
      * @return 
      */
@@ -93,7 +93,7 @@ public class BuguAggregation<T> implements Parallelable {
     }
     
     /**
-     * Since MongoDB 3.4
+     * @since mongoDB 3.4
      * @param fields
      * @return 
      */
@@ -246,7 +246,7 @@ public class BuguAggregation<T> implements Parallelable {
     }
     
     /**
-     * Since MongoDB 3.4
+     * @since mongoDB 3.4
      * @param resultName
      * @return 
      */
@@ -256,7 +256,7 @@ public class BuguAggregation<T> implements Parallelable {
     }
     
     /**
-     * Since MongoDB 3.4
+     * @since mongoDB 3.4
      * @param field
      * @return 
      */
