@@ -75,6 +75,7 @@ public class Polygon extends GeoJSON implements Serializable {
             int layerLen = coordinates.length;
             int pointLen = coordinates[0].length;
             for(int i=0; i<layerLen; i++){
+                sb.append("[ ");
                 for(int j=0; j<pointLen; j++){
                     sb.append("[")
                         .append(coordinates[i][j][0])
@@ -85,6 +86,7 @@ public class Polygon extends GeoJSON implements Serializable {
                         sb.append(", ");
                     }
                 }
+                sb.append(" ]");
                 if(i < layerLen -1 ){
                     sb.append(", ");
                 }
