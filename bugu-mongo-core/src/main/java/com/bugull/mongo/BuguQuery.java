@@ -559,4 +559,22 @@ public class BuguQuery<T> implements Parallelable {
         this.withoutCascade = withoutCascade;
     }
     
+    @Override
+    public String toString(){
+        StringBuilder sb = new StringBuilder();
+        sb.append("query condition:");
+        sb.append(condition.toString());
+        if(orderBy != null){
+            sb.append(" sort:");
+            sb.append(SortUtil.getSort(orderBy).toString());
+        }
+        if(pageNumber>0 && pageSize>0){
+            sb.append(" skip:");
+            sb.append((pageNumber-1) * pageSize);
+            sb.append(" limit:");
+            sb.append(pageSize);
+        }
+        return sb.toString();
+    }
+    
 }

@@ -281,5 +281,19 @@ public class BuguAggregation<T> implements Parallelable {
             }
         };
     }
+    
+    @Override
+    public String toString(){
+        StringBuilder sb = new StringBuilder();
+        sb.append("pipeline:");
+        for(DBObject dbo : pipeline){
+            sb.append(dbo.toString());
+        }
+        if(options != null){
+            sb.append(" options:");
+            sb.append(options.toString());
+        }
+        return sb.toString();
+    }
 
 }
