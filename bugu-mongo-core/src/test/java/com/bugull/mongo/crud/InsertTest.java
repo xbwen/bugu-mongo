@@ -17,6 +17,7 @@
 package com.bugull.mongo.crud;
 
 import com.bugull.mongo.base.ReplicaSetBaseTest;
+import com.bugull.mongo.dao.CustomerDao;
 import com.bugull.mongo.dao.GroupContactDao;
 import com.bugull.mongo.dao.GroupProductDao;
 import com.bugull.mongo.dao.OrderDao;
@@ -24,6 +25,7 @@ import com.bugull.mongo.dao.ProductDao;
 import com.bugull.mongo.dao.UserDao;
 import com.bugull.mongo.entity.Address;
 import com.bugull.mongo.entity.Contact;
+import com.bugull.mongo.entity.Customer;
 import com.bugull.mongo.entity.GroupContact;
 import com.bugull.mongo.entity.GroupProduct;
 import com.bugull.mongo.entity.Order;
@@ -34,6 +36,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.junit.Test;
 
 /**
  *
@@ -163,6 +166,41 @@ public class InsertTest extends ReplicaSetBaseTest {
         gp.setTotalPrice(10000);
         GroupProductDao gpDao = new GroupProductDao();
         gpDao.save(gp);
+        
+        disconnectDB();
+    }
+    
+    @Test
+    public void testInsertCustomer(){
+        connectDB();
+        
+        CustomerDao dao = new CustomerDao();
+        
+        Customer c1 = new Customer();
+        c1.setUsername("Frank");
+        c1.setAge(30);
+        c1.setStar(60);
+        dao.save(c1);
+        
+        Customer c2 = new Customer();
+        c2.setUsername("Jessica");
+        c2.setAge(20);
+        c2.setStar(20);
+        dao.save(c2);
+        
+        Customer c3 = new Customer();
+        c3.setUsername("Tom");
+        c3.setAge(10);
+        c3.setStar(100);
+        dao.save(c3);
+        
+        Customer c4 = new Customer();
+        c4.setUsername("Leo");
+        c4.setAge(60);
+        c4.setStar(40);
+        dao.save(c4);
+        
+        System.out.println("Insert OK.");
         
         disconnectDB();
     }
