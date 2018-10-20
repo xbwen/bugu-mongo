@@ -16,18 +16,24 @@
 
 package com.bugull.mongo.decoder;
 
+import com.bugull.mongo.BuguEntity;
 import com.bugull.mongo.annotations.Default;
 import com.bugull.mongo.annotations.Embed;
+import com.bugull.mongo.exception.AnnotationException;
 import com.bugull.mongo.utils.FieldUtil;
 import com.bugull.mongo.utils.MapperUtil;
 import com.mongodb.DBObject;
 import java.lang.reflect.Field;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
  * @author Frank Wen(xbwen@hotmail.com)
  */
 public class EmbedDecoder extends AbstractDecoder{
+    
+    private final static Logger logger = LogManager.getLogger(EmbedDecoder.class.getName());
         
     public EmbedDecoder(Field field, DBObject dbo){
         super(field);
@@ -49,6 +55,11 @@ public class EmbedDecoder extends AbstractDecoder{
         }
         Object o = MapperUtil.fromDBObject(field.getType(), (DBObject)value);
         FieldUtil.set(obj, field, o);
+        
+        //tip for wrong use of @Embed
+        if(o instanceof BuguEntity){
+            logger.error(type.getName(), new AnnotationException("The Embed object should not be BuguEntity!"));
+        }
     }
     
 }
