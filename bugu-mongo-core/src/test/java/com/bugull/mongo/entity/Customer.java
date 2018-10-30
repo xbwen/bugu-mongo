@@ -17,17 +17,19 @@ package com.bugull.mongo.entity;
 
 import com.bugull.mongo.SimpleEntity;
 import com.bugull.mongo.annotations.Entity;
+import java.util.Date;
 
 /**
  *
  * @author Frank Wen(xbwen@hotmail.com)
  */
-@Entity
+@Entity(name = "customer_test")
 public class Customer extends SimpleEntity {
     
     private String username;
     private int age;
     private int star;
+    private Date lastLogin;
 
     public String getUsername() {
         return username;
@@ -51,6 +53,14 @@ public class Customer extends SimpleEntity {
 
     public void setStar(int star) {
         this.star = star;
+    }
+
+    public Date getLastLogin() {
+        return lastLogin;
+    }
+
+    public void setLastLogin(Date lastLogin) {
+        this.lastLogin = lastLogin;
     }
     
 }

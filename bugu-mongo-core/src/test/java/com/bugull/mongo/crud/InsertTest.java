@@ -31,6 +31,7 @@ import com.bugull.mongo.entity.GroupProduct;
 import com.bugull.mongo.entity.Order;
 import com.bugull.mongo.entity.Product;
 import com.bugull.mongo.entity.User;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -170,7 +171,7 @@ public class InsertTest extends ReplicaSetBaseTest {
         disconnectDB();
     }
     
-    @Test
+    //@Test
     public void testInsertCustomer(){
         connectDB();
         
@@ -199,6 +200,27 @@ public class InsertTest extends ReplicaSetBaseTest {
         c4.setAge(60);
         c4.setStar(40);
         dao.save(c4);
+        
+        System.out.println("Insert OK.");
+        
+        disconnectDB();
+    }
+    
+    @Test
+    public void testInsertCustomerDate() throws Exception {
+        connectDB();
+        
+        CustomerDao dao = new CustomerDao();
+        
+        Customer c1 = new Customer();
+        c1.setUsername("Frank");
+        c1.setAge(30);
+        c1.setStar(60);
+        String dateStr = "1970-01-01 10:00:00";
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        Date date = format.parse(dateStr);
+        c1.setLastLogin(date);
+        dao.save(c1);
         
         System.out.println("Insert OK.");
         

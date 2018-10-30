@@ -18,7 +18,6 @@ package com.bugull.mongo.base;
 
 import com.bugull.mongo.BuguConnection;
 import com.bugull.mongo.BuguFramework;
-import java.net.UnknownHostException;
 
 /**
  *
