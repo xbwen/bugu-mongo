@@ -333,11 +333,16 @@ public class BuguQuery<T> implements Parallelable {
     /**
      * Note: the regex string must in Java style, not JavaScript style.
      * @param key
-     * @param regex
+     * @param regexStr
      * @return 
      */
-    public BuguQuery<T> regex(String key, String regex){
-        append(key, null, Pattern.compile(regex));
+    public BuguQuery<T> regex(String key, String regexStr){
+        append(key, null, Pattern.compile(regexStr));
+        return this;
+    }
+    
+    public BuguQuery<T> regexCaseInsensitive(String key, String regexStr){
+        append(key, null, Pattern.compile(regexStr, Pattern.CASE_INSENSITIVE));
         return this;
     }
     
