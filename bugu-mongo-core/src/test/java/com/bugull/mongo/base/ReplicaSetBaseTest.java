@@ -34,9 +34,9 @@ public class ReplicaSetBaseTest {
     protected void connectDB(){
         List<ServerAddress> serverList = new ArrayList<ServerAddress>();
         try{
-            serverList.add(new ServerAddress("192.168.1.240", 27017));
-            serverList.add(new ServerAddress("192.168.1.240", 27018));
-            serverList.add(new ServerAddress("192.168.1.240", 27019));
+            serverList.add(new ServerAddress("192.168.1.248", 27017));
+            serverList.add(new ServerAddress("192.168.1.248", 27018));
+            serverList.add(new ServerAddress("192.168.1.248", 27019));
         }catch(UnknownHostException ex){
             ex.printStackTrace();
         }
@@ -55,9 +55,9 @@ public class ReplicaSetBaseTest {
     protected void connectDBWithOptions(MongoClientOptions options){
         List<ServerAddress> serverList = new ArrayList<ServerAddress>();
         try {
-            serverList.add(new ServerAddress("192.168.0.200", 27017));
-            serverList.add(new ServerAddress("192.168.0.200", 27018));
-            serverList.add(new ServerAddress("192.168.0.200", 27019));
+            serverList.add(new ServerAddress("192.168.1.248", 27017));
+            serverList.add(new ServerAddress("192.168.1.248", 27018));
+            serverList.add(new ServerAddress("192.168.1.248", 27019));
         } catch (UnknownHostException ex) {
             ex.printStackTrace();
         }

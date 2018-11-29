@@ -865,6 +865,7 @@ public class BuguDao<T> extends AbstractDao {
 
     /**
      * Count all entity.
+     * If collection is very large, count() will be slow, you should use countFast().
      * @return 
      */
     public long count(){
@@ -880,6 +881,39 @@ public class BuguDao<T> extends AbstractDao {
     public long count(String key, Object value){
         value = checkSpecialValue(key, value);
         return getCollection().count(new BasicDBObject(key, value));
+    }
+    
+    /**
+     * If collection is very large, count() will be slow, you should use countFast().
+     * @return 
+     */
+    public long countFast(){
+        long counter = 0;
+        Iterable<T> results = aggregate().group("{_id:null, counter:{$sum:1}}").results();
+        Iterator<T> it = results.iterator();
+        if(it.hasNext()){
+            DBObject dbo = (DBObject)it.next();
+            String s = dbo.get("counter").toString();
+            counter = Long.parseLong(s);
+        }
+        return counter;
+    }
+    
+    /**
+     * If collection is very large, count() will be slow, you should use countFast().
+     * @return 
+     */
+    public long countFast(String key, Object value){
+        long counter = 0;
+        value = checkSpecialValue(key, value);
+        Iterable<T> results = aggregate().match(key, value).group("{_id:null, counter:{$sum:1}}").results();
+        Iterator<T> it = results.iterator();
+        if(it.hasNext()){
+            DBObject dbo = (DBObject)it.next();
+            String s = dbo.get("counter").toString();
+            counter = Long.parseLong(s);
+        }
+        return counter;
     }
     
     /**

@@ -33,6 +33,7 @@ import com.mongodb.DBObject;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Pattern;
 import org.apache.logging.log4j.LogManager;
@@ -333,6 +334,11 @@ public class BuguQuery<T> implements Parallelable {
         return this;
     }
     
+    public BuguQuery<T> regexCaseInsensitive(String key, String regexStr){
+        append(key, null, Pattern.compile(regexStr, Pattern.CASE_INSENSITIVE));
+        return this;
+    }
+    
     public BuguQuery<T> size(String key, int value){
         append(key, Operator.SIZE, value);
         return this;
@@ -460,8 +466,28 @@ public class BuguQuery<T> implements Parallelable {
         return MapperUtil.toList(dao.getEntityClass(), cursor, withoutCascade);
     }
     
+    /**
+     * If collection is very large, count() will be slow, you should use countFast().
+     * @return 
+     */
     public long count(){
         return dao.getCollection().count(condition);
+    }
+    
+     /**
+     * If collection is very large, count() will be slow, you should use countFast().
+     * @return 
+     */
+    public long countFast(){
+        long counter = 0;
+        Iterable<T> results = dao.aggregate().match(condition).group("{_id:null, counter:{$sum:1}}").results();
+        Iterator<T> it = results.iterator();
+        if(it.hasNext()){
+            DBObject dbo = (DBObject)it.next();
+            String s = dbo.get("counter").toString();
+            counter = Long.parseLong(s);
+        }
+        return counter;
     }
     
     public boolean exists(){

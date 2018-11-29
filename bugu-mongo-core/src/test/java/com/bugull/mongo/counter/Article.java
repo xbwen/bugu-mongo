@@ -13,30 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.bugull.mongo.counter;
 
-package com.bugull.mongo.base;
-
-import com.bugull.mongo.BuguConnection;
-import com.bugull.mongo.BuguFramework;
+import com.bugull.mongo.SimpleEntity;
+import com.bugull.mongo.annotations.Entity;
 
 /**
  *
  * @author Frank Wen(xbwen@hotmail.com)
  */
-public abstract class BaseTest {
+@Entity
+public class Article extends SimpleEntity {
     
-    protected void connectDB(){
-        BuguConnection conn = BuguFramework.getInstance().createConnection();
-        conn.setHost("127.0.0.1");
-        conn.setPort(27017);
-        conn.setUsername("test");
-        conn.setPassword("test");
-        conn.setDatabase("test");
-        conn.connect();
-    }
-    
-    protected void disconnectDB(){
-        BuguFramework.getInstance().destroy();
+    private String title;
+    private double score;
+
+    public String getTitle() {
+        return title;
     }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public double getScore() {
+        return score;
+    }
+
+    public void setScore(double score) {
+        this.score = score;
+    }
+    
 }
