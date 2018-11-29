@@ -1,4 +1,5 @@
 */build/
+/release-notes/
 /.nb-gradle/profiles/private/
 /.nb-gradle-properties
 /.gradle/
