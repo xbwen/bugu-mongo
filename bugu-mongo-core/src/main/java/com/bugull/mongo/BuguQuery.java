@@ -34,6 +34,7 @@ import com.mongodb.client.model.DBCollectionFindOptions;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
@@ -532,8 +533,29 @@ public class BuguQuery<T> implements Parallelable {
         return MapperUtil.toList(dao.getEntityClass(), cursor, withoutCascade);
     }
     
+    /**
+     * If collection is very large, count() will be slow, you should use countFast().
+     * @return 
+     */
     public long count(){
         return dao.getCollection().count(condition);
+    }
+    
+    /**
+     * If collection is very large, count() will be slow, you should use countFast().
+     * @since mongoDB 3.4
+     * @return 
+     */
+    public long countFast(){
+        long counter = 0;
+        Iterable<T> results = dao.aggregate().match(condition).count("counter").results();
+        Iterator<T> it = results.iterator();
+        if(it.hasNext()){
+            DBObject dbo = (DBObject)it.next();
+            String s = dbo.get("counter").toString();
+            counter = Long.parseLong(s);
+        }
+        return counter;
     }
     
     public boolean exists(){

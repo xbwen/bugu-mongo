@@ -758,11 +758,47 @@ public class BuguDao<T> extends AbstractDao {
     }
 
     /**
-     * Count all entity.
+     * Count all entity. 
+     * If collection is very large, count() will be slow, you should use countFast().
      * @return 
      */
     public long count(){
         return getCollection().count();
+    }
+    
+    /**
+     * If collection is very large, count() will be slow, you should use countFast().
+     * @since mongoDB 3.4
+     * @return 
+     */
+    public long countFast(){
+        long counter = 0;
+        Iterable<T> results = aggregate().count("counter").results();
+        Iterator<T> it = results.iterator();
+        if(it.hasNext()){
+            DBObject dbo = (DBObject)it.next();
+            String s = dbo.get("counter").toString();
+            counter = Long.parseLong(s);
+        }
+        return counter;
+    }
+    
+    /**
+     * If collection is very large, count() will be slow, you should use countFast().
+     * @since mongoDB 3.4
+     * @return 
+     */
+    public long countFast(String key, Object value){
+        long counter = 0;
+        value = checkSpecialValue(key, value);
+        Iterable<T> results = aggregate().match(key, value).count("counter").results();
+        Iterator<T> it = results.iterator();
+        if(it.hasNext()){
+            DBObject dbo = (DBObject)it.next();
+            String s = dbo.get("counter").toString();
+            counter = Long.parseLong(s);
+        }
+        return counter;
     }
     
     /**
