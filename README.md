@@ -41,9 +41,9 @@ bugu-mongo-fs:
 ----------
 各个版本的变更日志，以及jar包下载，请[查看这里](https://github.com/xbwen/bugu-mongo/releases)。
 
-3.x版本，支持JDK8及以上版本。
+3.x版本，支持JDK8及以上版本。建议MongoDB 3.4及以上版本使用。
 
-2.x版本，支持JDK6及以上版本。
+2.x版本，支持JDK6及以上版本。建议MongoDB 3.2及以下版本使用。
 
 交流反馈
 ----------
