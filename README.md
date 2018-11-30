@@ -37,13 +37,13 @@ bugu-mongo-fs:
 * [其它......](https://github.com/xbwen/bugu-mongo/wiki/%E5%85%B6%E5%AE%83......)
 
 
-版本与下载
+版本分支
 ----------
 各个版本的变更日志，以及jar包下载，请[查看这里](https://github.com/xbwen/bugu-mongo/releases)。
 
-3.x版本，支持JDK8及以上版本。建议MongoDB 3.4及以上版本使用。
+3.x分支，支持JDK8及以上版本。建议MongoDB 3.4及以上版本使用。驱动为MongoDB Java Driver 3.8.2。
 
-2.x版本，支持JDK6及以上版本。建议MongoDB 3.2及以下版本使用。
+2.x分支，支持JDK6及以上版本。建议MongoDB 3.2及以下版本使用。驱动为MongoDB Java Driver 2.14.3。
 
 交流反馈
 ----------
