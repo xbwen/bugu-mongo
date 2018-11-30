@@ -18,6 +18,7 @@ package com.bugull.mongo.counter;
 import com.bugull.mongo.BuguDao;
 import com.bugull.mongo.base.BaseTest;
 import com.bugull.mongo.cache.DaoCache;
+import java.util.List;
 import java.util.UUID;
 import org.junit.Test;
 
@@ -43,6 +44,53 @@ public class CountFastTest extends BaseTest {
         disconnectDB();
         
         System.out.println("done!");
+    }
+    
+    //@Test
+    public void testInsertMore(){
+        connectDB();
+        
+        BuguDao<Article> dao = DaoCache.getInstance().get(Article.class);
+        
+        for(int i=0; i<100; i++){
+            Article article1 = new Article();
+            article1.setTitle("977c91a3-6bab-4be6-8ebb-bafe679d90f4");
+            article1.setScore(0.09567830121026977D);
+            dao.save(article1);
+            
+            Article article2 = new Article();
+            article2.setTitle("451c445a-72d3-40e5-9110-e6c4c481195c");
+            article2.setScore(0.749565940706794D);
+            dao.save(article2);
+            
+            Article article3 = new Article();
+            article3.setTitle("d2e509ee-4a64-44a2-86cd-db540aaa4a11");
+            article3.setScore(0.29770944623277573D);
+            dao.save(article3);
+        }
+        
+        disconnectDB();
+        
+        System.out.println("done!");
+    }
+    
+    @Test
+    public void testDistinctLarge(){
+        connectDB();
+        
+        BuguDao<Article> dao = DaoCache.getInstance().get(Article.class);
+        
+        long begin = System.currentTimeMillis();
+        List allTitle = dao.query().greaterThan("score", 0.2).distinct("title");
+        long end = System.currentTimeMillis();
+        System.out.println("result: " + allTitle.size() + "  use time: " + (end - begin));
+        
+        long begin2 = System.currentTimeMillis();
+        List allTitle2 = dao.query().greaterThan("score", 0.2).distinctLarge("title");
+        long end2 = System.currentTimeMillis();
+        System.out.println("result: " + allTitle2.size() + "  use time: " + (end2 - begin2));
+        
+        disconnectDB();
     }
     
     //@Test
@@ -87,7 +135,7 @@ public class CountFastTest extends BaseTest {
         disconnectDB();
     }
     
-    @Test
+    //@Test
     public void testQueryCountFast(){
         
         connectDB();

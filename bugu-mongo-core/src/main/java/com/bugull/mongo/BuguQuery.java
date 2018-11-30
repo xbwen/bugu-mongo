@@ -495,8 +495,27 @@ public class BuguQuery<T> implements Parallelable {
         return dbo != null;
     }
     
+    /**
+     * distinct() on large collection will fail. you should use distinctLarge().
+     * @param key
+     * @return 
+     */
     public List distinct(String key){
         return dao.getCollection().distinct(key, condition);
+    }
+    
+     /**
+     * distinct() on large collection will fail. you should use distinctLarge().
+     * @param key
+     * @return 
+     */
+    public List distinctLarge(String key){
+        List list = new ArrayList();
+        Iterable<DBObject> results = dao.aggregate().match(condition).group("{_id:'$" + key + "'}").results();
+        for(DBObject dbo : results){
+            list.add(dbo.get("_id"));
+        }
+        return list;
     }
 
     public DBObject getCondition() {
