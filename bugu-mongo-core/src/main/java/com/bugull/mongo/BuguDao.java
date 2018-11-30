@@ -750,11 +750,26 @@ public class BuguDao<T> extends AbstractDao {
     
     /**
      * Find the distinct values for a specified field across a collection and returns the results in an array.
+     * distinct() on large collection will fail. you should use distinctLarge().
      * @param key
      * @return 
      */
     public List distinct(String key){
         return getCollection().distinct(key);
+    }
+    
+    /**
+     * distinct() on large collection will fail. you should use distinctLarge().
+     * @param key
+     * @return 
+     */
+    public List distinctLarge(String key){
+        List list = new ArrayList();
+        Iterable<DBObject> results = aggregate().group("{_id:'$" + key + "'}").results();
+        for(DBObject dbo : results){
+            list.add(dbo.get("_id"));
+        }
+        return list;
     }
 
     /**
@@ -767,16 +782,28 @@ public class BuguDao<T> extends AbstractDao {
     }
     
     /**
+     * Count by condition.
+     * If collection is very large, count() will be slow, you should use countFast().
+     * @param key the condition field
+     * @param value the condition value
+     * @return 
+     */
+    public long count(String key, Object value){
+        value = checkSpecialValue(key, value);
+        return getCollection().count(new BasicDBObject(key, value));
+    }
+    
+    /**
      * If collection is very large, count() will be slow, you should use countFast().
      * @since mongoDB 3.4
      * @return 
      */
     public long countFast(){
         long counter = 0;
-        Iterable<T> results = aggregate().count("counter").results();
-        Iterator<T> it = results.iterator();
+        Iterable<DBObject> results = aggregate().count("counter").results();
+        Iterator<DBObject> it = results.iterator();
         if(it.hasNext()){
-            DBObject dbo = (DBObject)it.next();
+            DBObject dbo = it.next();
             String s = dbo.get("counter").toString();
             counter = Long.parseLong(s);
         }
@@ -791,25 +818,14 @@ public class BuguDao<T> extends AbstractDao {
     public long countFast(String key, Object value){
         long counter = 0;
         value = checkSpecialValue(key, value);
-        Iterable<T> results = aggregate().match(key, value).count("counter").results();
-        Iterator<T> it = results.iterator();
+        Iterable<DBObject> results = aggregate().match(key, value).count("counter").results();
+        Iterator<DBObject> it = results.iterator();
         if(it.hasNext()){
-            DBObject dbo = (DBObject)it.next();
+            DBObject dbo = it.next();
             String s = dbo.get("counter").toString();
             counter = Long.parseLong(s);
         }
         return counter;
-    }
-    
-    /**
-     * Count by condition.
-     * @param key the condition field
-     * @param value the condition value
-     * @return 
-     */
-    public long count(String key, Object value){
-        value = checkSpecialValue(key, value);
-        return getCollection().count(new BasicDBObject(key, value));
     }
     
     /**

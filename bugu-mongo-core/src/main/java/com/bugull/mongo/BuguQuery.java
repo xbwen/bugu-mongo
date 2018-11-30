@@ -548,10 +548,10 @@ public class BuguQuery<T> implements Parallelable {
      */
     public long countFast(){
         long counter = 0;
-        Iterable<T> results = dao.aggregate().match(condition).count("counter").results();
-        Iterator<T> it = results.iterator();
+        Iterable<DBObject> results = dao.aggregate().match(condition).count("counter").results();
+        Iterator<DBObject> it = results.iterator();
         if(it.hasNext()){
-            DBObject dbo = (DBObject)it.next();
+            DBObject dbo = it.next();
             String s = dbo.get("counter").toString();
             counter = Long.parseLong(s);
         }
@@ -563,8 +563,27 @@ public class BuguQuery<T> implements Parallelable {
         return dbo != null;
     }
     
+    /**
+     * distinct() on large collection will fail. you should use distinctLarge().
+     * @param key
+     * @return 
+     */
     public List distinct(String key){
         return dao.getCollection().distinct(key, condition);
+    }
+    
+    /**
+     * distinct() on large collection will fail. you should use distinctLarge().
+     * @param key
+     * @return 
+     */
+    public List distinctLarge(String key){
+        List list = new ArrayList();
+        Iterable<DBObject> results = dao.aggregate().match(condition).group("{_id:'$" + key + "'}").results();
+        for(DBObject dbo : results){
+            list.add(dbo.get("_id"));
+        }
+        return list;
     }
 
     public DBObject getCondition() {
