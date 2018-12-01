@@ -1,6 +1,6 @@
 
 group = 'com.bugull.mongo'
-version = '3.1.0'
+version = '3.2.0'
 
 subprojects{
     apply plugin: 'java'
@@ -20,7 +20,7 @@ subprojects{
         options.encoding = "UTF-8"
     }
     
-    project.ext.set("junit", "true")
+    project.ext.set("junit", "false")
 
     test{
         onlyIf {
