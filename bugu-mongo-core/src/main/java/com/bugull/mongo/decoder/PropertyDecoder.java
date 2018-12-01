@@ -115,7 +115,7 @@ public class PropertyDecoder extends AbstractDecoder{
             field.setByte(obj, Byte.parseByte(value.toString()));
         }
         else if(DataType.isByteObject(type)){
-            field.setByte(obj, Byte.valueOf(value.toString()));
+            field.set(obj, Byte.valueOf(value.toString()));
         }
         //process List and Collection.
         else if(DataType.isListType(type) || DataType.isCollectionType(type)){
