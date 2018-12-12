@@ -82,12 +82,7 @@ public final class InternalDao<T> extends BuguDao<T> {
             wr = doInsertWithoutCascade(t, withoutCascade);
         }
         else{
-            Field idField = null;
-            try{
-                idField = FieldsCache.getInstance().getIdField(clazz);
-            }catch(IdException ex){
-                logger.error(ex.getMessage(), ex);
-            }
+            Field idField = FieldsCache.getInstance().getIdField(clazz);
             Id idAnnotation = idField.getAnnotation(Id.class);
             if(idAnnotation.type()==IdType.USER_DEFINE){
                 if(this.exists(Operator.ID, ent.getId())){

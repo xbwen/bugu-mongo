@@ -314,12 +314,7 @@ public class BuguDao<T> extends AbstractDao {
             wr = insert(t);
         }
         else{
-            Field idField = null;
-            try{
-                idField = FieldsCache.getInstance().getIdField(clazz);
-            }catch(IdException ex){
-                logger.error(ex.getMessage(), ex);
-            }
+            Field idField = FieldsCache.getInstance().getIdField(clazz);
             Id idAnnotation = idField.getAnnotation(Id.class);
             if(idAnnotation.type()==IdType.USER_DEFINE){
                 if(this.exists(Operator.ID, ent.getId())){

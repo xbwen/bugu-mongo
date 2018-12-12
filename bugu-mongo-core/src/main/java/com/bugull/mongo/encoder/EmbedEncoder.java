@@ -22,16 +22,12 @@ import com.bugull.mongo.annotations.Embed;
 import com.bugull.mongo.exception.AnnotationException;
 import com.bugull.mongo.utils.MapperUtil;
 import java.lang.reflect.Field;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  *
  * @author Frank Wen(xbwen@hotmail.com)
  */
 public class EmbedEncoder extends AbstractEncoder {
-    
-    private final static Logger logger = LogManager.getLogger(EmbedEncoder.class.getName());
     
     public EmbedEncoder(Object obj, Field field){
         super(obj, field);
@@ -57,7 +53,7 @@ public class EmbedEncoder extends AbstractEncoder {
         
         //tip for wrong use of @Embed
         if(value instanceof BuguEntity){
-            logger.error(type.getName(), new AnnotationException("The Embed object should not be BuguEntity!"));
+            throw new AnnotationException("The Embed object should not be BuguEntity!");
         }
         
         return MapperUtil.toDBObject(value);

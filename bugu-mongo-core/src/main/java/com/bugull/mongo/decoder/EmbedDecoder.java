@@ -58,7 +58,7 @@ public class EmbedDecoder extends AbstractDecoder{
         
         //tip for wrong use of @Embed
         if(o instanceof BuguEntity){
-            logger.error(type.getName(), new AnnotationException("The Embed object should not be BuguEntity!"));
+            throw new AnnotationException("The Embed object should not be BuguEntity!");
         }
     }
     

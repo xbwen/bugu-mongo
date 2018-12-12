@@ -21,7 +21,6 @@ import com.bugull.mongo.BuguQuery;
 import com.bugull.mongo.agg.Lookup;
 import com.bugull.mongo.annotations.Id;
 import com.bugull.mongo.cache.FieldsCache;
-import com.bugull.mongo.exception.FieldException;
 import com.bugull.mongo.parallel.Parallelable;
 import com.bugull.mongo.utils.MapperUtil;
 import com.bugull.mongo.utils.Operator;
@@ -36,8 +35,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * Join query on two collection. It's based on aggregation, but easy to use.
@@ -45,8 +42,6 @@ import org.apache.logging.log4j.Logger;
  * @author Frank Wen(xbwen@hotmail.com)
  */
 public class JoinQuery<L, R> implements Parallelable {
-    
-    private final static Logger logger = LogManager.getLogger(JoinQuery.class.getName());
     
     protected final BuguDao<L> dao;
     
@@ -133,12 +128,7 @@ public class JoinQuery<L, R> implements Parallelable {
         }
         
         //check left key
-        Field leftField = null;
-        try{
-            leftField = FieldsCache.getInstance().getField(dao.getEntityClass(), leftKey);
-        }catch(FieldException ex){
-            logger.error(ex.getMessage(), ex);
-        }
+        Field leftField = FieldsCache.getInstance().getField(dao.getEntityClass(), leftKey);
         if(leftField != null){
             Id leftId = leftField.getAnnotation(Id.class);
             if(leftId != null){
@@ -147,12 +137,7 @@ public class JoinQuery<L, R> implements Parallelable {
         }
         
         //check right key
-        Field rightField = null;
-        try{
-            rightField = FieldsCache.getInstance().getField(rightColl, rightKey);
-        }catch(FieldException ex){
-            logger.error(ex.getMessage(), ex);
-        }
+        Field rightField = FieldsCache.getInstance().getField(rightColl, rightKey);
         if(rightField != null){
             Id rightId = rightField.getAnnotation(Id.class);
             if(rightId != null){

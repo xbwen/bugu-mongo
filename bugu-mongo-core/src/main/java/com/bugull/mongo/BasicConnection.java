@@ -15,6 +15,7 @@
  */
 package com.bugull.mongo;
 
+import com.bugull.mongo.exception.BuguException;
 import com.mongodb.DB;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
@@ -97,8 +98,7 @@ class BasicConnection implements BuguConnection {
     
     private void doConnect() throws UnknownHostException{
         if(host != null && serverList != null){
-            logger.error("Error when connect to database server! You should set database host or server list, but not both!");
-            return;
+            throw new BuguException("Error when connect to database server! You should set database host or server list, but not both!");
         }
         if(username != null && password != null && database != null){
             this.credential = MongoCredential.createCredential(username, database, password.toCharArray());
@@ -130,8 +130,7 @@ class BasicConnection implements BuguConnection {
             }
         }
         else{
-            logger.error("Error when connect to database server! You should set database host or server list, at least one!");
-            return;
+            throw new BuguException("Error when connect to database server! You should set database host or server list, at least one!");
         }
         //get the database
         db = mongoClient.getDB(database);

@@ -33,7 +33,6 @@ import com.mongodb.DBObject;
 import com.mongodb.client.model.DBCollectionFindOptions;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -81,12 +80,7 @@ public class BuguQuery<T> implements Parallelable {
             append(key, op, value);
         }
         else{
-            Field f = null;
-            try{
-                f = FieldsCache.getInstance().getField(clazz, key);
-            }catch(FieldException ex){
-                logger.error(ex.getMessage(), ex);
-            }
+            Field f = FieldsCache.getInstance().getField(clazz, key);
             if(f.getAnnotation(Id.class) != null){
                 Object dbId = IdUtil.toDbId(clazz, (String)value);
                 append(Operator.ID, op, dbId);
@@ -119,12 +113,7 @@ public class BuguQuery<T> implements Parallelable {
             append(key, op, value);
         }
         else{
-            Field f = null;
-            try{
-                f = FieldsCache.getInstance().getField(clazz, key);
-            }catch(FieldException ex){
-                logger.error(ex.getMessage(), ex);
-            }
+            Field f = FieldsCache.getInstance().getField(clazz, key);
             if(f.getAnnotation(Id.class) != null){
                 Object dbId = IdUtil.toDbId(clazz, (String)value);
                 append(Operator.ID, op, dbId);
@@ -143,13 +132,8 @@ public class BuguQuery<T> implements Parallelable {
             append(key, op, values);
         }
         else{
-            Field f = null;
-            try{
-                Class<T> clazz = dao.getEntityClass();
-                f = FieldsCache.getInstance().getField(clazz, key);
-            }catch(FieldException ex){
-                logger.error(ex.getMessage(), ex);
-            }
+            Class<T> clazz = dao.getEntityClass();
+            Field f = FieldsCache.getInstance().getField(clazz, key);
             if(f.getAnnotation(Id.class) != null){
                 append(Operator.ID, op, toIds(values));
             }
@@ -491,17 +475,9 @@ public class BuguQuery<T> implements Parallelable {
         return this;
     }
     
-    private void checkSingle() throws DBQueryException{
+    public T result(){
         if(orderBy!=null || pageNumber!=0 || pageSize!=0){
             throw new DBQueryException("You should use results() to get a list, when you use sorting or pagination");
-        }
-    }
-    
-    public T result(){
-        try{
-            checkSingle();
-        }catch(DBQueryException ex){
-            logger.error(ex.getMessage(), ex);
         }
         DBCollection coll = dao.getCollection();
         DBObject dbo;

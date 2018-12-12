@@ -22,17 +22,13 @@ import com.bugull.mongo.exception.IdException;
 import com.bugull.mongo.access.InternalDao;
 import com.bugull.mongo.utils.Operator;
 import java.lang.reflect.Field;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.bson.types.ObjectId;
 
 /**
  *
  * @author Frank Wen(xbwen@hotmail.com)
  */
-public class IdEncoder extends AbstractEncoder{
-    
-    private final static Logger logger = LogManager.getLogger(IdEncoder.class.getName());
+public class IdEncoder extends AbstractEncoder {
     
     private final Id id;
     
@@ -52,17 +48,7 @@ public class IdEncoder extends AbstractEncoder{
     }
     
     @Override
-    public Object encode(){
-        Object result = null;
-        try{
-            result = fixIdValue();
-        }catch(IdException ex){
-            logger.error(ex.getMessage(), ex);
-        }
-        return result;
-    }
-    
-    private Object fixIdValue() throws IdException {
+    public Object encode() {
         Object result = null;
         switch(id.type()){
             case AUTO_GENERATE:

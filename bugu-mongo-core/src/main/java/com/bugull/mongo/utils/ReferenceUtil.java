@@ -20,12 +20,8 @@ import com.bugull.mongo.annotations.Id;
 import com.bugull.mongo.annotations.Ref;
 import com.bugull.mongo.annotations.RefList;
 import com.bugull.mongo.cache.FieldsCache;
-import com.bugull.mongo.exception.FieldException;
-import com.bugull.mongo.exception.IdException;
 import com.mongodb.DBRef;
 import java.lang.reflect.Field;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.bson.types.ObjectId;
 
 /**
@@ -33,8 +29,6 @@ import org.bson.types.ObjectId;
  * @author Frank Wen(xbwen@hotmail.com)
  */
 public final class ReferenceUtil {
-    
-    private final static Logger logger = LogManager.getLogger(ReferenceUtil.class.getName());
     
     public static Object toDbReference(Ref ref, Class<?> clazz, String idStr){
         if(StringUtil.isEmpty(idStr)){
@@ -64,12 +58,7 @@ public final class ReferenceUtil {
     
     private static Object toManualRef(Class<?> clazz, String idStr){
         Object result = null;
-        Field idField = null;
-        try{
-            idField = FieldsCache.getInstance().getIdField(clazz);
-        }catch(IdException ex){
-            logger.error(ex.getMessage(), ex);
-        }
+        Field idField = FieldsCache.getInstance().getIdField(clazz);
         Id idAnnotation = idField.getAnnotation(Id.class);
         switch(idAnnotation.type()){
             case AUTO_GENERATE:
@@ -115,12 +104,7 @@ public final class ReferenceUtil {
     
     public static Object toDbReference(Class<?> clazz, String fieldName, Class<?> refClass, String idStr){
         Object result;
-        Field refField = null;
-        try{
-            refField = FieldsCache.getInstance().getField(clazz, fieldName);
-        }catch(FieldException ex){
-            logger.error(ex.getMessage(), ex);
-        }
+        Field refField = FieldsCache.getInstance().getField(clazz, fieldName);
         Ref ref = refField.getAnnotation(Ref.class);
         if(ref != null){
             result = toDbReference(ref, refClass, idStr);

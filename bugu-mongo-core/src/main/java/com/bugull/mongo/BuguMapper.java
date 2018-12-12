@@ -21,7 +21,6 @@ import com.bugull.mongo.annotations.Ref;
 import com.bugull.mongo.annotations.RefList;
 import com.bugull.mongo.cache.DaoCache;
 import com.bugull.mongo.cache.FieldsCache;
-import com.bugull.mongo.exception.FieldException;
 import com.bugull.mongo.utils.DataType;
 import com.bugull.mongo.utils.FieldUtil;
 import com.bugull.mongo.access.InternalDao;
@@ -42,8 +41,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * The utility class for ODM(Object Document Mapping), mainly fetch lazy and cascade data.
@@ -52,8 +49,6 @@ import org.apache.logging.log4j.Logger;
  */
 @SuppressWarnings("unchecked")
 public final class BuguMapper {
-    
-    private final static Logger logger = LogManager.getLogger(BuguMapper.class.getName());
     
     /**
      * Convert to JSON string.
@@ -135,12 +130,7 @@ public final class BuguMapper {
     }
     
     private static void fetchOneLevel(BuguEntity obj, String fieldName){
-        Field field = null;
-        try{
-            field = FieldsCache.getInstance().getField(obj.getClass(), fieldName);
-        }catch(FieldException ex){
-            logger.error(ex.getMessage(), ex);
-        }
+        Field field = FieldsCache.getInstance().getField(obj.getClass(), fieldName);
         if(field.getAnnotation(Ref.class) != null){
             fetchRef(obj, field);
         }else if(field.getAnnotation(RefList.class) != null){
@@ -149,12 +139,7 @@ public final class BuguMapper {
     }
     
     private static void fetchRemainder(BuguEntity obj, String fieldName, String remainder){
-        Field field = null;
-        try{
-            field = FieldsCache.getInstance().getField(obj.getClass(), fieldName);
-        }catch(FieldException ex){
-            logger.error(ex.getMessage(), ex);
-        }
+        Field field = FieldsCache.getInstance().getField(obj.getClass(), fieldName);
         Object value = FieldUtil.get(obj, field);
         if(value == null){
             return;

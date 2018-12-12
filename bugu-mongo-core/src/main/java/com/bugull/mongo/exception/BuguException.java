@@ -20,7 +20,7 @@ package com.bugull.mongo.exception;
  *
  * @author Frank Wen(xbwen@hotmail.com)
  */
-public class BuguException extends RuntimeException{
+public class BuguException extends RuntimeException {
     
     public BuguException(String message) {
         super(message);

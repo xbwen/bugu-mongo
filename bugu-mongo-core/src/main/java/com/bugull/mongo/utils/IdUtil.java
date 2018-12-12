@@ -18,10 +18,7 @@ package com.bugull.mongo.utils;
 
 import com.bugull.mongo.annotations.Id;
 import com.bugull.mongo.cache.FieldsCache;
-import com.bugull.mongo.exception.IdException;
 import java.lang.reflect.Field;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.bson.types.ObjectId;
 
 /**
@@ -29,8 +26,6 @@ import org.bson.types.ObjectId;
  * @author Frank Wen(xbwen@hotmail.com)
  */
 public final class IdUtil {
-    
-    private final static Logger logger = LogManager.getLogger(IdUtil.class.getName());
     
     /**
      * Convert the id string to object, which matching the id data in mongoDB.
@@ -43,12 +38,7 @@ public final class IdUtil {
             return null;
         }
         Object result = null;
-        Field idField = null;
-        try{
-            idField = FieldsCache.getInstance().getIdField(clazz);
-        }catch(IdException ex){
-            logger.error(ex.getMessage(), ex);
-        }
+        Field idField = FieldsCache.getInstance().getIdField(clazz);
         Id idAnnotation = idField.getAnnotation(Id.class);
         
         //the idStr maybe illegal value, have to catch exception here
@@ -65,7 +55,7 @@ public final class IdUtil {
                     break;
             }
         }catch(Exception ex){
-            logger.error(ex.getMessage(), ex);
+            throw new IllegalArgumentException("idStr can not convert to legal database ID.");
         }
         return result;
     }

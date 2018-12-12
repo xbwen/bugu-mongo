@@ -34,8 +34,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * Cache(Map) holds entity classes' fields, for performance purporse.
@@ -43,8 +41,6 @@ import org.apache.logging.log4j.Logger;
  * @author Frank Wen(xbwen@hotmail.com)
  */
 public class FieldsCache {
-    
-    private final static Logger logger = LogManager.getLogger(FieldsCache.class.getName());
     
     private final ConcurrentMap<String, SoftReference<Field[]>> cache = new ConcurrentHashMap<String, SoftReference<Field[]>>();
     
@@ -77,7 +73,7 @@ public class FieldsCache {
     }
     
     /**
-     * Filter the static filed, and set all the filed to alccessibe=true
+     * Filter the static filed, and set all the filed to accessible=true
      * @param fields
      * @return 
      */
@@ -126,7 +122,7 @@ public class FieldsCache {
      * @param clazz
      * @return 
      */
-    public Field getIdField(Class<?> clazz) throws IdException {
+    public Field getIdField(Class<?> clazz) {
         Field result = null;
         Field[] fields = get(clazz);
         for(Field f : fields){
@@ -148,12 +144,7 @@ public class FieldsCache {
      */
     public String getIdFieldName(Class<?> clazz){
         String name = null;
-        Field f = null;
-        try{
-            f = this.getIdField(clazz);
-        }catch(IdException ex){
-            logger.error(ex.getMessage(), ex);
-        }
+        Field f = this.getIdField(clazz);
         if(f != null){
             name = f.getName();
         }
@@ -167,7 +158,7 @@ public class FieldsCache {
      * @return
      * @throws FieldException 
      */
-    public Field getField(Class<?> clazz, String fieldName) throws FieldException {
+    public Field getField(Class<?> clazz, String fieldName) {
         //first, search by java object attribute name
         Field field = null;
         Field[] fields = get(clazz);
