@@ -23,8 +23,6 @@ import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * Number of threads accessing file in GridFS by this servlet is restricted.
@@ -32,8 +30,6 @@ import org.apache.logging.log4j.Logger;
  * @author Frank Wen(xbwen@hotmail.com)
  */
 public class AccessRestrictedServlet extends UploadedFileServlet {
-    
-    private final static Logger logger = LogManager.getLogger(AccessRestrictedServlet.class.getName());
     
     /*
      * The Connection pool size in mongodb-java-driver 2.14 is 10.
@@ -75,7 +71,7 @@ public class AccessRestrictedServlet extends UploadedFileServlet {
                 semaphore.acquire();
                 processRequest(request, response);
             }catch(Exception ex){
-                logger.error(ex.getMessage(), ex);
+                throw new BuguFSException(ex.getMessage());
             }finally{
                 semaphore.release();
             }

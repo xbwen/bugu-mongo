@@ -24,7 +24,6 @@ import com.bugull.mongo.BuguEntity;
 import com.bugull.mongo.annotations.Id;
 import com.bugull.mongo.annotations.IdType;
 import com.bugull.mongo.cache.FieldsCache;
-import com.bugull.mongo.exception.IdException;
 import com.bugull.mongo.utils.StringUtil;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCursor;
