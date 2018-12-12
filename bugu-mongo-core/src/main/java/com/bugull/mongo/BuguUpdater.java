@@ -237,14 +237,30 @@ public class BuguUpdater<T> {
     }
     
     /**
-     * Increase a numeric field
+     * Increase a numeric field.
      * @param key the field's name
      * @param value the numeric value to be added. It can be positive or negative integer, long, float, double.
      * @return 
      */
-    public BuguUpdater<T> inc(String key, Object value){
+    public BuguUpdater<T> inc(String key, Number value){
         append(Operator.INC, key, value);
         return this;
+    }
+    
+    /**
+     * Decrease a numeric field.
+     * @param key
+     * @param value
+     * @return 
+     */
+    public BuguUpdater<T> dec(String key, Number value){
+        if(value instanceof Long || value instanceof Integer){
+            return inc(key, value.longValue() * -1);
+        }
+        if(value instanceof Double || value instanceof Float){
+            return inc(key, value.doubleValue() * -1);
+        }
+        throw new IllegalArgumentException("decrease value must be integer, long, double or float.");
     }
     
     /**
@@ -253,7 +269,7 @@ public class BuguUpdater<T> {
      * @param value the numeric value to multiply
      * @return 
      */
-    public BuguUpdater<T> mul(String key, Object value){
+    public BuguUpdater<T> mul(String key, Number value){
         append(Operator.MUL, key, value);
         return this;
     }

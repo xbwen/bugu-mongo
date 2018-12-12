@@ -296,37 +296,46 @@ public class BuguQuery<T> implements Parallelable {
     }
     
     public BuguQuery<T> in(String key, List list){
-        if(list == null){
-            list = Collections.emptyList();
+        if(list == null || list.isEmpty()){
+            throw new IllegalArgumentException("$in query with empty value is not allowed.");
         }
         return in(key, list.toArray());
     }
     
     public BuguQuery<T> in(String key, Object... values){
+        if(values == null || values.length == 0){
+            throw new IllegalArgumentException("$in query with empty value is not allowed.");
+        }
         appendIn(key, Operator.IN, values);
         return this;
     }
     
     public BuguQuery<T> notIn(String key, List list){
-        if(list == null){
-            list = Collections.emptyList();
+        if(list == null || list.isEmpty()){
+            throw new IllegalArgumentException("$nin query with empty value is not allowed.");
         }
         return notIn(key, list.toArray());
     }
     
     public BuguQuery<T> notIn(String key, Object... values){
+        if(values == null || values.length == 0){
+            throw new IllegalArgumentException("$nin query with empty value is not allowed.");
+        }
         appendIn(key, Operator.NIN, values);
         return this;
     }
     
     public BuguQuery<T> all(String key, List list){
-        if(list == null){
-            list = Collections.emptyList();
+        if(list == null || list.isEmpty()){
+            throw new IllegalArgumentException("$all query with empty value is not allowed.");
         }
         return all(key, list.toArray());
     }
     
     public BuguQuery<T> all(String key, Object... values){
+        if(values == null || values.length == 0){
+            throw new IllegalArgumentException("$all query with empty value is not allowed.");
+        }
         append(key, Operator.ALL, values);
         return this;
     }
