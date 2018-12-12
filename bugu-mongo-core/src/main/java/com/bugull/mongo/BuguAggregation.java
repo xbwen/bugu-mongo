@@ -210,7 +210,7 @@ public class BuguAggregation<T> implements Parallelable {
     
     public BuguAggregation replaceRoot(String key, Object value){
         if(StringUtil.isEmpty(key) || !key.equals("newRoot")){
-            logger.error("the key must be newRoot when use $replaceRoot!");
+            throw new IllegalArgumentException("the key must be newRoot when use $replaceRoot!");
         }
         return replaceRoot(new BasicDBObject(key, value));
     }
