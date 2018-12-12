@@ -23,8 +23,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * A convenient Servlet for getting a file from GridFS via http.
@@ -32,8 +30,6 @@ import org.apache.logging.log4j.Logger;
  * @author Frank Wen(xbwen@hotmail.com)
  */
 public class UploadedFileServlet extends HttpServlet {
-    
-    private final static Logger logger = LogManager.getLogger(UploadedFileServlet.class.getName());
     
     private final static String SLASH = "/";
     
