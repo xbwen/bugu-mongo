@@ -32,8 +32,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.imageio.ImageIO;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * Convenient class for uploading an image file to GridFS.
@@ -43,8 +41,6 @@ import org.apache.logging.log4j.Logger;
  * @author Frank Wen(xbwen@hotmail.com)
  */
 public class ImageUploader extends Uploader{
-    
-    private final static Logger logger = LogManager.getLogger(ImageUploader.class.getName());
     
     public final static String DIMENSION = "dimension";
     
@@ -193,7 +189,7 @@ public class ImageUploader extends Uploader{
         try {
             bi = ImageIO.read(f);
         } catch (IOException ex) {
-            logger.error("Can not read the image file", ex);
+            throw new BuguFSException(ex.getMessage());
         }
         return bi;
     }
@@ -203,7 +199,7 @@ public class ImageUploader extends Uploader{
         try {
             bi = ImageIO.read(is);
         } catch (IOException ex) {
-            logger.error("Can not read the InputStream", ex);
+            throw new BuguFSException(ex.getMessage());
         } finally {
             StreamUtil.safeClose(is);
         }
@@ -223,7 +219,7 @@ public class ImageUploader extends Uploader{
             BuguFS fs = BuguFSFactory.getInstance().create(connection, bucket, chunkSize);
             fid = fs.save(baos.toByteArray(), filename, attributes);
         }catch(IOException ex){
-            logger.error("Can not save the buffered image", ex);
+            throw new BuguFSException(ex.getMessage());
         }finally{
             StreamUtil.safeClose(baos);
         }

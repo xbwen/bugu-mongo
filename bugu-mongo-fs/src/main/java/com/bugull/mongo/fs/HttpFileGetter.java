@@ -35,8 +35,6 @@ import java.util.TimeZone;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * Get a file from GridFS by HTTP.
@@ -44,8 +42,6 @@ import org.apache.logging.log4j.Logger;
  * @author Frank Wen(xbwen@hotmail.com)
  */
 public class HttpFileGetter {
-    
-    private final static Logger logger = LogManager.getLogger(HttpFileGetter.class.getName());
     
     private final static long ONE_YEAR_SECONDS = 365L * 24L * 60L * 60L;
     private final static long ONE_YEAR_MILLISECONDS = ONE_YEAR_SECONDS * 1000L;
@@ -109,7 +105,7 @@ public class HttpFileGetter {
                             modifiedDate = df.parse(lastModified);
                             sinceDate = df.parse(modifiedSince);
                         }catch(ParseException ex){
-                            logger.error("Can not parse the Date", ex);
+                            //just ignore the exception
                         }
                         if(modifiedDate!=null && sinceDate!=null && modifiedDate.compareTo(sinceDate) <= 0){
                             response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);    //Not Modified

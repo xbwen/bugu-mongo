@@ -23,19 +23,16 @@ import com.bugull.mongo.annotations.Id;
 import com.bugull.mongo.annotations.Ignore;
 import com.bugull.mongo.annotations.Ref;
 import com.bugull.mongo.annotations.RefList;
+import com.bugull.mongo.exception.ConstructorException;
 import com.mongodb.DBObject;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  *
  * @author Frank Wen(xbwen@hotmail.com)
  */
 public final class DecoderFactory {
-    
-    private final static Logger logger = LogManager.getLogger(DecoderFactory.class.getName());
     
     public static Decoder create(Field field, DBObject dbo){
         Decoder decoder;
@@ -73,7 +70,7 @@ public final class DecoderFactory {
         try{
             cons = clazz.getConstructor(Field.class, DBObject.class);
         } catch (Exception ex) {
-            logger.error("Something is wrong when get constructor", ex);
+            throw new ConstructorException(ex.getMessage());
         }
         if(cons == null){
             return null;
@@ -83,7 +80,7 @@ public final class DecoderFactory {
         try{
             result = cons.newInstance(field, dbo);
         } catch (Exception ex) {
-            logger.error("Something is wrong when create new instance", ex);
+            throw new ConstructorException(ex.getMessage());
         } 
         if(result == null){
             return null;

@@ -29,8 +29,6 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * Convenient class for uploading a file to GridFS. It uses the BuguFS class internally.
@@ -38,8 +36,6 @@ import org.apache.logging.log4j.Logger;
  * @author Frank Wen(xbwen@hotmail.com)
  */
 public class Uploader {
-    
-    private final static Logger logger = LogManager.getLogger(Uploader.class.getName());
     
     protected InputStream input;
     protected String originalName;
@@ -57,7 +53,7 @@ public class Uploader {
         try{
             this.input = new FileInputStream(file);
         }catch(FileNotFoundException ex){
-            logger.error("Can not create the FileInputStream", ex);
+            throw new BuguFSException(ex.getMessage());
         }
         this.originalName = originalName;
     }

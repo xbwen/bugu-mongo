@@ -19,7 +19,6 @@ package com.bugull.mongo;
 import com.bugull.mongo.annotations.Id;
 import com.bugull.mongo.cache.FieldsCache;
 import com.bugull.mongo.exception.DBQueryException;
-import com.bugull.mongo.exception.FieldException;
 import com.bugull.mongo.parallel.Parallelable;
 import com.bugull.mongo.utils.IdUtil;
 import com.bugull.mongo.utils.MapperUtil;
@@ -37,8 +36,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * Convenient class for creating queries.
@@ -47,8 +44,6 @@ import org.apache.logging.log4j.Logger;
  */
 @SuppressWarnings("unchecked")
 public class BuguQuery<T> implements Parallelable {
-    
-    private final static Logger logger = LogManager.getLogger(BuguQuery.class.getName());
     
     protected final BuguDao<T> dao;
     

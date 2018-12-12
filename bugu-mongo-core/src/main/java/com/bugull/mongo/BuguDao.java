@@ -26,7 +26,6 @@ import com.bugull.mongo.annotations.IdType;
 import com.bugull.mongo.annotations.SplitType;
 import com.bugull.mongo.bitwise.BitwiseQuery;
 import com.bugull.mongo.cache.FieldsCache;
-import com.bugull.mongo.exception.IdException;
 import com.bugull.mongo.geo.GeoQuery;
 import com.bugull.mongo.listener.CascadeDeleteListener;
 import com.bugull.mongo.listener.EntityListener;
@@ -53,8 +52,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * The basic Dao class.
@@ -63,8 +60,6 @@ import org.apache.logging.log4j.Logger;
  */
 @SuppressWarnings("unchecked")
 public class BuguDao<T> extends AbstractDao {
-    
-    protected final static Logger logger = LogManager.getLogger(BuguDao.class.getName());
     
     protected Class<T> clazz;
     protected DBObject keys;  //non-lazy fields

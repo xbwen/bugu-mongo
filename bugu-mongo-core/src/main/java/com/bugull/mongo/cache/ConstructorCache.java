@@ -16,13 +16,11 @@
 
 package com.bugull.mongo.cache;
 
+import com.bugull.mongo.exception.ConstructorException;
 import java.lang.ref.SoftReference;
 import java.lang.reflect.Constructor;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 /**
  * Cache(Map) holds entity classes' constructor, for performance purporse.
  * 
@@ -30,8 +28,6 @@ import org.apache.logging.log4j.Logger;
  */
 @SuppressWarnings("unchecked")
 public class ConstructorCache {
-    
-    private final static Logger logger = LogManager.getLogger(ConstructorCache.class.getName());
     
     private final ConcurrentMap<String, SoftReference<Constructor<?>>> cache = new ConcurrentHashMap<String, SoftReference<Constructor<?>>>();
     
@@ -65,7 +61,7 @@ public class ConstructorCache {
         try {
             cons = clazz.getConstructor(types);
         } catch (Exception ex) {
-            logger.error("Something is wrong when get constructor", ex);
+            throw new ConstructorException(ex.getMessage());
         }
         sr = new SoftReference<Constructor<?>>(cons);
         if(recycled){
@@ -88,7 +84,7 @@ public class ConstructorCache {
         try {
             obj = cons.newInstance(args);
         } catch (Exception ex) {
-            logger.error("Something is wrong when create new instance", ex);
+            throw new ConstructorException(ex.getMessage());
         } 
         return obj;
     }

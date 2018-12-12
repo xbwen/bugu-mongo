@@ -23,12 +23,12 @@ import com.bugull.mongo.annotations.Property;
 import com.bugull.mongo.annotations.Ref;
 import com.bugull.mongo.annotations.RefList;
 import com.bugull.mongo.cache.FieldsCache;
+import com.bugull.mongo.exception.BuguException;
+import com.bugull.mongo.exception.FieldException;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * Utility class for operating object's fields.
@@ -37,18 +37,15 @@ import org.apache.logging.log4j.Logger;
  */
 public final class FieldUtil {
     
-    private final static Logger logger = LogManager.getLogger(FieldUtil.class.getName());
-    
+    //Note: there is an blank space at the end.
     private static final String TYPE_NAME_PREFIX = "class ";
     
     public static Object get(Object obj, Field f){
         Object value = null;
         try {
             value = f.get(obj);
-        } catch (IllegalArgumentException ex) {
-            logger.error("Can not get field's value", ex);
-        } catch (IllegalAccessException ex) {
-            logger.error("Can not get field's value", ex);
+        } catch (Exception ex) {
+            throw new FieldException(ex.getMessage());
         }
         return value;
     }
@@ -56,10 +53,8 @@ public final class FieldUtil {
     public static void set(Object obj, Field f, Object value){
         try{
             f.set(obj, value);
-        }catch(IllegalArgumentException ex){
-            logger.error("Can not set field's value", ex);
-        }catch(IllegalAccessException ex){
-            logger.error("Can not set field's value", ex);
+        }catch(Exception ex){
+            throw new FieldException(ex.getMessage());
         }
     }
     
@@ -114,7 +109,7 @@ public final class FieldUtil {
         try{
             cls = Class.forName(className);
         }catch(ClassNotFoundException ex){
-            logger.error("Can not get class of type " + type.toString(), ex);
+            throw new BuguException(ex.getMessage());
         }
         return cls;
     }

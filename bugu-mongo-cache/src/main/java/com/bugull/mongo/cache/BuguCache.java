@@ -23,8 +23,6 @@ import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.curator.utils.CloseableUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * Singleton object, which to configure cache behavior and hold cache data. 
@@ -34,8 +32,6 @@ import org.apache.logging.log4j.Logger;
 public class BuguCache {
     
     public final static String ZK_PREFIX = "/bugu:cache:";
-    
-    private static Logger logger = LogManager.getLogger(BuguCache.class.getName());
     
     private String zkConnectString;
     private CuratorFramework zkClient;
@@ -64,7 +60,7 @@ public class BuguCache {
         try {
             zkClient.blockUntilConnected();
         } catch (InterruptedException ex) {
-            logger.error(ex.getMessage(), ex);
+            throw new BuguCacheException(ex.getMessage());
         }
     }
     

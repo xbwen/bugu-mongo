@@ -18,6 +18,7 @@ package com.bugull.mongo.decoder;
 
 import com.bugull.mongo.annotations.Default;
 import com.bugull.mongo.annotations.Property;
+import com.bugull.mongo.exception.BuguException;
 import com.bugull.mongo.utils.DataType;
 import com.bugull.mongo.utils.FieldUtil;
 import com.mongodb.DBObject;
@@ -39,8 +40,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.Set;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.bson.types.Decimal128;
 
 /**
@@ -49,8 +48,6 @@ import org.bson.types.Decimal128;
  */
 @SuppressWarnings("unchecked")
 public class PropertyDecoder extends AbstractDecoder{
-    
-    private final static Logger logger = LogManager.getLogger(PropertyDecoder.class.getName());
     
     public PropertyDecoder(Field field, DBObject dbo){
         super(field);
@@ -76,10 +73,8 @@ public class PropertyDecoder extends AbstractDecoder{
             }else{
                 decodePrimitive(obj, type);
             }
-        }catch(IllegalArgumentException ex){
-            logger.error("Something is wrong when parse the field's value", ex);
-        }catch(IllegalAccessException ex){
-            logger.error("Something is wrong when parse the field's value", ex);
+        }catch(Exception ex){
+            throw new BuguException(ex.getMessage());
         }
     }
     

@@ -21,8 +21,6 @@ import com.bugull.mongo.base.ReplicaSetBaseTest;
 import com.bugull.mongo.dao.CustomerDao;
 import com.bugull.mongo.entity.Customer;
 import java.util.List;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 
 /**
@@ -31,8 +29,6 @@ import org.junit.Test;
  */
 public class ExprQueryTest extends ReplicaSetBaseTest {
     
-    private final static Logger logger = LogManager.getLogger(ExprQueryTest.class.getName());
-    
     @Test
     public void test(){
         connectDB();
@@ -40,8 +36,6 @@ public class ExprQueryTest extends ReplicaSetBaseTest {
         CustomerDao dao = new CustomerDao();
         
         BuguQuery<Customer> query = dao.query().expr(ExpressionBuilder.compare().greaterThan("$star", "$age").build());
-        
-        logger.error("the query is: {}", query);
         
         List<Customer> list = query.results();
         

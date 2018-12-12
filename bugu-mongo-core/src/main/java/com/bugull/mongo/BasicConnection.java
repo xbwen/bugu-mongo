@@ -21,10 +21,7 @@ import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
-import java.net.UnknownHostException;
 import java.util.List;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * Basic implement of BuguConnection, create by BuguFramework.
@@ -32,8 +29,6 @@ import org.apache.logging.log4j.Logger;
  * @author Frank Wen(xbwen@hotmail.com)
  */
 class BasicConnection implements BuguConnection {
-    
-    private final static Logger logger = LogManager.getLogger(BasicConnection.class.getName());
     
     private String host;
     private int port = 27017;
@@ -53,11 +48,8 @@ class BasicConnection implements BuguConnection {
         this.host = host;
         this.port = port;
         this.database = database;
-        try {
-            doConnect();
-        } catch (UnknownHostException ex) {
-            logger.error(ex.getMessage(), ex);
-        }
+        
+        connect();
     }
     
     @Override
@@ -67,11 +59,8 @@ class BasicConnection implements BuguConnection {
         this.database = database;
         this.username = username;
         this.password = password;
-        try {
-            doConnect();
-        } catch (UnknownHostException ex) {
-            logger.error(ex.getMessage(), ex);
-        }
+        
+        connect();
     }
     
     @Override
@@ -80,23 +69,12 @@ class BasicConnection implements BuguConnection {
         this.serverList = serverList;
         this.credentialList = credentialList;
         this.database = database;
-        try {
-            doConnect();
-        } catch (UnknownHostException ex) {
-            logger.error(ex.getMessage(), ex);
-        }
+        
+        connect();
     }
     
     @Override
-    public void connect(){
-        try {
-            doConnect();
-        } catch (UnknownHostException ex) {
-            logger.error(ex.getMessage(), ex);
-        }
-    }
-    
-    private void doConnect() throws UnknownHostException{
+    public void connect() {
         if(host != null && serverList != null){
             throw new BuguException("Error when connect to database server! You should set database host or server list, but not both!");
         }

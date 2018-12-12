@@ -49,14 +49,14 @@ public class CacheableDao <T> extends BuguDao<T> {
                     zkClient.create().withMode(CreateMode.PERSISTENT).forPath(path);
                 }
             } catch (Exception ex) {
-                logger.error(ex.getMessage(), ex);
+                throw new BuguCacheException(ex.getMessage());
             }
             //create and start NodeCache
             NodeCache nodeCache = new NodeCache(zkClient, path);
             try {
                 nodeCache.start();
             } catch (Exception ex) {
-                logger.error(ex.getMessage(), ex);
+                throw new BuguCacheException(ex.getMessage());
             }
             //add NodeCache listener
             nodeCache.getListenable().addListener(new NodeCacheListener(){
@@ -113,7 +113,7 @@ public class CacheableDao <T> extends BuguDao<T> {
             try {
                 zkClient.setData().inBackground().forPath(path, data.getBytes());
             } catch (Exception ex) {
-                logger.error(ex.getMessage(), ex);
+                throw new BuguCacheException(ex.getMessage());
             }
         }
     }

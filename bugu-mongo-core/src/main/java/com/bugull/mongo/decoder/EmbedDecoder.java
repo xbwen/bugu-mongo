@@ -24,16 +24,12 @@ import com.bugull.mongo.utils.FieldUtil;
 import com.bugull.mongo.utils.MapperUtil;
 import com.mongodb.DBObject;
 import java.lang.reflect.Field;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  *
  * @author Frank Wen(xbwen@hotmail.com)
  */
 public class EmbedDecoder extends AbstractDecoder{
-    
-    private final static Logger logger = LogManager.getLogger(EmbedDecoder.class.getName());
         
     public EmbedDecoder(Field field, DBObject dbo){
         super(field);

@@ -1,6 +1,6 @@
 /*
  * Copyright (c) www.bugull.com
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,30 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.bugull.mongo.cache;
 
-package com.bugull.mongo.utils;
-
-import java.io.Closeable;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import com.bugull.mongo.exception.BuguException;
 
 /**
  *
  * @author Frank Wen(xbwen@hotmail.com)
  */
-public final class StreamUtil {
+public class BuguCacheException extends BuguException {
     
-    private static final Logger LOGGER = Logger.getLogger("com.bugull.mongo");
-    
-    public static void safeClose(Closeable stream) {
-        if (stream != null) {
-            try {
-                stream.close();
-            } catch (IOException ex) {
-                LOGGER.log(Level.WARNING, "Error when close stream.", ex);
-            }
-        }
+    public BuguCacheException(String message) {
+        super(message);
     }
-
+    
 }

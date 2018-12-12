@@ -35,8 +35,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.bson.types.ObjectId;
 
 /**
@@ -47,8 +45,6 @@ import org.bson.types.ObjectId;
  * @author Frank Wen(xbwen@hotmail.com)
  */
 public class BuguFS {
-    
-    private final static Logger logger = LogManager.getLogger(BuguFS.class.getName());
     
     private final GridFS fs;
     private final DBCollection files;
@@ -89,7 +85,7 @@ public class BuguFS {
         try{
             f = fs.createFile(file);
         }catch(IOException ex){
-            logger.error("Can not create GridFSInputFile", ex);
+            throw new BuguFSException(ex.getMessage());
         }
         if(f != null){
             f.setChunkSize(chunkSize);

@@ -15,15 +15,15 @@
  */
 package com.bugull.mongo.parallel;
 
+import com.bugull.mongo.exception.BuguException;
 import com.bugull.mongo.utils.ThreadUtil;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * 
@@ -32,7 +32,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class ParallelQueryExecutor {
     
-    private final static Logger logger = LogManager.getLogger(ParallelQueryExecutor.class.getName());
+    private static final Logger LOGGER = Logger.getLogger("com.bugull.mongo");
     
     /**
      * Execute BuguQuery or BuguAggregation in parallel.
@@ -46,7 +46,7 @@ public class ParallelQueryExecutor {
         }
         int len = querys.length;
         if(len <= 1){
-            logger.warn("You should NOT use parallel query when only one query!");
+            LOGGER.log(Level.WARNING, "You should NOT use parallel query when only one query!");
         }
         int max = Runtime.getRuntime().availableProcessors() * 2 + 1;
         if(len > max){
@@ -59,10 +59,8 @@ public class ParallelQueryExecutor {
             for(Future<Iterable> future : futureList){
                 result.add(future.get());
             }
-        }catch(InterruptedException ie){
-            logger.error(ie.getMessage(), ie);
-        }catch(ExecutionException ee){
-            logger.error(ee.getMessage(), ee);
+        }catch(Exception ex){
+            throw new BuguException(ex.getMessage());
         }finally{
             ThreadUtil.safeClose(es);
         }
