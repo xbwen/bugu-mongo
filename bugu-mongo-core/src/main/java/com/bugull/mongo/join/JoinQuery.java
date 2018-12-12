@@ -75,7 +75,7 @@ public class JoinQuery<L, R> implements Parallelable {
     
     public JoinQuery<L, R> keys(String leftKey, String rightKey){
         if(StringUtil.isEmpty(leftKey) || StringUtil.isEmpty(rightKey)){
-            logger.error("Both leftKey and rightKey can NOT be null!!!");
+            throw new IllegalArgumentException("Both leftKey and rightKey can NOT be null!!!");
         }
         this.leftKey = leftKey;
         this.rightKey = rightKey;
