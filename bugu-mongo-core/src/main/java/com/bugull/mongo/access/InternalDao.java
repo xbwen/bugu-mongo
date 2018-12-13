@@ -26,11 +26,9 @@ import com.bugull.mongo.annotations.IdType;
 import com.bugull.mongo.cache.FieldsCache;
 import com.bugull.mongo.utils.StringUtil;
 import com.mongodb.BasicDBObject;
-import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.WriteResult;
 import java.lang.reflect.Field;
-import java.util.List;
 
 /**
  * The dao used in bugu-mongo framework itself. Do not use this in your application.
@@ -62,16 +60,6 @@ public final class InternalDao<T> extends BuguDao<T> {
         dbo.put(Operator.ID, IdUtil.toDbId(clazz, id));
         DBObject result = getCollection().findOne(dbo, keys);
         return MapperUtil.fromDBObject(clazz, result, withoutCascade);
-    }
-    
-    public List<T> findNotLazily(DBObject query){
-        DBCursor cursor = getCollection().find(query);
-        return MapperUtil.toList(clazz, cursor);
-    }
-    
-    public List<T> findNotLazily(int pageNum, int pageSize){
-        DBCursor cursor = getCollection().find().skip((pageNum-1)*pageSize).limit(pageSize);
-        return MapperUtil.toList(clazz, cursor);
     }
     
     public WriteResult saveWithoutCascade(T t, boolean withoutCascade){
