@@ -83,7 +83,7 @@ public class RefListEncoder extends AbstractEncoder{
         Class<?> cls = FieldUtil.getRealType(type, field);
         InternalDao dao = DaoCache.getInstance().get(cls);
         int len = Array.getLength(val);
-        List<Object> result = new ArrayList<Object>();
+        List<Object> result = new ArrayList<>();
         for(int i=0; i<len; i++){
             BuguEntity entity = (BuguEntity)Array.get(val, i);
             if(entity != null){
@@ -98,7 +98,7 @@ public class RefListEncoder extends AbstractEncoder{
     
     private Object encodeCollection(Class type, Object val){
         Collection<BuguEntity> collection = (Collection<BuguEntity>)val;
-        List<Object> result = new ArrayList<Object>();
+        List<Object> result = new ArrayList<>();
         Class<?> cls = FieldUtil.getRealType(type, field);
         InternalDao dao = DaoCache.getInstance().get(cls);
         for(BuguEntity entity : collection){

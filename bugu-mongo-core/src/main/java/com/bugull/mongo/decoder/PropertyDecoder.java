@@ -73,7 +73,7 @@ public class PropertyDecoder extends AbstractDecoder{
             }else{
                 decodePrimitive(obj, type);
             }
-        }catch(Exception ex){
+        }catch(IllegalAccessException | IllegalArgumentException ex){
             throw new BuguException(ex.getMessage());
         }
     }

@@ -216,7 +216,7 @@ public final class BuguMapper {
         int len = Array.getLength(val);
         elementClass = FieldUtil.getRealType(elementClass, field);
         Object arr = Array.newInstance(elementClass, len);
-        List<String> idList = new ArrayList<String>();
+        List<String> idList = new ArrayList<>();
         for(int i=0; i<len; i++){
             Object item = Array.get(val, i);
             if(item != null){
@@ -246,7 +246,7 @@ public final class BuguMapper {
     
     private static List fetchCollectionValue(Object val, Field field, Class elementClass){
         Collection<BuguEntity> collection = (Collection<BuguEntity>)val;
-        List<String> idList = new ArrayList<String>();
+        List<String> idList = new ArrayList<>();
         for(BuguEntity ent : collection){
             if(ent != null){
                 idList.add(ent.getId());

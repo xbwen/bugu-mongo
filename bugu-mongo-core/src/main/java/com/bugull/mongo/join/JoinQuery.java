@@ -252,10 +252,10 @@ public class JoinQuery<L, R> implements Parallelable {
         }
         
         //return JoinResult
-        List<JoinResult<L, R>> list = new ArrayList<JoinResult<L, R>>();
+        List<JoinResult<L, R>> list = new ArrayList<>();
         Iterable<DBObject> it = agg.results();
         for(DBObject dbo : it){
-            JoinResult<L, R> result = new JoinResult<L, R>();
+            JoinResult<L, R> result = new JoinResult<>();
             DBObject _id = (DBObject)dbo.get("_id");
             L leftEntity = MapperUtil.fromDBObject(leftColl, _id);
             result.setLeftEntity(leftEntity);

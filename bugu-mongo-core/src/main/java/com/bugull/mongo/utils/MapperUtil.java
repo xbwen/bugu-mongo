@@ -97,7 +97,7 @@ public final class MapperUtil {
     }
     
     public static <T> List<T> toList(Class<T> clazz, DBCursor cursor, boolean withoutCascade){
-        List<T> list = new ArrayList<T>();
+        List<T> list = new ArrayList<>();
         while(cursor.hasNext()){
             DBObject dbo = cursor.next();
             list.add(fromDBObject(clazz, dbo, withoutCascade));
@@ -107,7 +107,7 @@ public final class MapperUtil {
     }
     
     public static <T> List<T> toList(Class<T> clazz, Iterable<DBObject> it){
-        List<T> list = new ArrayList<T>();
+        List<T> list = new ArrayList<>();
         for(DBObject dbo : it){
             list.add(fromDBObject(clazz, dbo));
         }

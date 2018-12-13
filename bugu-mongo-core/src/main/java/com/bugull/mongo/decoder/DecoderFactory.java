@@ -27,6 +27,7 @@ import com.bugull.mongo.exception.ConstructorException;
 import com.mongodb.DBObject;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  *
@@ -69,7 +70,7 @@ public final class DecoderFactory {
         Constructor<?> cons = null;
         try{
             cons = clazz.getConstructor(Field.class, DBObject.class);
-        } catch (Exception ex) {
+        } catch (NoSuchMethodException | SecurityException ex) {
             throw new ConstructorException(ex.getMessage());
         }
         if(cons == null){
@@ -79,7 +80,7 @@ public final class DecoderFactory {
         Object result = null;
         try{
             result = cons.newInstance(field, dbo);
-        } catch (Exception ex) {
+        } catch (IllegalAccessException | IllegalArgumentException | InstantiationException | InvocationTargetException ex) {
             throw new ConstructorException(ex.getMessage());
         } 
         if(result == null){

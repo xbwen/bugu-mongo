@@ -29,7 +29,7 @@ import java.util.concurrent.ConcurrentMap;
 @SuppressWarnings("unchecked")
 public class DaoCache {
     
-    private final ConcurrentMap<String, SoftReference<InternalDao<?>>> cache = new ConcurrentHashMap<String, SoftReference<InternalDao<?>>>();
+    private final ConcurrentMap<String, SoftReference<InternalDao<?>>> cache = new ConcurrentHashMap<>();
     
     private DaoCache(){
         
@@ -57,8 +57,8 @@ public class DaoCache {
             }
         }
         //if not exists
-        dao = new InternalDao<T>(clazz);
-        sr = new SoftReference<InternalDao<?>>(dao);
+        dao = new InternalDao<>(clazz);
+        sr = new SoftReference<>(dao);
         if(recycled){
             cache.put(name, sr);
             return dao;

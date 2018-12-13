@@ -113,7 +113,7 @@ public class RefListDecoder extends AbstractDecoder{
         }
         //cascade read
         else {
-            List<String> idList = new ArrayList<String>();
+            List<String> idList = new ArrayList<>();
             for(int i=0; i<size; i++){
                 Object item = list.get(i);
                 if(item != null){
@@ -144,7 +144,7 @@ public class RefListDecoder extends AbstractDecoder{
     private List decodeCollection(Object val, Class elementClass){
         elementClass = FieldUtil.getRealType(elementClass, field);
         Collection collection = (Collection)val;
-        List<BuguEntity> result = new ArrayList<BuguEntity>();
+        List<BuguEntity> result = new ArrayList<>();
         //not cascade read
         if(refList.cascade().toUpperCase().indexOf(Default.CASCADE_READ)==-1 || withoutCascade){
             for(Object item : collection){
@@ -158,7 +158,7 @@ public class RefListDecoder extends AbstractDecoder{
         }
         //cascade read
         else {
-            List<String> idList = new ArrayList<String>();
+            List<String> idList = new ArrayList<>();
             for(Object item : collection){
                 if(item != null){
                     String refId = ReferenceUtil.fromDbReference(refList, item);

@@ -31,11 +31,7 @@ public class CompareBuilder implements Builder {
     private static final String LT = "$lt";
     private static final String LTE = "$lte";
     
-    private final DBObject dbo;
-    
-    public CompareBuilder(){
-        dbo = new BasicDBObject();
-    }
+    private final DBObject dbo = new BasicDBObject();
     
     public CompareBuilder eq(String attr1, String attr2){
         dbo.put(EQ, new String[]{attr1, attr2});

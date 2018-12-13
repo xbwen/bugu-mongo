@@ -42,7 +42,7 @@ import java.util.concurrent.ConcurrentMap;
  */
 public class FieldsCache {
     
-    private final ConcurrentMap<String, SoftReference<Field[]>> cache = new ConcurrentHashMap<String, SoftReference<Field[]>>();
+    private final ConcurrentMap<String, SoftReference<Field[]>> cache = new ConcurrentHashMap<>();
     
     private FieldsCache(){
         
@@ -62,7 +62,7 @@ public class FieldsCache {
      * @return 
      */
     private Field[] getAllFields(Class<?> clazz){
-        List<Field> allFields = new ArrayList<Field>();
+        List<Field> allFields = new ArrayList<>();
         allFields.addAll(filterFields(clazz.getDeclaredFields()));
         Class parent = clazz.getSuperclass();
         while((parent != null) && (parent != Object.class)){
@@ -78,7 +78,7 @@ public class FieldsCache {
      * @return 
      */
     private List<Field> filterFields(Field[] fields){
-        List<Field> result = new ArrayList<Field>();
+        List<Field> result = new ArrayList<>();
         for(Field field : fields){
             if (!Modifier.isStatic(field.getModifiers())){
                 field.setAccessible(true);
@@ -103,7 +103,7 @@ public class FieldsCache {
         }
         //if not exists
         fields = getAllFields(clazz);
-        sr = new SoftReference<Field[]>(fields);
+        sr = new SoftReference<>(fields);
         if(recycled){
             cache.put(name, sr);
             return fields;
@@ -264,7 +264,7 @@ public class FieldsCache {
      * @return 
      */
     public List<String> getAllColumnsName(Class<?> clazz){
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         Field[] fields = get(clazz);
         for(Field f : fields){
             String columnName = f.getName();

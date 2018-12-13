@@ -43,8 +43,8 @@ import java.util.Map;
 @SuppressWarnings("unchecked")
 public class CascadeDeleteListener implements EntityListener {
     
-    private final List<Field> refFields = new ArrayList<Field>();
-    private final List<Field> refListFields = new ArrayList<Field>();
+    private final List<Field> refFields = new ArrayList<>();
+    private final List<Field> refListFields = new ArrayList<>();
 
     public CascadeDeleteListener(Class<?> clazz) {
         Field[] fields = FieldsCache.getInstance().get(clazz);
@@ -114,7 +114,7 @@ public class CascadeDeleteListener implements EntityListener {
     
     private List<String> getArrayIds(Object value){
         int len = Array.getLength(value);
-        List<String> idList = new ArrayList<String>();
+        List<String> idList = new ArrayList<>();
         for(int i=0; i<len; i++){
             Object item = Array.get(value, i);
             if(item != null){
@@ -127,7 +127,7 @@ public class CascadeDeleteListener implements EntityListener {
     
     private List<String> getCollectionIds(Object value){
         Collection<BuguEntity> collection = (Collection<BuguEntity>)value;
-        List<String> idList = new ArrayList<String>();
+        List<String> idList = new ArrayList<>();
         for(BuguEntity ent : collection){
             if(ent != null){
                 idList.add(ent.getId());
@@ -139,7 +139,7 @@ public class CascadeDeleteListener implements EntityListener {
     private List<String> getMapIds(Object value){
         Map<Object, BuguEntity> map = (Map<Object, BuguEntity>)value;
         Collection<BuguEntity> values = map.values();
-        List<String> idList = new ArrayList<String>();
+        List<String> idList = new ArrayList<>();
         for(BuguEntity ent : values){
             if(ent != null){
                 idList.add(ent.getId());

@@ -85,7 +85,7 @@ public class EmbedListEncoder extends AbstractEncoder{
     
     private Object encodeEnumArray(Object arr){
         int len = Array.getLength(arr);
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
         for(int i=0; i<len; i++){
             Object o = Array.get(arr, i);
             if(o != null){
@@ -97,7 +97,7 @@ public class EmbedListEncoder extends AbstractEncoder{
     
     private Object encodeArray(Object arr){
         int len = Array.getLength(arr);
-        List<DBObject> result = new ArrayList<DBObject>();
+        List<DBObject> result = new ArrayList<>();
         for(int i=0; i<len; i++){
             Object o = Array.get(arr, i);
             if(o != null){
@@ -108,7 +108,7 @@ public class EmbedListEncoder extends AbstractEncoder{
     }
     
     private Object encodeEnumCollection(Object coll){
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
         Collection collection = (Collection)coll;
         for(Object o : collection){
             if(o != null){
@@ -119,7 +119,7 @@ public class EmbedListEncoder extends AbstractEncoder{
     }
     
     private Object encodeCollection(Object coll){
-        List<DBObject> result = new ArrayList<DBObject>();
+        List<DBObject> result = new ArrayList<>();
         Collection collection = (Collection)coll;
         for(Object o : collection){
             if(o != null){

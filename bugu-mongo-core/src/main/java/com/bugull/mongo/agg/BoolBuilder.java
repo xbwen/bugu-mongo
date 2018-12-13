@@ -31,11 +31,8 @@ public final class BoolBuilder implements Builder {
     private final static String NOT = "$not";
     
     private String expression;
-    private final List<DBObject> list;
     
-    public BoolBuilder(){
-        list = new ArrayList<DBObject>();
-    }
+    private final List<DBObject> list = new ArrayList<>();
     
     public BoolBuilder and(String json1, String json2){
         this.expression = AND;

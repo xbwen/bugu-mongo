@@ -72,7 +72,7 @@ public class AdvancedDao<T> extends BuguDao<T> {
         }else{
             cursor = c.find();
         }
-        List<DBObject> list = new ArrayList<DBObject>();
+        List<DBObject> list = new ArrayList<>();
         for(Iterator<DBObject> it = cursor.iterator(); it.hasNext(); ){
             list.add(it.next());
         }
@@ -92,7 +92,7 @@ public class AdvancedDao<T> extends BuguDao<T> {
         }else{
             cursor = c.find().skip((pageNum-1)*pageSize).limit(pageSize);
         }
-        List<DBObject> list = new ArrayList<DBObject>();
+        List<DBObject> list = new ArrayList<>();
         for(Iterator<DBObject> it = cursor.iterator(); it.hasNext(); ){
             list.add(it.next());
         }

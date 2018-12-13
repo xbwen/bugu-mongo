@@ -54,8 +54,8 @@ public final class IdUtil {
                     result = idStr;
                     break;
             }
-        }catch(Exception ex){
-            throw new IllegalArgumentException("idStr can not convert to legal database ID.");
+        }catch(NumberFormatException ex){
+            throw new IllegalArgumentException("idStr can not convert to legal database ID.", ex);
         }
         return result;
     }

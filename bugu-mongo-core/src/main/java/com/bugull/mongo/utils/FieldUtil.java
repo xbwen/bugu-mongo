@@ -44,7 +44,7 @@ public final class FieldUtil {
         Object value = null;
         try {
             value = f.get(obj);
-        } catch (Exception ex) {
+        } catch (IllegalAccessException | IllegalArgumentException ex) {
             throw new FieldException(ex.getMessage());
         }
         return value;
@@ -53,7 +53,7 @@ public final class FieldUtil {
     public static void set(Object obj, Field f, Object value){
         try{
             f.set(obj, value);
-        }catch(Exception ex){
+        }catch(IllegalAccessException | IllegalArgumentException ex){
             throw new FieldException(ex.getMessage());
         }
     }

@@ -32,7 +32,7 @@ import java.util.concurrent.Executors;
  */
 public class BuguFramework {
     
-    private final Map<String, BuguConnection> map = new ConcurrentHashMap<String, BuguConnection>();
+    private final Map<String, BuguConnection> map = new ConcurrentHashMap<>();
     
     private ExecutorService executor;
     

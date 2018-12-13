@@ -29,11 +29,7 @@ public final class CondBuilder implements Builder {
     private final static String THEN = "then";
     private final static String ELSE = "else";
     
-    private final DBObject dbo;
-    
-    public CondBuilder(){
-        dbo = new BasicDBObject();
-    }
+    private final DBObject dbo = new BasicDBObject();
     
     public CondBuilder ifCondition(DBObject ifObj){
         dbo.put(IF, ifObj);

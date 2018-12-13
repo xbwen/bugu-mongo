@@ -19,6 +19,7 @@ import com.bugull.mongo.exception.BuguException;
 import com.bugull.mongo.utils.ThreadUtil;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -40,7 +41,7 @@ public class ParallelQueryExecutor {
      * @return
      */
     public List<Iterable> execute(Parallelable... querys) {
-        List<ParallelTask> taskList = new ArrayList<ParallelTask>();
+        List<ParallelTask> taskList = new ArrayList<>();
         for(Parallelable query : querys){
             taskList.add(new ParallelTask(query));
         }
@@ -53,13 +54,13 @@ public class ParallelQueryExecutor {
             len = max;
         }
         ExecutorService es = Executors.newFixedThreadPool(len);
-        List<Iterable> result = new ArrayList<Iterable>();
+        List<Iterable> result = new ArrayList<>();
         try{
             List<Future<Iterable>> futureList = es.invokeAll(taskList);
             for(Future<Iterable> future : futureList){
                 result.add(future.get());
             }
-        }catch(Exception ex){
+        }catch(InterruptedException | ExecutionException ex){
             throw new BuguException(ex.getMessage());
         }finally{
             ThreadUtil.safeClose(es);

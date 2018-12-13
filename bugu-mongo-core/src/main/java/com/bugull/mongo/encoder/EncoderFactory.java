@@ -26,6 +26,7 @@ import com.bugull.mongo.annotations.RefList;
 import com.bugull.mongo.exception.ConstructorException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  *
@@ -68,7 +69,7 @@ public final class EncoderFactory {
         Constructor<?> cons = null;
         try{
             cons = clazz.getConstructor(Object.class, Field.class);
-        } catch (Exception ex) {
+        } catch (NoSuchMethodException | SecurityException ex) {
             throw new ConstructorException(ex.getMessage());
         }
         if(cons == null){
@@ -78,7 +79,7 @@ public final class EncoderFactory {
         Object result = null;
         try{
             result = cons.newInstance(obj, field);
-        } catch (Exception ex) {
+        } catch (IllegalAccessException | IllegalArgumentException | InstantiationException | InvocationTargetException ex) {
             throw new ConstructorException(ex.getMessage());
         } 
         if(result == null){

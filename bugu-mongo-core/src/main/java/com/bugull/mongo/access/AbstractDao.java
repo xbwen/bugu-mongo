@@ -28,7 +28,7 @@ public abstract class AbstractDao {
     
     private DBCollection coll;
     
-    private static final ThreadLocal<DBCollection> local = new ThreadLocal<DBCollection>();
+    private static final ThreadLocal<DBCollection> local = new ThreadLocal<>();
     
     protected void setCollection(DBCollection coll) {
         if(split){

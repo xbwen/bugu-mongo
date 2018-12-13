@@ -66,7 +66,7 @@ public class BuguDao<T> extends AbstractDao {
     
     protected boolean hasCustomListener = false;
     
-    protected final List<EntityListener> listenerList = new ArrayList<EntityListener>();
+    protected final List<EntityListener> listenerList = new ArrayList<>();
     
     public BuguDao(Class<T> clazz){
         this.clazz = clazz;
@@ -276,7 +276,7 @@ public class BuguDao<T> extends AbstractDao {
         if(list==null || list.isEmpty()){
             return null;
         }
-        List<DBObject> dboList = new ArrayList<DBObject>();
+        List<DBObject> dboList = new ArrayList<>();
         for(T t : list){
             dboList.add(MapperUtil.toDBObject(t));
         }
@@ -803,6 +803,8 @@ public class BuguDao<T> extends AbstractDao {
     /**
      * If collection is very large, count() will be slow, you should use countFast().
      * @since mongoDB 3.4
+     * @param key
+     * @param value
      * @return 
      */
     public long countFast(String key, Object value){

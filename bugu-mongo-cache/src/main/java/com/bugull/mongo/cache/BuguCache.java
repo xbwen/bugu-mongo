@@ -36,7 +36,7 @@ public class BuguCache {
     private String zkConnectString;
     private CuratorFramework zkClient;
     
-    private Map<String, List> data = new ConcurrentHashMap<String, List>();
+    private final Map<String, List> data = new ConcurrentHashMap<>();
     
     private BuguCache(){
         

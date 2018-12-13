@@ -55,7 +55,7 @@ public final class StringUtil {
         try{
             md = MessageDigest.getInstance("MD5");
         }catch (NoSuchAlgorithmException ex) {
-            //ignore ex
+            //just ignore ex
             return null;
         }
         char[] hexDigits = { '0', '1', '2', '3', '4',

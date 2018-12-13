@@ -38,7 +38,7 @@ import java.util.List;
 public class BuguAggregation<T> implements Parallelable {
     
     private final DBCollection coll;
-    private final List<DBObject> pipeline = new ArrayList<DBObject>();
+    private final List<DBObject> pipeline = new ArrayList<>();
     
     private AggregationOptions options;
     

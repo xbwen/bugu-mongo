@@ -28,7 +28,7 @@ import java.util.List;
 public final class IndexUtil {
     
     public static List<DBIndex> getDBIndex(String indexString){
-        List<DBIndex> list = new ArrayList<DBIndex>();
+        List<DBIndex> list = new ArrayList<>();
         indexString = indexString.replaceAll("\\}[^{^}]+\\{", "};{");
         indexString = indexString.replaceAll("[{}'']", "");
         String[] items = indexString.split(";");

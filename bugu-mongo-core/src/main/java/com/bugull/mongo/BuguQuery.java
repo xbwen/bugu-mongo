@@ -71,7 +71,7 @@ public class BuguQuery<T> implements Parallelable {
             Object dbId = IdUtil.toDbId(clazz, (String)value);
             append(Operator.ID, op, dbId);
         }
-        else if(key.indexOf(".")!=-1){
+        else if(key.indexOf(".") != -1){
             append(key, op, value);
         }
         else{
@@ -136,7 +136,7 @@ public class BuguQuery<T> implements Parallelable {
                 append(key, op, toReferenceList(key, values));
             }
             else if(f.getType().isEnum()){
-                List<String> list = new ArrayList<String>();
+                List<String> list = new ArrayList<>();
                 for(Object obj : values){
                     list.add(obj.toString());
                 }
@@ -170,7 +170,7 @@ public class BuguQuery<T> implements Parallelable {
     }
     
     private List<Object> toIds(Object... values){
-        List<Object> idList = new ArrayList<Object>();
+        List<Object> idList = new ArrayList<>();
         Class<T> clazz = dao.getEntityClass();
         int len = values.length;
         for(int i=0; i<len; i++){
@@ -183,7 +183,7 @@ public class BuguQuery<T> implements Parallelable {
     }
     
     private List<Object> toReferenceList(String key, Object... values){
-        List<Object> refList = new ArrayList<Object>();
+        List<Object> refList = new ArrayList<>();
         Class<T> clazz = dao.getEntityClass();
         int len = values.length;
         for(int i=0; i<len; i++){

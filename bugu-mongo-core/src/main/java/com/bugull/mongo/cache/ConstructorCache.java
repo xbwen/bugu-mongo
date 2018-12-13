@@ -19,6 +19,7 @@ package com.bugull.mongo.cache;
 import com.bugull.mongo.exception.ConstructorException;
 import java.lang.ref.SoftReference;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 /**
@@ -29,7 +30,7 @@ import java.util.concurrent.ConcurrentMap;
 @SuppressWarnings("unchecked")
 public class ConstructorCache {
     
-    private final ConcurrentMap<String, SoftReference<Constructor<?>>> cache = new ConcurrentHashMap<String, SoftReference<Constructor<?>>>();
+    private final ConcurrentMap<String, SoftReference<Constructor<?>>> cache = new ConcurrentHashMap<>();
     
     private ConstructorCache(){
         
@@ -60,10 +61,10 @@ public class ConstructorCache {
         Class<T>[] types = null;
         try {
             cons = clazz.getConstructor(types);
-        } catch (Exception ex) {
+        } catch (NoSuchMethodException | SecurityException ex) {
             throw new ConstructorException(ex.getMessage());
         }
-        sr = new SoftReference<Constructor<?>>(cons);
+        sr = new SoftReference<>(cons);
         if(recycled){
             cache.put(name, sr);
             return cons;
@@ -83,7 +84,7 @@ public class ConstructorCache {
         Object[] args = null;
         try {
             obj = cons.newInstance(args);
-        } catch (Exception ex) {
+        } catch (IllegalAccessException | IllegalArgumentException | InstantiationException | InvocationTargetException ex) {
             throw new ConstructorException(ex.getMessage());
         } 
         return obj;
