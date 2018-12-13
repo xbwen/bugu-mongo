@@ -16,7 +16,10 @@
 
 package com.bugull.mongo.crud;
 
+import com.bugull.mongo.BuguDao;
 import com.bugull.mongo.base.ReplicaSetBaseTest;
+import com.bugull.mongo.cache.DaoCache;
+import com.bugull.mongo.counter.Article;
 import com.bugull.mongo.dao.OrderDao;
 import com.bugull.mongo.dao.ProductDao;
 import com.bugull.mongo.dao.UserDao;
@@ -54,7 +57,7 @@ public class UpdateTest extends ReplicaSetBaseTest {
         disconnectDB();
     }
     
-    @Test
+    //@Test
     public void testUpdateListValue(){
         connectDB();
         
@@ -93,6 +96,39 @@ public class UpdateTest extends ReplicaSetBaseTest {
         UserDao userDao = new UserDao();
         User user = userDao.query().is("username", "Franky").result();
         userDao.update().unset("registerTime", "contact").execute(user);
+        
+        disconnectDB();
+    }
+    
+    //@Test
+    public void testInc(){
+        connectDB();
+        
+        BuguDao<Article> dao = DaoCache.getInstance().get(Article.class);
+        
+        dao.update().inc("score", 0.2).execute("5bffd2a98a7e29103a595392");
+        
+        disconnectDB();
+    }
+    
+    @Test
+    public void testDec(){
+        connectDB();
+        
+        BuguDao<Article> dao = DaoCache.getInstance().get(Article.class);
+        
+        dao.update().dec("score", 2).execute("5bffd2a98a7e29103a595392");
+        
+        disconnectDB();
+    }
+    
+    //@Test
+    public void testMul(){
+        connectDB();
+        
+        BuguDao<Article> dao = DaoCache.getInstance().get(Article.class);
+        
+        dao.update().mul("score", 2).execute("5bffd2a98a7e29103a595392");
         
         disconnectDB();
     }
