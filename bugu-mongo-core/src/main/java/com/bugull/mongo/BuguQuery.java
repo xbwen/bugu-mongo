@@ -274,6 +274,34 @@ public class BuguQuery<T> implements Parallelable {
         return this;
     }
     
+    /**
+     * Match: greaterThanEquals minValue and lessThanEquals maxValue.
+     * @param key
+     * @param minValue
+     * @param maxValue
+     * @return 
+     */
+    public BuguQuery<T> between(String key, Object minValue, Object maxValue){
+        greaterThanEquals(key, minValue);
+        lessThanEquals(key, maxValue);
+        return this;
+    }
+    
+    /**
+     * Match: lessThan minValue or greaterThan maxValue.
+     * @param key
+     * @param minValue
+     * @param maxValue
+     * @return 
+     */
+    public BuguQuery<T> notBetween(String key, Object minValue, Object maxValue){
+        DBObject dbo = new BasicDBObject();
+        dbo.put(Operator.GTE, minValue);
+        dbo.put(Operator.LTE, maxValue);
+        append(key, Operator.NOT, dbo);
+        return this;
+    }
+    
     public BuguQuery<T> in(String key, List list){
         if(list == null || list.isEmpty()){
             throw new IllegalArgumentException("$in query with empty value is not allowed.");
@@ -585,6 +613,10 @@ public class BuguQuery<T> implements Parallelable {
         this.withoutCascade = withoutCascade;
     }
     
+    /**
+     * Print query condition. Useful for log.
+     * @return 
+     */
     @Override
     public String toString(){
         StringBuilder sb = new StringBuilder();
