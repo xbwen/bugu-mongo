@@ -27,7 +27,7 @@ import java.util.concurrent.Semaphore;
  */
 public class AccessCount {
     
-    private final ConcurrentMap<String, Semaphore> map = new ConcurrentHashMap<String, Semaphore>();
+    private final ConcurrentMap<String, Semaphore> map = new ConcurrentHashMap<>();
     
     private AccessCount(){
         

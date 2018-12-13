@@ -97,7 +97,7 @@ public class Uploader {
     
     public void setAttribute(String key, Object value){
         if(attributes == null){
-            attributes = new HashMap<String, Object>();
+            attributes = new HashMap<>();
         }
         attributes.put(key, value);
     }

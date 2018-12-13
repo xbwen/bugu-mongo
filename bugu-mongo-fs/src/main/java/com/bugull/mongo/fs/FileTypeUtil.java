@@ -70,23 +70,30 @@ public final class FileTypeUtil {
         }
         ext = ext.toLowerCase();
         String type = "application/octet-stream";
-        if(ext.equals("jpg")){
-            type = "image/jpeg";
-        }
-        else if(ext.equals("jpeg") || ext.equals("png") || ext.equals("gif") || ext.equals("bmp")){
-            type = "image/" + ext;
-        }
-        else if(ext.equals("swf")){
-            type = "application/x-shockwave-flash";
-        }
-        else if(ext.equals("flv")){
-            type = "video/x-flv";
-        }
-        else if(ext.equals("mp3")){
-            type = "audio/mpeg";
-        }
-        else if(ext.equals("mp4")){
-            type = "video/mp4";
+        switch (ext) {
+            case "jpg":
+                type = "image/jpeg";
+                break;
+            case "jpeg":
+            case "png":
+            case "gif":
+            case "bmp":
+                type = "image/" + ext;
+                break;
+            case "swf":
+                type = "application/x-shockwave-flash";
+                break;
+            case "flv":
+                type = "video/x-flv";
+                break;
+            case "mp3":
+                type = "audio/mpeg";
+                break;
+            case "mp4":
+                type = "video/mp4";
+                break;
+            default:
+                break;
         }
         return type;
     }

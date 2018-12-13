@@ -70,7 +70,7 @@ public class AccessRestrictedServlet extends UploadedFileServlet {
             try{
                 semaphore.acquire();
                 processRequest(request, response);
-            }catch(Exception ex){
+            }catch(IOException | InterruptedException | ServletException ex){
                 throw new BuguFSException(ex.getMessage());
             }finally{
                 semaphore.release();

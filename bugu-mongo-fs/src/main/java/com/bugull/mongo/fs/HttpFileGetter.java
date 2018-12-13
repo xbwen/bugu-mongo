@@ -53,7 +53,7 @@ public class HttpFileGetter {
     private String bucket;
     private boolean contentMD5;
     
-    private DBObject query = new BasicDBObject(ImageUploader.DIMENSION, null);
+    private final DBObject query = new BasicDBObject(ImageUploader.DIMENSION, null);
     
     public HttpFileGetter(HttpServletRequest request, HttpServletResponse response){
         this.request = request;

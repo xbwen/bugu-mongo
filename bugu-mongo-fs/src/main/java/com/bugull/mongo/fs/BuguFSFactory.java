@@ -30,7 +30,7 @@ import java.util.concurrent.ConcurrentMap;
  */
 public class BuguFSFactory {
     
-    private final ConcurrentMap<String, SoftReference<BuguFS>> cache = new ConcurrentHashMap<String, SoftReference<BuguFS>>();
+    private final ConcurrentMap<String, SoftReference<BuguFS>> cache = new ConcurrentHashMap<>();
     
     private BuguFSFactory(){
         
@@ -83,7 +83,7 @@ public class BuguFSFactory {
         }
         //if not exists
         fs = new BuguFS(connectionName, bucket, chunkSize);
-        sr = new SoftReference<BuguFS>(fs);
+        sr = new SoftReference<>(fs);
         if(recycled){
             cache.putIfAbsent(key, sr);
             return fs;
