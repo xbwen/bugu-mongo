@@ -363,6 +363,13 @@ public class BuguQuery<T> implements Parallelable {
         return this;
     }
     
+    public BuguQuery<T> startsWith(String key, String prefixValue){
+        if(! prefixValue.startsWith("^")){
+            prefixValue = "^" + prefixValue;
+        }
+        return regex(key, prefixValue);
+    }
+    
     public BuguQuery<T> size(String key, int value){
         append(key, Operator.SIZE, value);
         return this;
