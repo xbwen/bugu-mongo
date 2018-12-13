@@ -26,6 +26,13 @@ import java.util.List;
 /**
  * Basic implement of BuguConnection, create by BuguFramework.
  * 
+ * Application code conn't new BasicConnection(). Please create connection by this way:
+ * 
+ * <pre>
+ * BuguConnection conn = BuguFramework.getInstance().createConnection();
+ * conn.connect("192.168.0.100", 27017, "mydb", "username", "password");
+ * </pre>
+ * 
  * @author Frank Wen(xbwen@hotmail.com)
  */
 class BasicConnection implements BuguConnection {
@@ -43,6 +50,12 @@ class BasicConnection implements BuguConnection {
     private MongoClient mongoClient;
     private DB db;
     
+    /**
+     * connect to a single mongodb server without auth.
+     * @param host
+     * @param port
+     * @param database 
+     */
     @Override
     public void connect(String host, int port, String database){
         this.host = host;
@@ -52,6 +65,14 @@ class BasicConnection implements BuguConnection {
         connect();
     }
     
+    /**
+     * connect to a single mongodb server.
+     * @param host
+     * @param port
+     * @param database
+     * @param username
+     * @param password 
+     */
     @Override
     public void connect(String host, int port, String database, String username, String password){
         this.host = host;
@@ -73,6 +94,9 @@ class BasicConnection implements BuguConnection {
         connect();
     }
     
+    /**
+     * connect to mongodb with specified parameters.
+     */
     @Override
     public void connect() {
         if(host != null && serverList != null){
