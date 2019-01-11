@@ -50,6 +50,7 @@ public final class Operator {
     public static final String AND = "$and";
     public static final String OR = "$or";
     public static final String NOR = "$nor";
+    public static final String NOT = "$not";
     
     //geo query
     public static final String GEOMETRY = "$geometry";
