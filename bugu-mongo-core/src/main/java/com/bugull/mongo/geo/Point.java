@@ -67,17 +67,5 @@ public class Point extends GeoJSON implements Serializable {
         }
         coordinates[1] = latitude;
     }
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Point: ");
-        if(coordinates != null){
-            sb.append(coordinates[0]);
-            sb.append(", ");
-            sb.append(coordinates[1]);
-        }
-        return sb.toString();
-    }
     
 }

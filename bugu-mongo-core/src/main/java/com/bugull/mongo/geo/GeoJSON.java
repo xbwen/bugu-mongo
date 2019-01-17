@@ -15,6 +15,8 @@
  */
 package com.bugull.mongo.geo;
 
+import com.bugull.mongo.utils.MapperUtil;
+
 /**
  * The basic class of all GeoJSON data. 
  * 
@@ -31,6 +33,8 @@ public abstract class GeoJSON {
     }
     
     @Override
-    public abstract String toString();
+    public String toString() {
+        return MapperUtil.toDBObject(this, true).toString();
+    }
     
 }

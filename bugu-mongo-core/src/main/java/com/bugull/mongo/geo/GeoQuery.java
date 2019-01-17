@@ -72,10 +72,17 @@ public class GeoQuery<T> extends BuguQuery<T> {
         return this;
     }
     
-    public GeoQuery<T> geoWithin(String key, Polygon polygon){
+    public GeoQuery<T> geoWithin(String key, GeoJSON geoJson){
         DBObject geometry = new BasicDBObject();
-        geometry.put(Operator.GEOMETRY, MapperUtil.toDBObject(polygon, true));
+        geometry.put(Operator.GEOMETRY, MapperUtil.toDBObject(geoJson, true));
         append(key, Operator.GEO_WITHIN, geometry);
+        return this;
+    }
+    
+    public GeoQuery<T> geoIntersects(String key, GeoJSON geoJson){
+        DBObject geometry = new BasicDBObject();
+        geometry.put(Operator.GEOMETRY, MapperUtil.toDBObject(geoJson, true));
+        append(key, Operator.GEO_INTERSECTS, geometry);
         return this;
     }
     

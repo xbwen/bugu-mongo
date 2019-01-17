@@ -59,6 +59,7 @@ public final class Operator {
     public static final String MIN_DISTANCE = "$minDistance";
     public static final String NEAR_SPHERE = "$nearSphere";
     public static final String GEO_WITHIN = "$geoWithin";
+    public static final String GEO_INTERSECTS = "$geoIntersects";
     
     //bitwise query
     public static final String BITS_ALL_SET = "$bitsAllSet";

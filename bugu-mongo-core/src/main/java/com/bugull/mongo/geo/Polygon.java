@@ -19,7 +19,7 @@ import java.io.Serializable;
 
 /**
  * A polygon area on map, consists of points sequence.
- * Note: for a polygon, the first point must be equal to the last point.
+ * Note: for rings in polygon, the first point must be equal to the last point.
  * 
  * @author Frank Wen (xbwen@hotmail.com)
  */
@@ -32,24 +32,6 @@ public class Polygon extends GeoJSON implements Serializable {
     public Polygon(){
         type = "Polygon";
     }
-    
-    /**
-     * Create a rectangle. p1 must be same as p5.
-     * @param p1
-     * @param p2
-     * @param p3
-     * @param p4 
-     * @param p5
-     */
-    public Polygon(double[] p1, double[] p2, double[] p3, double[] p4, double[] p5){
-        type = "Polygon";
-        coordinates = new double[1][5][2];
-        coordinates[0][0] = p1;
-        coordinates[0][1] = p2;
-        coordinates[0][2] = p3;
-        coordinates[0][3] = p4;
-        coordinates[0][4] = p5;
-    }
 
     public double[][][] getCoordinates() {
         return coordinates;
@@ -59,40 +41,12 @@ public class Polygon extends GeoJSON implements Serializable {
         this.coordinates = coordinates;
     }
     
-    public void setPointSequence(double[]... points){
+    public void setSingleRing(double[]... points){
         int size = points.length;
         coordinates = new double[1][size][2];
         for(int i=0; i<size; i++){
             coordinates[0][i] = points[i];
         }
-    }
-    
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Polygon: ");
-        if(coordinates != null){
-            int layerLen = coordinates.length;
-            int pointLen = coordinates[0].length;
-            for(int i=0; i<layerLen; i++){
-                sb.append("[ ");
-                for(int j=0; j<pointLen; j++){
-                    sb.append("[")
-                        .append(coordinates[i][j][0])
-                        .append(", ")
-                        .append(coordinates[i][j][1])
-                        .append("]");
-                    if(j < pointLen - 1){
-                        sb.append(", ");
-                    }
-                }
-                sb.append(" ]");
-                if(i < layerLen -1 ){
-                    sb.append(", ");
-                }
-            }
-        }
-        return sb.toString();
     }
     
 }
