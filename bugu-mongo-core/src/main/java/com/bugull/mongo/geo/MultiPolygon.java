@@ -39,7 +39,7 @@ public class MultiPolygon extends GeoJSON implements Serializable {
         this.coordinates = coordinates;
     }
     
-    public void setAreas(Polygon... polygons){
+    public void setPolygons(Polygon... polygons){
         int size = polygons.length;
         coordinates = new double[size][][][];
         for(int i=0; i<size; i++){
