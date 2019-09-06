@@ -276,23 +276,33 @@ public class BuguDao<T> extends AbstractDao {
         if(list==null || list.isEmpty()){
             return null;
         }
-        List<DBObject> dboList = new ArrayList<>();
-        for(T t : list){
-            dboList.add(MapperUtil.toDBObject(t));
-        }
-        WriteResult wr = getCollection().insert(dboList);
-        int len = dboList.size();
-        for(int i=0; i<len; i++){
-            String id = dboList.get(i).get(Operator.ID).toString();
-            BuguEntity ent = (BuguEntity)(list.get(i));
-            ent.setId(id);
-        }
-        if(hasCustomListener){
+        Field idField = FieldsCache.getInstance().getIdField(clazz);
+        Id idAnnotation = idField.getAnnotation(Id.class);
+        if(idAnnotation.type()==IdType.AUTO_INCREASE){
             for(T t : list){
-                notifyInserted((BuguEntity)t);
+                save(t);
             }
+            return new WriteResult(list.size(), false, null);
         }
-        return wr;
+        else{
+            List<DBObject> dboList = new ArrayList<>();
+            for(T t : list){
+                dboList.add(MapperUtil.toDBObject(t));
+            }
+            WriteResult wr = getCollection().insert(dboList);
+            int len = dboList.size();
+            for(int i=0; i<len; i++){
+                String id = dboList.get(i).get(Operator.ID).toString();
+                BuguEntity ent = (BuguEntity)(list.get(i));
+                ent.setId(id);
+            }
+            if(hasCustomListener){
+                for(T t : list){
+                    notifyInserted((BuguEntity)t);
+                }
+            }
+            return wr;
+        }
     }
     
     /**
