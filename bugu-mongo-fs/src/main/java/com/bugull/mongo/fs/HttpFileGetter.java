@@ -152,24 +152,37 @@ public class HttpFileGetter {
                 byte[] buffer = new byte[bufferSize];
                 int remain = contentLength;
                 int readSize = Math.min(bufferSize, remain);
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                while( (read = is.read(buffer, 0, readSize)) != -1 ){
-                    baos.write(buffer, 0, read);
-                    remain -= read;
-                    if(remain <= 0){
-                        break;
-                    }
-                    readSize = Math.min(bufferSize, remain);
-                }
-                byte[] bytes = baos.toByteArray();
                 if(contentMD5){
+                    //use ByteArrayOutputStream to compute MD5
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    while( (read = is.read(buffer, 0, readSize)) != -1 ){
+                        baos.write(buffer, 0, read);
+                        remain -= read;
+                        if(remain <= 0){
+                            break;
+                        }
+                        readSize = Math.min(bufferSize, remain);
+                    }
+                    byte[] bytes = baos.toByteArray();
                     String md5 = StringUtil.encodeMD5(bytes);
                     if(! StringUtil.isEmpty(md5)){
                         response.setHeader("Content-MD5", md5.toLowerCase());
                     }
+                    os.write(bytes);
+                    os.flush();
                 }
-                os.write(bytes);
-                os.flush();
+                else{
+                    //MD5 is no need, just output the data
+                    while( (read = is.read(buffer, 0, readSize)) != -1 ){
+                        os.write(buffer, 0, read);
+                        os.flush();
+                        remain -= read;
+                        if(remain <= 0){
+                            break;
+                        }
+                        readSize = Math.min(bufferSize, remain);
+                    }
+                }
             }
         }finally{
             StreamUtil.safeClose(is);
