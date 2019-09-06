@@ -177,7 +177,11 @@ public class HttpFileGetter {
         }
     }
     
-    public void setAttribute(String attribute, Object value){
+    public void setDimension(String dimension) {
+        query.put(ImageUploader.DIMENSION, dimension);
+    }
+    
+    public void setAttribute(String attribute, Object value) {
         query.put(attribute, value);
     }
 
