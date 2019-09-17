@@ -215,6 +215,16 @@ public class BuguUpdater<T> {
     }
     
     /**
+     * Set one field(column) to current date.
+     * @param key
+     * @return 
+     */
+    public BuguUpdater<T> currentDate(String key){
+        append(Operator.CURRENT_DATE, key, Boolean.TRUE);
+        return this;
+    }
+    
+    /**
      * Remove one filed(column) of an entity.
      * @param key the field name
      * @return 

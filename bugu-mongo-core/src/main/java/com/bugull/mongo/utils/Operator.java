@@ -82,6 +82,7 @@ public final class Operator {
     public static final String MAX = "$max";
     public static final String BIT = "$bit";
     public static final String ISOLATED = "$isolated";
+    public static final String CURRENT_DATE = "$currentDate";
     
     //aggregation
     public static final String LOOKUP = "$lookup";

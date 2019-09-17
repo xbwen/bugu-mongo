@@ -111,7 +111,7 @@ public class UpdateTest extends ReplicaSetBaseTest {
         disconnectDB();
     }
     
-    @Test
+    //@Test
     public void testDec(){
         connectDB();
         
@@ -129,6 +129,17 @@ public class UpdateTest extends ReplicaSetBaseTest {
         BuguDao<Article> dao = DaoCache.getInstance().get(Article.class);
         
         dao.update().mul("score", 2).execute("5bffd2a98a7e29103a595392");
+        
+        disconnectDB();
+    }
+    
+    @Test
+    public void testCurrentDate(){
+        connectDB();
+        
+        BuguDao<User> dao = DaoCache.getInstance().get(User.class);
+        
+        dao.update().currentDate("registerTime").execute("5d7216f9661c3c6c1f83b943");
         
         disconnectDB();
     }
