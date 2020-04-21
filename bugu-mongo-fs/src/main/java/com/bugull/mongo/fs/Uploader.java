@@ -49,6 +49,8 @@ public class Uploader {
     
     protected Map<String, Object> attributes;
     
+    protected GridFSDBFile uploadedFile;
+    
     public Uploader(File file, String originalName){
         try{
             this.input = new FileInputStream(file);
@@ -132,9 +134,23 @@ public class Uploader {
      * @return 
      */
     public long getFileContentLength() {
-        BuguFS fs = BuguFSFactory.getInstance().create(connection, bucket, chunkSize);
-        GridFSDBFile f = fs.findOneById(fileId);
-        return f.getLength();
+        if(uploadedFile == null){
+            BuguFS fs = BuguFSFactory.getInstance().create(connection, bucket, chunkSize);
+            uploadedFile = fs.findOneById(fileId);
+        }
+        return uploadedFile.getLength();
+    }
+    
+    /**
+     * get the file MD5 after saved to MongoDB.
+     * @return 
+     */
+    public String getFileMD5() {
+        if(uploadedFile == null){
+            BuguFS fs = BuguFSFactory.getInstance().create(connection, bucket, chunkSize);
+            uploadedFile = fs.findOneById(fileId);
+        }
+        return uploadedFile.getMD5();
     }
     
     protected void processFilename(){
