@@ -49,4 +49,12 @@ public class Polygon extends GeoJSON implements Serializable {
         }
     }
     
+    public void setSingleRing(Point... points){
+        int size = points.length;
+        coordinates = new double[1][size][2];
+        for(int i=0; i<size; i++){
+            coordinates[0][i] = points[i].getCoordinates();
+        }
+    }
+    
 }
