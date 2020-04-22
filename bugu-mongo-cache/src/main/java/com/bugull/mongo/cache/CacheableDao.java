@@ -30,6 +30,7 @@ import org.apache.zookeeper.CreateMode;
  * 
  * @author Frank Wen(xbwen@hotmail.com)
  */
+@SuppressWarnings("unchecked")
 public class CacheableDao <T> extends BuguDao<T> {
 
     private BuguQuery<T> cacheQuery;

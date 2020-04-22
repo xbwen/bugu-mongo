@@ -35,6 +35,7 @@ import java.util.List;
  * 
  * @author Frank Wen(xbwen@hotmail.com)
  */
+@SuppressWarnings("unchecked")
 class BasicConnection implements BuguConnection {
     
     private String host;
