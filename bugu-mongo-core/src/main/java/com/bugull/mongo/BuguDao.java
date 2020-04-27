@@ -67,9 +67,11 @@ public class BuguDao<T> extends AbstractDao {
     
     protected boolean hasCustomListener = false;
     
+    //Listener for update, delete
     protected final List<EntityListener> listenerList = new ArrayList<>();
     
-    protected CopyOnWriteArraySet<String> indexSet = new CopyOnWriteArraySet<>();
+    //Index done or not
+    protected CopyOnWriteArraySet<String> indexedSet = new CopyOnWriteArraySet<>();
     
     public BuguDao(Class<T> clazz){
         this.clazz = clazz;
@@ -136,14 +138,14 @@ public class BuguDao<T> extends AbstractDao {
         //for @EnsureIndex
         EnsureIndex ei = clazz.getAnnotation(EnsureIndex.class);
         if(ei != null){
-             if(! indexSet.contains(collectionName)){
+             if(! indexedSet.contains(collectionName)){
                 synchronized (this) {
-                    if(! indexSet.contains(collectionName)){
+                    if(! indexedSet.contains(collectionName)){
                         List<DBIndex> list = IndexUtil.getDBIndex(ei.value());
                         for(DBIndex dbi : list){
                             getCollection().createIndex(dbi.indexKeys, dbi.indexOptions);
                         }
-                        indexSet.add(connectionName);
+                        indexedSet.add(connectionName);
                     }
                 }
             }
