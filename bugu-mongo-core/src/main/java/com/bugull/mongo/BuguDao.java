@@ -52,6 +52,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
  * The basic Dao class.
@@ -68,7 +69,7 @@ public class BuguDao<T> extends AbstractDao {
     
     protected final List<EntityListener> listenerList = new ArrayList<>();
     
-    protected boolean indexProcessed = false;
+    protected CopyOnWriteArraySet<String> indexSet = new CopyOnWriteArraySet<>();
     
     public BuguDao(Class<T> clazz){
         this.clazz = clazz;
@@ -135,14 +136,14 @@ public class BuguDao<T> extends AbstractDao {
         //for @EnsureIndex
         EnsureIndex ei = clazz.getAnnotation(EnsureIndex.class);
         if(ei != null){
-             if(! indexProcessed){
+             if(! indexSet.contains(collectionName)){
                 synchronized (this) {
-                    if(! indexProcessed){
+                    if(! indexSet.contains(collectionName)){
                         List<DBIndex> list = IndexUtil.getDBIndex(ei.value());
                         for(DBIndex dbi : list){
                             getCollection().createIndex(dbi.indexKeys, dbi.indexOptions);
                         }
-                        indexProcessed = true;
+                        indexSet.add(connectionName);
                     }
                 }
             }
