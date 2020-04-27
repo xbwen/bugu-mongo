@@ -17,9 +17,8 @@
 package com.bugull.mongo.index;
 
 import com.bugull.mongo.BuguDao;
-import com.bugull.mongo.base.ReplicaSetBaseTest;
+import com.bugull.mongo.base.BaseTest;
 import com.bugull.mongo.cache.DaoCache;
-import com.mongodb.WriteResult;
 import java.util.Date;
 import org.junit.Test;
 
@@ -27,7 +26,7 @@ import org.junit.Test;
  *
  * @author Frank Wen(xbwen@hotmail.com)
  */
-public class UniqueIndexTest extends ReplicaSetBaseTest {
+public class UniqueIndexTest extends BaseTest {
     
     @Test
     public void test(){

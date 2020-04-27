@@ -13,39 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.bugull.mongo.base;
 
-package com.bugull.mongo.index;
-
-import com.bugull.mongo.SimpleEntity;
-import com.bugull.mongo.annotations.EnsureIndex;
-import com.bugull.mongo.annotations.Entity;
-import java.util.Date;
+import com.bugull.mongo.BuguConnection;
+import com.bugull.mongo.BuguFramework;
 
 /**
  *
  * @author Frank Wen(xbwen@hotmail.com)
  */
-@Entity
-@EnsureIndex("{macAddress:1}, {lastLogin: -1}")
-public class WifiDevice extends SimpleEntity {
+public class MongosConnectionTest {
     
-    private String macAddress;
-    private Date lastLogin;
-
-    public String getMacAddress() {
-        return macAddress;
+     protected void connectDB(){
+        BuguConnection conn = BuguFramework.getInstance().createConnection();
+        conn.setHost("192.168.1.248");
+        conn.setPort(27030);
+        conn.setUsername("test");
+        conn.setPassword("test");
+        conn.setDatabase("test");
+        conn.connect();
     }
-
-    public void setMacAddress(String macAddress) {
-        this.macAddress = macAddress;
+    
+    protected void disconnectDB(){
+        BuguFramework.getInstance().destroy();
     }
-
-    public Date getLastLogin() {
-        return lastLogin;
-    }
-
-    public void setLastLogin(Date lastLogin) {
-        this.lastLogin = lastLogin;
-    }
-
+    
 }
