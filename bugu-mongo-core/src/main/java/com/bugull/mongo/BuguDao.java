@@ -68,6 +68,8 @@ public class BuguDao<T> extends AbstractDao {
     
     protected final List<EntityListener> listenerList = new ArrayList<>();
     
+    protected boolean indexProcessed = false;
+    
     public BuguDao(Class<T> clazz){
         this.clazz = clazz;
         
@@ -133,9 +135,16 @@ public class BuguDao<T> extends AbstractDao {
         //for @EnsureIndex
         EnsureIndex ei = clazz.getAnnotation(EnsureIndex.class);
         if(ei != null){
-            List<DBIndex> list = IndexUtil.getDBIndex(ei.value());
-            for(DBIndex dbi : list){
-                getCollection().createIndex(dbi.indexKeys, dbi.indexOptions);
+             if(! indexProcessed){
+                synchronized (this) {
+                    if(! indexProcessed){
+                        List<DBIndex> list = IndexUtil.getDBIndex(ei.value());
+                        for(DBIndex dbi : list){
+                            getCollection().createIndex(dbi.indexKeys, dbi.indexOptions);
+                        }
+                        indexProcessed = true;
+                    }
+                }
             }
         }
     }
