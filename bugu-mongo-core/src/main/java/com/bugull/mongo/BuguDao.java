@@ -157,6 +157,9 @@ public class BuguDao<T> extends AbstractDao {
      * @param date 
      */
     public void setSplitSuffix(Date date){
+        if(date == null){
+            return;
+        }
         Entity entity = clazz.getAnnotation(Entity.class);
         SplitType st = entity.split();
         SimpleDateFormat sdf = null;
@@ -185,6 +188,9 @@ public class BuguDao<T> extends AbstractDao {
      * @param s 
      */
     public void setSplitSuffix(String s){
+        if(s == null){
+            return;
+        }
         Entity entity = clazz.getAnnotation(Entity.class);
         SplitType st = entity.split();
         if(st == SplitType.STRING){
