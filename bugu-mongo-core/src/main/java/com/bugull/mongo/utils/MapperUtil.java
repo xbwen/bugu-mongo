@@ -106,14 +106,6 @@ public final class MapperUtil {
         return list;
     }
     
-    public static <T> List<T> toList(Class<T> clazz, Iterable<DBObject> it){
-        List<T> list = new ArrayList<>();
-        for(DBObject dbo : it){
-            list.add(fromDBObject(clazz, dbo));
-        }
-        return list;
-    }
-    
     /**
      * Get the name property of @Entity annotation. 
      * If the name property is not set, then return the class' name, in lower case type.
