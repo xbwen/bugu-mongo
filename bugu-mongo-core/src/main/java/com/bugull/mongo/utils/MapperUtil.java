@@ -98,11 +98,14 @@ public final class MapperUtil {
     
     public static <T> List<T> toList(Class<T> clazz, DBCursor cursor, boolean withoutCascade){
         List<T> list = new ArrayList<>();
-        while(cursor.hasNext()){
-            DBObject dbo = cursor.next();
-            list.add(fromDBObject(clazz, dbo, withoutCascade));
+        try{
+            while(cursor.hasNext()){
+                DBObject dbo = cursor.next();
+                list.add(fromDBObject(clazz, dbo, withoutCascade));
+            }
+        }finally{
+            cursor.close();
         }
-        cursor.close();
         return list;
     }
     

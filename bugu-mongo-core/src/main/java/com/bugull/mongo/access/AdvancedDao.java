@@ -76,6 +76,7 @@ public class AdvancedDao<T> extends BuguDao<T> {
         for(Iterator<DBObject> it = cursor.iterator(); it.hasNext(); ){
             list.add(it.next());
         }
+        cursor.close();
         return list;
     }
     
@@ -96,6 +97,7 @@ public class AdvancedDao<T> extends BuguDao<T> {
         for(Iterator<DBObject> it = cursor.iterator(); it.hasNext(); ){
             list.add(it.next());
         }
+        cursor.close();
         return list;
     }
     
