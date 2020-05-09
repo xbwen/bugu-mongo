@@ -16,7 +16,7 @@
 
 package com.bugull.mongo.split;
 
-import com.bugull.mongo.base.ReplicaSetBaseTest;
+import com.bugull.mongo.base.MongosConnectionTest;
 import java.util.List;
 import org.junit.Test;
 
@@ -24,9 +24,9 @@ import org.junit.Test;
  *
  * @author Frank Wen(xbwen@hotmail.com)
  */
-public class FriendTest extends ReplicaSetBaseTest {
+public class FriendTest extends MongosConnectionTest {
     
-    //@Test
+    @Test
     public void testInsert(){
         connectDB();
         
@@ -46,10 +46,17 @@ public class FriendTest extends ReplicaSetBaseTest {
         dao.setSplitSuffix(f2.getProvince());
         dao.save(f2);
         
+        Friend f3 = new Friend();
+        f3.setName("Jessica");
+        f3.setProvince("Zhejiang");
+        
+        dao.setSplitSuffix(f3.getProvince());
+        dao.save(f3);
+        
         disconnectDB();
     }
     
-    @Test
+    //@Test
     public void testQuery(){
         connectDB();
         
