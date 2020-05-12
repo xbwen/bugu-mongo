@@ -145,7 +145,7 @@ public class BuguDao<T> extends AbstractDao {
                         for(DBIndex dbi : list){
                             getCollection().createIndex(dbi.indexKeys, dbi.indexOptions);
                         }
-                        indexedSet.add(connectionName);
+                        indexedSet.add(collectionName);
                     }
                 }
             }
