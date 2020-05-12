@@ -115,8 +115,7 @@ public class BuguDao<T> extends AbstractDao {
     
     private void initCollection(String collectionName){
         Entity entity = clazz.getAnnotation(Entity.class);
-        String connectionName = entity.connection();
-        DB db = BuguFramework.getInstance().getConnection(connectionName).getDB();
+        DB db = BuguFramework.getInstance().getConnection(entity.connection()).getDB();
         DBCollection dbColl;
         //if capped
         if(entity.capped() && !db.collectionExists(collectionName)){
