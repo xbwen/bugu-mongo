@@ -47,14 +47,15 @@ bugu-mongo-fs:
 
 交流反馈
 ----------
-Email：xbwen(at)hotmail.com
+Email：xbwen@hotmail.com
 
 QQ群：165738383
 
+作者主页：xbwen.github.io(http://xbwen.github.io)
 
 License
 ----------
-Copyright (c) www.bugull.com
+Copyright (c) www.hadlinks.com
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
