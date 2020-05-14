@@ -47,11 +47,11 @@ bugu-mongo-fs:
 
 交流反馈
 ----------
-Email：xbwen@hotmail.com
+Email：xbwen(at)hotmail.com
 
 QQ群：165738383
 
-作者主页：xbwen.github.io(http://xbwen.github.io)
+作者主页：[xbwen.github.io](http://xbwen.github.io)
 
 License
 ----------
