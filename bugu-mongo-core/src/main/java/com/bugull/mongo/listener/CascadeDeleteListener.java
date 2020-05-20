@@ -107,9 +107,11 @@ public class CascadeDeleteListener implements EntityListener {
         if(clazz == null){
             return;
         }
-        InternalDao dao = DaoCache.getInstance().get(clazz);
-        BuguQuery query = dao.query().in(Operator.ID, idList);
-        dao.remove(query);
+        if(idList != null && !idList.isEmpty()){
+            InternalDao dao = DaoCache.getInstance().get(clazz);
+            BuguQuery query = dao.query().in(Operator.ID, idList);
+            dao.remove(query);
+        }
     }
     
     private List<String> getArrayIds(Object value){

@@ -214,6 +214,9 @@ public final class BuguMapper {
     
     private static Object fetchArrayValue(Object val, Field field, Class elementClass) {
         int len = Array.getLength(val);
+        if(len == 0){
+            return null;
+        }
         elementClass = FieldUtil.getRealType(elementClass, field);
         Object arr = Array.newInstance(elementClass, len);
         List<String> idList = new ArrayList<>();
@@ -246,6 +249,9 @@ public final class BuguMapper {
     
     private static List fetchCollectionValue(Object val, Field field, Class elementClass){
         Collection<BuguEntity> collection = (Collection<BuguEntity>)val;
+        if(collection.isEmpty()){
+            return null;
+        }
         List<String> idList = new ArrayList<>();
         for(BuguEntity ent : collection){
             if(ent != null){
@@ -267,6 +273,11 @@ public final class BuguMapper {
     }
     
     private static Map fetchMapValue(Object val, Field field) {
+        Map map = (Map)val;
+        if(map.isEmpty()){
+            return null;
+        }
+        
         //for Map<K,V>, first to check the type of V
         ParameterizedType paramType = (ParameterizedType)field.getGenericType();
         Type[] types = paramType.getActualTypeArguments();
@@ -294,8 +305,8 @@ public final class BuguMapper {
                 isSingle = true;
             }
         }
+        
         //get value by different type of V
-        Map map = (Map)val;
         Map result = new HashMap();
         Class<?> cls  = null;
         InternalDao dao = null;
