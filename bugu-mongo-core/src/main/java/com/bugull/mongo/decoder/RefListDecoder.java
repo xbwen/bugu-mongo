@@ -92,10 +92,10 @@ public class RefListDecoder extends AbstractDecoder{
     private Object decodeArray(Object val, Class elementClass){
         elementClass = FieldUtil.getRealType(elementClass, field);
         List list = (ArrayList)val;
-        int size = list.size();
-        if(size <= 0){
+        if(list.isEmpty()){
             return null;
         }
+        int size = list.size();
         Object arr = Array.newInstance(elementClass, size);
         //not cascade read
         if(refList.cascade().toUpperCase().indexOf(Default.CASCADE_READ)==-1 || withoutCascade){
@@ -144,6 +144,9 @@ public class RefListDecoder extends AbstractDecoder{
     private List decodeCollection(Object val, Class elementClass){
         elementClass = FieldUtil.getRealType(elementClass, field);
         Collection collection = (Collection)val;
+        if(collection.isEmpty()){
+            return null;
+        }
         List<BuguEntity> result = new ArrayList<>();
         //not cascade read
         if(refList.cascade().toUpperCase().indexOf(Default.CASCADE_READ)==-1 || withoutCascade){
@@ -178,6 +181,11 @@ public class RefListDecoder extends AbstractDecoder{
     }
     
     private Map decodeMap(){
+        Map map = (Map)value;
+        if(map.isEmpty()){
+            return null;
+        }
+        
         //for Map<K,V>, first to check the type of V
         ParameterizedType paramType = (ParameterizedType)field.getGenericType();
         Type[] types = paramType.getActualTypeArguments();
@@ -207,8 +215,8 @@ public class RefListDecoder extends AbstractDecoder{
                 isSingle = true;
             }
         }
+        
         //decode value by different type of V
-        Map map = (Map)value;
         Map result = new HashMap();
         boolean cascadeRead = false;
         Class<?> cls  = null;
