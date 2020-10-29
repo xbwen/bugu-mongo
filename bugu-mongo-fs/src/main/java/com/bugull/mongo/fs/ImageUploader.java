@@ -187,10 +187,13 @@ public class ImageUploader extends Uploader{
         }
         BufferedImage targetImage = new BufferedImage(targetWidth, targetHeight, BufferedImage.TYPE_INT_RGB);
         Graphics2D g2d = targetImage.createGraphics();
-        targetImage = g2d.getDeviceConfiguration().createCompatibleImage(targetWidth, targetHeight, Transparency.TRANSLUCENT);
-        g2d.dispose();
-        //targetImage have changed, Graphics2D must be created again.
-        g2d = targetImage.createGraphics();
+        if(FileTypeUtil.isPng(filename)){
+            //if it's png image, create compatible image with transparency.
+            targetImage = g2d.getDeviceConfiguration().createCompatibleImage(targetWidth, targetHeight, Transparency.TRANSLUCENT);
+            g2d.dispose();
+            //targetImage have changed, Graphics2D must be created again.
+            g2d = targetImage.createGraphics();
+        }
         Image img = srcImage.getScaledInstance(targetWidth, targetHeight, Image.SCALE_SMOOTH);
         g2d.drawImage(img, 0, 0, targetWidth, targetHeight, null);
         g2d.dispose();

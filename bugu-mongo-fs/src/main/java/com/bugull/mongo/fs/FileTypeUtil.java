@@ -38,6 +38,20 @@ public final class FileTypeUtil {
     }
     
     /**
+     * check the file is png image
+     * @param filename
+     * @return 
+     */
+    public static boolean isPng(String filename){
+        boolean result = false;
+        String ext = getExtention(filename);
+        if(!StringUtil.isEmpty(ext) && ext.equalsIgnoreCase("png")){
+            result = true;
+        }
+        return result;
+    }
+    
+    /**
      * If it's an image file, cache it in browser
      * @param ext
      * @return 
@@ -79,12 +93,6 @@ public final class FileTypeUtil {
             case "gif":
             case "bmp":
                 type = "image/" + ext;
-                break;
-            case "swf":
-                type = "application/x-shockwave-flash";
-                break;
-            case "flv":
-                type = "video/x-flv";
                 break;
             case "mp3":
                 type = "audio/mpeg";
