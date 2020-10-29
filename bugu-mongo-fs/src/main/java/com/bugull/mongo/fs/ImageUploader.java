@@ -23,7 +23,6 @@ import com.mongodb.DBObject;
 import com.mongodb.gridfs.GridFSDBFile;
 import java.awt.AlphaComposite;
 import java.awt.Font;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Transparency;
@@ -94,28 +93,28 @@ public class ImageUploader extends Uploader{
         int originalWidth = originalImage.getWidth(null);
         int originalHeight = originalImage.getHeight(null);
         BufferedImage newImage = new BufferedImage(originalWidth, originalHeight, BufferedImage.TYPE_INT_RGB);
-        Graphics2D g = newImage.createGraphics();
-        g.drawImage(originalImage, 0, 0, originalWidth, originalHeight, null);
-        g.setColor(watermark.getColor());
-        g.setFont(new Font(watermark.getFontName(), watermark.getFontStyle(), watermark.getFontSize())); 
-        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, watermark.getAlpha())); 
+        Graphics2D g2d = newImage.createGraphics();
+        g2d.drawImage(originalImage, 0, 0, originalWidth, originalHeight, null);
+        g2d.setColor(watermark.getColor());
+        g2d.setFont(new Font(watermark.getFontName(), watermark.getFontStyle(), watermark.getFontSize())); 
+        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, watermark.getAlpha())); 
         String text = watermark.getText();
         int len = text.length();
         int fontSize = watermark.getFontSize();
         switch(watermark.getAlign()){
             case Watermark.CENTER:
-                g.drawString(text, (originalWidth - (len * fontSize)) / 2, (originalHeight - fontSize) / 2);
+                g2d.drawString(text, (originalWidth - (len * fontSize)) / 2, (originalHeight - fontSize) / 2);
                 break;
             case Watermark.BOTTOM_RIGHT:
-                g.drawString(text, originalWidth - (len * fontSize) - watermark.getRight(), originalHeight - fontSize - watermark.getBottom());
+                g2d.drawString(text, originalWidth - (len * fontSize) - watermark.getRight(), originalHeight - fontSize - watermark.getBottom());
                 break;
             case Watermark.BOTTOM_LEFT:
-                g.drawString(text, watermark.getLeft(), originalHeight - fontSize - watermark.getBottom());
+                g2d.drawString(text, watermark.getLeft(), originalHeight - fontSize - watermark.getBottom());
                 break;
             default:
                 break;
         }
-        g.dispose();
+        g2d.dispose();
         return saveImage(newImage);
     }
     
@@ -130,24 +129,24 @@ public class ImageUploader extends Uploader{
             return saveInputStream();
         }
         BufferedImage newImage = new BufferedImage(originalWidth, originalHeight, BufferedImage.TYPE_INT_RGB);
-        Graphics2D g = newImage.createGraphics();
-        g.drawImage(originalImage, 0, 0, originalWidth, originalHeight, null);
-        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, watermark.getAlpha())); 
+        Graphics2D g2d = newImage.createGraphics();
+        g2d.drawImage(originalImage, 0, 0, originalWidth, originalHeight, null);
+        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, watermark.getAlpha())); 
         //position of the watermark
         switch(watermark.getAlign()){
             case Watermark.CENTER:
-                g.drawImage(watermarkImage, (originalWidth - watermarkWidth) / 2, (originalHeight - watermarkHeight) / 2, watermarkWidth, watermarkHeight, null);
+                g2d.drawImage(watermarkImage, (originalWidth - watermarkWidth) / 2, (originalHeight - watermarkHeight) / 2, watermarkWidth, watermarkHeight, null);
                 break;
             case Watermark.BOTTOM_RIGHT:
-                g.drawImage(watermarkImage, originalWidth - watermarkWidth - watermark.getRight(), originalHeight - watermarkHeight - watermark.getBottom(), watermarkWidth, watermarkHeight, null);
+                g2d.drawImage(watermarkImage, originalWidth - watermarkWidth - watermark.getRight(), originalHeight - watermarkHeight - watermark.getBottom(), watermarkWidth, watermarkHeight, null);
                 break;
             case Watermark.BOTTOM_LEFT:
-                g.drawImage(watermarkImage, watermark.getLeft(), originalHeight - watermarkHeight - watermark.getBottom(), watermarkWidth, watermarkHeight, null);
+                g2d.drawImage(watermarkImage, watermark.getLeft(), originalHeight - watermarkHeight - watermark.getBottom(), watermarkWidth, watermarkHeight, null);
                 break;
             default:
                 break;
         }
-        g.dispose();
+        g2d.dispose();
         return saveImage(newImage);
     }
     
