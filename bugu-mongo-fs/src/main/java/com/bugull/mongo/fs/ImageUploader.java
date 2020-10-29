@@ -26,6 +26,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Transparency;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -185,10 +186,14 @@ public class ImageUploader extends Uploader{
             targetHeight = (int)(srcHeight * ratio);
         }
         BufferedImage targetImage = new BufferedImage(targetWidth, targetHeight, BufferedImage.TYPE_INT_RGB);
+        Graphics2D g2d = targetImage.createGraphics();
+        targetImage = g2d.getDeviceConfiguration().createCompatibleImage(targetWidth, targetHeight, Transparency.TRANSLUCENT);
+        g2d.dispose();
+        //targetImage have changed, Graphics2D must be created again.
+        g2d = targetImage.createGraphics();
         Image img = srcImage.getScaledInstance(targetWidth, targetHeight, Image.SCALE_SMOOTH);
-        Graphics g = targetImage.getGraphics();
-        g.drawImage(img, 0, 0, targetWidth, targetHeight, null);
-        g.dispose();
+        g2d.drawImage(img, 0, 0, targetWidth, targetHeight, null);
+        g2d.dispose();
         return saveImage(targetImage);
     }
     
