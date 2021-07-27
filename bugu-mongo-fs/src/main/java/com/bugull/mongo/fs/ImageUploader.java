@@ -16,6 +16,7 @@
 
 package com.bugull.mongo.fs;
 
+import com.bugull.mongo.BuguFramework;
 import com.bugull.mongo.utils.StreamUtil;
 import com.bugull.mongo.utils.StringUtil;
 import com.mongodb.BasicDBObject;
@@ -148,6 +149,32 @@ public class ImageUploader extends Uploader{
         }
         g2d.dispose();
         return saveImage(newImage);
+    }
+    
+    /**
+     * Asynchronously, compress the image to another dimension, not scale to filling
+     * @param dimension
+     * @param maxWidth
+     * @param maxHeight 
+     */
+    public void asyncCompress(String dimension, int maxWidth, int maxHeight){
+        asyncCompress(dimension, maxWidth, maxHeight, false);
+    }
+    
+    /**
+     * Asynchronously, compress the image to another dimension
+     * @param dimension
+     * @param maxWidth
+     * @param maxHeight
+     * @param filling fill the entire area or not
+     */
+    public void asyncCompress(String dimension, int maxWidth, int maxHeight, boolean filling){
+        BuguFramework.getInstance().getExecutor().execute(new Runnable(){
+            @Override
+            public void run(){
+                compress(dimension, maxWidth, maxHeight, filling);
+            }
+        });
     }
     
     /**
